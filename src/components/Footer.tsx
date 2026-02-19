@@ -25,6 +25,16 @@ export default function Footer() {
             LinkedIn
           </a>
         </div>
+        <div className="footer__projects" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <p style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.5rem' }}>My Projects</p>
+          <div className="footer__links">
+            <a href="https://dailysmartcalc.com" target="_blank" rel="noopener noreferrer" className="footer__link">SmartCalc</a>
+            <a href="https://mycalcfinance.com" target="_blank" rel="noopener noreferrer" className="footer__link">Finance Calculators</a>
+            <a href="https://onlineimageshrinker.com" target="_blank" rel="noopener noreferrer" className="footer__link">Image Shrinker</a>
+            <a href="https://legalpolicygen.com" target="_blank" rel="noopener noreferrer" className="footer__link">Legal Policy Gen</a>
+            <a href="https://orderviachat.com" target="_blank" rel="noopener noreferrer" className="footer__link">OrderViaChat</a>
+          </div>
+        </div>
       </div>
     </footer>
   )
