@@ -11,7 +11,7 @@ interface SEOProps {
 }
 
 const SITE_NAME = 'iamrizwan'
-const BASE_URL = 'https://iamrizwan.com'
+const BASE_URL = 'https://imrizwan.com'
 
 export default function SEO({
   title,
