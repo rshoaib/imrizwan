@@ -1,0 +1,24 @@
+# Rizwan — Developer Blog
+
+> SharePoint & Power Platform development blog with real code, solutions, and tutorials.
+
+imrizwan.com (https://imrizwan.com) is a developer blog by Rizwan, a SharePoint and Power Platform developer. The blog features technical articles with real code examples, screenshots, and step-by-step guides.
+
+## Topics Covered
+- SPFx (SharePoint Framework) web part development
+- Power Platform solutions (Power Apps, Power Automate, Power BI)
+- SharePoint Online customization and development
+- Microsoft 365 development tips and tricks
+- React and TypeScript for SharePoint development
+
+## Projects
+- SmartCalc: Free online calculators — https://dailysmartcalc.com
+- MyCalcFinance: Financial calculators — https://mycalcfinance.com
+- Online Image Shrinker: Privacy-first image tools — https://onlineimageshrinker.com
+- Legal Policy Generator: Free legal document generator — https://legalpolicygen.com
+- OrderViaChat: WhatsApp ordering platform — https://orderviachat.com
+
+## Contact
+- Website: https://imrizwan.com
+- GitHub: https://github.com/nicegamer7
+- LinkedIn: https://www.linkedin.com/in/imrizwan/

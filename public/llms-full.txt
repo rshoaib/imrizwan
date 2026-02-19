@@ -1,0 +1,50 @@
+# Rizwan — Developer Blog — Full Site Documentation for AI Systems
+
+> SharePoint & Power Platform development blog with real code, solutions, and tutorials.
+
+imrizwan.com (https://imrizwan.com) is a developer blog by Rizwan, featuring technical articles about SharePoint Framework (SPFx) web parts, Power Platform solutions, Microsoft 365 development, and modern web technologies. All posts include real code examples, screenshots, and step-by-step implementation guides.
+
+---
+
+## Blog Categories
+
+### SharePoint Framework (SPFx)
+Articles about building custom web parts for SharePoint Online using the SPFx framework with React and TypeScript.
+
+### Power Platform
+Guides for Power Apps, Power Automate flows, and Power BI dashboards for business automation.
+
+### Microsoft 365 Development
+Tips and tricks for extending Microsoft 365 with custom solutions, APIs, and integrations.
+
+---
+
+## Projects by Rizwan
+
+### SmartCalc
+URL: https://dailysmartcalc.com
+Free online calculators for finance, health, and productivity. 25+ browser-based tools including mortgage, investment, BMI, calorie, and pomodoro calculators.
+
+### MyCalcFinance
+URL: https://mycalcfinance.com
+Free financial calculators for mortgage, compound interest, retirement, taxes, salary, net worth, budgeting, and more.
+
+### Online Image Shrinker
+URL: https://onlineimageshrinker.com
+Privacy-first image tools that run 100% in-browser. Compress, resize, convert, remove backgrounds, upscale, and 20+ more tools. No uploads required.
+
+### Legal Policy Generator
+URL: https://legalpolicygen.com
+Generate free Privacy Policies, Terms of Service, NDA, EULA, DMCA, Cookie Banners, and 22+ more legal documents. GDPR/CCPA compliant.
+
+### OrderViaChat
+URL: https://orderviachat.com
+The simplest way for small businesses to accept orders on WhatsApp. Create a free online store and receive orders directly via WhatsApp chat.
+
+---
+
+## Technical Details
+- Built with React + TypeScript + Vite
+- Blog content served from Supabase
+- Deployed on Vercel
+- Available at: https://imrizwan.com
