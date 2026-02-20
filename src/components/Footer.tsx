@@ -32,7 +32,6 @@ export default function Footer() {
             <a href="https://mycalcfinance.com" target="_blank" rel="noopener noreferrer" className="footer__link">Finance Calculators</a>
             <a href="https://onlineimageshrinker.com" target="_blank" rel="noopener noreferrer" className="footer__link">Image Shrinker</a>
             <a href="https://legalpolicygen.com" target="_blank" rel="noopener noreferrer" className="footer__link">Legal Policy Gen</a>
-            <a href="https://orderviachat.com" target="_blank" rel="noopener noreferrer" className="footer__link">OrderViaChat</a>
           </div>
         </div>
       </div>
