@@ -1,25 +1,180 @@
 export interface BlogPost {
-    id: string
-    slug: string
-    title: string
-    excerpt: string
-    content: string
-    date: string
-    displayDate: string
-    readTime: string
-    category: 'SPFx' | 'Power Platform' | 'SharePoint' | 'Microsoft 365'
-    image?: string
-    tags?: string[]
+  id: string
+  slug: string
+  title: string
+  excerpt: string
+  content: string
+  date: string
+  displayDate: string
+  readTime: string
+  category: 'SPFx' | 'Power Platform' | 'SharePoint' | 'Microsoft 365'
+  image?: string
+  tags?: string[]
 }
 
 export const blogPosts: BlogPost[] = [
-    {
-        id: '1',
-        slug: 'building-spfx-hello-world-webpart',
-        title: 'Building Your First SPFx Web Part: A Complete Hello World Guide',
-        excerpt:
-            'Step-by-step guide to creating your first SharePoint Framework (SPFx) web part — from scaffolding to deployment, with real screenshots from my tenant.',
-        content: `
+  {
+    id: '4',
+    slug: 'sharepoint-agents-ai-powered-assistants',
+    title: 'SharePoint Agents: Build AI-Powered Assistants for Your Intranet',
+    excerpt:
+      'Learn how to create AI-powered agents that use your SharePoint site content as a knowledge base — from setup in Copilot Studio to deploying in Teams chat.',
+    content: `
+## What Are SharePoint Agents?
+
+SharePoint Agents are **AI-powered assistants** that live on your SharePoint sites and answer questions based on your site's content. Think of them as a custom ChatGPT trained exclusively on your organization's documents, pages, and list data.
+
+Powered by **Microsoft 365 Copilot**, these agents can:
+- Answer employee questions using site content as the knowledge base
+- Search across pages, documents, and list items
+- Be accessed directly in **Microsoft Teams** chat
+- Be scoped to specific content so they only answer what they should
+
+## Why SharePoint Agents Matter
+
+Every organization has the same problem: employees can't find information. It's buried in SharePoint libraries, nested in folder structures, or locked inside PDFs nobody reads.
+
+SharePoint Agents solve this by putting an **AI layer on top of your existing content**:
+
+- **Reduce IT/HR support tickets** by 40-60% with self-service answers
+- **Faster onboarding** — new hires ask the agent instead of bothering colleagues
+- **Always up-to-date** — the agent reads live site content, not a static FAQ
+- **Zero training data needed** — your SharePoint content IS the training data
+
+## Prerequisites
+
+Before you create your first agent, make sure you have:
+
+- **Microsoft 365 Copilot license** (included in Copilot for Microsoft 365)
+- **SharePoint Online** — agents are not available for on-premises
+- **Site Owner or Site Collection Admin** permissions
+- **Copilot Studio** access (included with Copilot license)
+- **Well-structured content** — agents work best when your pages have clear headings and metadata
+
+## Step-by-Step: Creating Your First Agent
+
+### Step 1: Navigate to Your SharePoint Site
+
+Go to the SharePoint site you want the agent to cover. This could be an HR portal, IT knowledge base, or project site.
+
+### Step 2: Open Copilot Studio from Site Settings
+
+Click the **Settings gear** → **Copilot Studio** → **Create an Agent**.
+
+Alternatively, go directly to \`https://copilotstudio.microsoft.com\` and select **New Agent** → **SharePoint** as the knowledge source.
+
+### Step 3: Configure Knowledge Sources
+
+Add the content your agent should know about:
+
+\`\`\`
+Knowledge Sources:
+├── SharePoint Site Pages     (auto-indexed)
+├── Document Libraries        (PDFs, Word, Excel)
+├── SharePoint Lists           (structured data)
+└── Specific Folders           (scoped access)
+\`\`\`
+
+**Pro tip:** Start narrow. Pick one library or set of pages rather than the entire site. You can always expand later.
+
+### Step 4: Write Agent Instructions
+
+This is where you define the agent's personality and boundaries:
+
+\`\`\`
+You are the IT Help Desk assistant for Contoso.
+Answer questions using only the content from the IT Knowledge Base site.
+If you don't know the answer, say "I don't have that information.
+Please contact helpdesk@contoso.com for further assistance."
+Always be professional and concise.
+Do not make up answers or reference external sources.
+\`\`\`
+
+### Step 5: Test in the Preview Pane
+
+Copilot Studio provides a live preview where you can ask questions and see how the agent responds. Test with:
+- Questions your employees actually ask
+- Edge cases (topics NOT on the site)
+- Different phrasings of the same question
+
+### Step 6: Publish
+
+Click **Publish** to make the agent live. Choose where it should be accessible:
+- On the SharePoint site itself (embedded chat widget)
+- In Microsoft Teams (as a bot in 1:1 or group chat)
+- Both
+
+## Customizing Agent Behavior
+
+### Setting Topics
+
+Topics let you define structured conversation flows for common scenarios:
+
+- **Password Reset** → Guide through self-service portal steps
+- **Leave Policy** → Pull from HR policy documents
+- **Software Request** → Link to the request form
+
+### Adjusting Tone
+
+You control the agent's personality through the system instructions:
+
+- **Formal:** "Respond in a professional, third-person tone"
+- **Friendly:** "Be conversational and use first-person language"
+- **Technical:** "Include technical details and reference document sections"
+
+### Setting Boundaries
+
+Critical for enterprise deployment:
+
+- **Scope:** Only answer from approved knowledge sources
+- **Fallback:** Always provide a human escalation path
+- **Guardrails:** Prevent the agent from discussing topics outside its scope
+
+## Using Your Agent in Teams
+
+Once published, users can interact with the agent directly in Microsoft Teams:
+
+1. Open **Teams** → **Chat** → **Search** for your agent name
+2. Start a 1:1 conversation
+3. Ask questions in natural language
+4. The agent responds with answers sourced from your SharePoint content
+5. Responses include **citations** linking back to the original SharePoint page or document
+
+This is the killer feature — employees don't need to leave Teams to get answers from SharePoint.
+
+## Best Practices
+
+- **Content hygiene is everything.** Agents are only as good as the content they read. Clean up outdated pages, fix broken metadata, and use descriptive titles
+- **Use metadata and columns.** Agents reason better over structured data. Add categories, departments, and dates to your lists and libraries
+- **Respect permissions.** Agents honor SharePoint permissions — users only see answers from content they have access to
+- **Start small, iterate fast.** Launch with one department (IT or HR), gather feedback, then expand
+- **Monitor analytics.** Copilot Studio provides conversation analytics — track what users ask, what goes unanswered, and where the agent struggles
+- **Update regularly.** As you add new content to SharePoint, the agent automatically picks it up — but review its responses quarterly
+
+## What's Next
+
+Microsoft's roadmap for SharePoint Agents in late 2026 includes:
+
+- **Autonomous multi-step agents** that can perform actions (not just answer questions) — like submitting forms, creating list items, or triggering Power Automate flows
+- **Cross-site agents** that span multiple SharePoint sites for organization-wide knowledge
+- **Agent-to-agent orchestration** where specialized agents hand off to each other
+- **Advanced analytics dashboards** showing ROI and knowledge gaps
+
+SharePoint Agents represent a fundamental shift in how organizations interact with their intranet. The content you've been building in SharePoint for years is now the fuel for AI-powered experiences — and the best part is, you don't need to write a single line of code.
+`,
+    date: '2026-02-24',
+    displayDate: 'February 24, 2026',
+    readTime: '9 min read',
+    category: 'SharePoint',
+    tags: ['sharepoint', 'copilot', 'ai-agents', 'microsoft-365', 'copilot-studio'],
+  },
+  {
+    id: '1',
+    slug: 'building-spfx-hello-world-webpart',
+    title: 'Building Your First SPFx Web Part: A Complete Hello World Guide',
+    excerpt:
+      'Step-by-step guide to creating your first SharePoint Framework (SPFx) web part — from scaffolding to deployment, with real screenshots from my tenant.',
+    content: `
 ## Why SPFx?
 
 SharePoint Framework (SPFx) is the recommended way to customize and extend SharePoint Online. Unlike legacy solutions (farm solutions, sandboxed solutions), SPFx runs client-side in the browser and works seamlessly with modern SharePoint pages.
@@ -99,19 +254,19 @@ This opens the SharePoint Workbench at \`https://localhost:4321/temp/workbench.h
 
 In the next post, I'll cover how to add real SharePoint data using PnP JS and the Microsoft Graph API.
 `,
-        date: '2026-02-18',
-        displayDate: 'February 18, 2026',
-        readTime: '8 min read',
-        category: 'SPFx',
-        tags: ['spfx', 'webpart', 'react', 'sharepoint-online'],
-    },
-    {
-        id: '2',
-        slug: 'power-automate-sharepoint-approval-flow',
-        title: 'Building a SharePoint Approval Flow with Power Automate',
-        excerpt:
-            'How I built a document approval workflow using Power Automate that sends Teams notifications and updates SharePoint list status — complete walkthrough.',
-        content: `
+    date: '2026-02-18',
+    displayDate: 'February 18, 2026',
+    readTime: '8 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'webpart', 'react', 'sharepoint-online'],
+  },
+  {
+    id: '2',
+    slug: 'power-automate-sharepoint-approval-flow',
+    title: 'Building a SharePoint Approval Flow with Power Automate',
+    excerpt:
+      'How I built a document approval workflow using Power Automate that sends Teams notifications and updates SharePoint list status — complete walkthrough.',
+    content: `
 ## The Problem
 
 My team needed a document approval process:
@@ -161,19 +316,19 @@ Add **"Send an email"** or **"Post message in Teams"** to notify the original up
 
 This flow runs in under 30 seconds for the approval notification. The total cycle time depends on how fast the manager responds.
 `,
-        date: '2026-02-16',
-        displayDate: 'February 16, 2026',
-        readTime: '6 min read',
-        category: 'Power Platform',
-        tags: ['power-automate', 'sharepoint', 'approval', 'teams'],
-    },
-    {
-        id: '3',
-        slug: 'sharepoint-column-formatting-json',
-        title: 'SharePoint Column Formatting: Beautiful List Views with JSON',
-        excerpt:
-            'Transform boring SharePoint lists into visual dashboards using JSON column formatting. Status badges, progress bars, and conditional icons — no code deployment needed.',
-        content: `
+    date: '2026-02-16',
+    displayDate: 'February 16, 2026',
+    readTime: '6 min read',
+    category: 'Power Platform',
+    tags: ['power-automate', 'sharepoint', 'approval', 'teams'],
+  },
+  {
+    id: '3',
+    slug: 'sharepoint-column-formatting-json',
+    title: 'SharePoint Column Formatting: Beautiful List Views with JSON',
+    excerpt:
+      'Transform boring SharePoint lists into visual dashboards using JSON column formatting. Status badges, progress bars, and conditional icons — no code deployment needed.',
+    content: `
 ## Why Column Formatting?
 
 SharePoint column formatting lets you customize how columns look using JSON. No SPFx deployment, no app catalog — just paste JSON into the column settings.
@@ -259,10 +414,10 @@ Show a percentage column as a visual progress bar:
 - Use \`@me\` to personalize views per user
 - Check Microsoft's official samples: [Column Formatting Samples](https://github.com/SharePoint/sp-dev-list-formatting)
 `,
-        date: '2026-02-14',
-        displayDate: 'February 14, 2026',
-        readTime: '7 min read',
-        category: 'SharePoint',
-        tags: ['sharepoint', 'column-formatting', 'json', 'no-code'],
-    },
+    date: '2026-02-14',
+    displayDate: 'February 14, 2026',
+    readTime: '7 min read',
+    category: 'SharePoint',
+    tags: ['sharepoint', 'column-formatting', 'json', 'no-code'],
+  },
 ]
