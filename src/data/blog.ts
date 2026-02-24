@@ -14,6 +14,240 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '5',
+    slug: 'building-copilot-declarative-agents-teams-toolkit',
+    title: 'Building Declarative Agents for Microsoft 365 Copilot with Teams Toolkit',
+    excerpt:
+      'A hands-on guide to creating your first Copilot declarative agent — from scaffolding with Teams Toolkit to defining capabilities, adding API plugins, and deploying to your tenant.',
+    content: `
+## What Are Declarative Agents?
+
+Declarative agents are **custom extensions** for Microsoft 365 Copilot that let you tailor Copilot's behavior for specific scenarios — without writing complex bot code. Instead of building an entire conversational AI from scratch, you **declare** what the agent should do using a JSON manifest.
+
+Think of it this way: Microsoft 365 Copilot is the engine, and declarative agents let you put a custom steering wheel on it. You control:
+
+- **What knowledge** the agent can access (SharePoint sites, Graph connectors, specific files)
+- **What tone** it uses (formal, friendly, technical)
+- **What actions** it can perform via API plugins
+- **What boundaries** it stays within
+
+## Why Declarative Agents Over Custom Bots?
+
+If you've built Teams bots before, you know the pain: Bot Framework SDK, OAuth flows, adaptive cards, deployment infrastructure. Declarative agents skip all of that:
+
+| Feature | Custom Bot | Declarative Agent |
+|---------|-----------|------------------|
+| Code required | Hundreds of lines | Zero (JSON only) |
+| Hosting | Your own server/Azure | Microsoft-hosted |
+| Auth | Manual OAuth setup | Automatic SSO |
+| AI model | BYO (OpenAI, etc.) | Microsoft 365 Copilot |
+| Knowledge | Manual RAG pipeline | Point at SharePoint/Graph |
+| Deployment | App registration + publish | Sideload or admin deploy |
+
+For most enterprise scenarios — IT help desks, HR assistants, project knowledge bases — declarative agents are the right choice.
+
+## Prerequisites
+
+Before you start building, make sure you have:
+
+- **Microsoft 365 Copilot license** (E3/E5 + Copilot add-on or Copilot Pro)
+- **Teams Toolkit for VS Code** (v5.10 or later — install from Extensions marketplace)
+- **Node.js 18+** and **npm**
+- **Microsoft 365 developer tenant** (or your production tenant with sideloading enabled)
+- **Teams desktop or web client** for testing
+
+## Step 1: Scaffold the Project
+
+Open VS Code, then use the Teams Toolkit to create your project:
+
+1. Press **Ctrl+Shift+P** → type **Teams: Create a New App**
+2. Select **Copilot Agent** → **Declarative Agent**
+3. Choose **No plugin** (we'll add one later)
+4. Name your project: \`hr-policy-agent\`
+
+Teams Toolkit generates this structure:
+
+\`\`\`
+hr-policy-agent/
+├── appPackage/
+│   ├── declarativeAgent.json    ← Agent definition
+│   ├── manifest.json            ← Teams app manifest
+│   └── color.png / outline.png
+├── env/
+│   ├── .env.dev
+│   └── .env.dev.user
+├── teamsapp.yml                 ← Lifecycle config
+└── package.json
+\`\`\`
+
+The magic lives in **declarativeAgent.json** — this is where you define everything.
+
+## Step 2: Configure the Agent Manifest
+
+Open \`appPackage/declarativeAgent.json\`. Here's a real-world configuration for an HR policy assistant:
+
+\`\`\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.2/schema.json",
+  "version": "v1.2",
+  "name": "HR Policy Assistant",
+  "description": "Answers questions about company HR policies including leave, benefits, onboarding, and workplace guidelines.",
+  "instructions": "You are the HR Policy Assistant for our organization. Answer questions using ONLY the provided knowledge sources. Be professional but approachable. If you cannot find the answer in the knowledge sources, say: 'I don't have that information in our HR documentation. Please contact hr@company.com or visit the HR portal.' Never fabricate policies or provide legal advice. Always cite which document your answer comes from."
+}
+\`\`\`
+
+### Key Fields Explained
+
+- **name**: Shows up in the Copilot UI when users mention the agent
+- **description**: Helps Copilot understand when to route questions to your agent
+- **instructions**: The system prompt — this is the most important field. Be specific about tone, boundaries, and fallback behavior
+
+## Step 3: Add Knowledge Sources
+
+The real power of declarative agents is grounding them in your organization's data. Add a \`capabilities\` section:
+
+\`\`\`json
+{
+  "capabilities": [
+    {
+      "name": "OneDriveAndSharePoint",
+      "items_by_url": [
+        {
+          "url": "https://contoso.sharepoint.com/sites/HR/Policies"
+        },
+        {
+          "url": "https://contoso.sharepoint.com/sites/HR/Employee-Handbook"
+        }
+      ]
+    }
+  ]
+}
+\`\`\`
+
+The agent will **only** answer from these SharePoint locations. This is crucial for enterprise compliance — you control exactly what data the agent can reference.
+
+### Supported Knowledge Sources
+
+- **SharePoint sites and libraries** — most common for enterprise knowledge bases
+- **Microsoft Graph connectors** — pull data from external systems (ServiceNow, Confluence, etc.)
+- **Specific files and folders** — narrow scope to individual documents
+
+## Step 4: Add an API Plugin (Optional but Powerful)
+
+Want your agent to **do things**, not just answer questions? Add an API plugin. For example, let's add the ability to submit a leave request:
+
+Create \`appPackage/apiPlugin.json\`:
+
+\`\`\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
+  "schema_version": "v2.2",
+  "name_for_human": "Leave Request",
+  "description_for_human": "Submit and check leave requests",
+  "namespace": "leaveRequests",
+  "functions": [
+    {
+      "name": "submitLeaveRequest",
+      "description": "Submit a new leave request for the current user",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Confirm Leave Request",
+          "body": "Submit a leave request from {{startDate}} to {{endDate}}?"
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": { "type": "OAuthPluginVault" },
+      "spec": { "url": "apiSpecification/openapi.json" }
+    }
+  ]
+}
+\`\`\`
+
+Then reference it in your \`declarativeAgent.json\`:
+
+\`\`\`json
+{
+  "actions": [
+    {
+      "id": "leaveRequestPlugin",
+      "file": "apiPlugin.json"
+    }
+  ]
+}
+\`\`\`
+
+Now your agent can answer HR questions **and** take actions — all within the Copilot chat interface.
+
+## Step 5: Test Locally
+
+Teams Toolkit makes testing straightforward:
+
+1. Press **F5** in VS Code (or click the **Run** button in Teams Toolkit)
+2. Teams Toolkit will:
+   - Package your app manifest
+   - Sideload the agent to your Teams client
+   - Open Teams in your browser
+3. Open **Microsoft 365 Copilot** in Teams
+4. Click the **agent icon** (right side of chat) → select your agent
+5. Ask a question: *"What is our parental leave policy?"*
+
+### Debugging Tips
+
+- **Agent doesn't appear?** Check that sideloading is enabled in your tenant admin center
+- **Wrong answers?** Refine your \`instructions\` field — more specific prompts give better results
+- **No knowledge grounding?** Verify the SharePoint URLs are accessible to the logged-in user
+- **API plugin errors?** Check the OpenAPI spec matches your actual API endpoints
+
+## Step 6: Deploy to Your Organization
+
+When you're ready to go live:
+
+### Option A: Admin Deployment (Recommended for Enterprise)
+
+1. Run \`Teams: Zip Teams Metadata Package\` from the command palette
+2. Go to the **Teams Admin Center** → **Manage Apps** → **Upload**
+3. Upload the \`.zip\` package
+4. Assign the app to specific users or the entire organization
+5. Users will see the agent in their Copilot sidebar within 24 hours
+
+### Option B: Developer Sideload
+
+For testing or small teams, keep using the F5 sideload approach. The agent will only be available to developers who sideload it.
+
+## Best Practices for Production Agents
+
+After building dozens of these for enterprise clients, here are the patterns that work:
+
+- **Be ruthlessly specific in instructions.** Vague instructions = vague answers. Tell the agent exactly what to do and what NOT to do
+- **Scope knowledge narrowly.** Start with one SharePoint site, not the entire tenant. Expand based on user feedback
+- **Add example questions.** Include 3-5 sample prompts in your agent's \`conversation_starters\` to guide users
+- **Monitor and iterate.** Check Copilot analytics in the admin center to see what users ask. Update knowledge sources based on gaps
+- **Version your manifests.** Treat \`declarativeAgent.json\` like code — commit to Git, review changes, tag releases
+- **Test with real users.** What makes sense to you as a developer might confuse end users. Run a pilot with 10-20 people before org-wide rollout
+
+## What's Coming Next
+
+Microsoft's 2026 roadmap for declarative agents is exciting:
+
+- **Multi-agent orchestration** — agents that delegate to other agents for complex workflows
+- **Autonomous triggers** — agents that proactively notify users based on events (e.g., policy updates)
+- **Enhanced Graph connector support** — connect to 50+ enterprise systems out of the box
+- **Agent analytics dashboard** — ROI tracking, usage patterns, and knowledge gap analysis
+
+Declarative agents represent the future of enterprise AI assistants. They're simple enough to build in an afternoon, yet powerful enough to handle real business scenarios. If you're already in the Microsoft 365 ecosystem, this is the fastest path from idea to deployed AI assistant.
+`,
+    date: '2026-02-24',
+    displayDate: 'February 24, 2026',
+    readTime: '11 min read',
+    category: 'Microsoft 365',
+    tags: ['copilot', 'declarative-agents', 'teams-toolkit', 'microsoft-365', 'ai-development'],
+  },
+  {
     id: '4',
     slug: 'sharepoint-agents-ai-powered-assistants',
     title: 'SharePoint Agents: Build AI-Powered Assistants for Your Intranet',
