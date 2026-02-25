@@ -64,6 +64,12 @@ export default function About() {
 
         <div className="about__links">
           <a
+            href="mailto:sh_rizwan44@hotmail.com"
+            className="about__social-link"
+          >
+            ✉️ Email
+          </a>
+          <a
             href="https://github.com/nicegamer7"
             target="_blank"
             rel="noopener noreferrer"
@@ -72,7 +78,7 @@ export default function About() {
             🔗 GitHub
           </a>
           <a
-            href="https://www.linkedin.com/in/imrizwan/"
+            href="https://www.linkedin.com/in/rizwan-shoaib-b341b485/"
             target="_blank"
             rel="noopener noreferrer"
             className="about__social-link"
