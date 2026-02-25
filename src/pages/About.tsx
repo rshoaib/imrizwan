@@ -64,6 +64,13 @@ export default function About() {
 
         <div className="about__links">
           <a
+            href="/resume.pdf"
+            download
+            className="about__social-link about__social-link--primary"
+          >
+            📄 Download Resume
+          </a>
+          <a
             href="mailto:sh_rizwan44@hotmail.com"
             className="about__social-link"
           >

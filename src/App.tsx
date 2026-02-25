@@ -4,6 +4,8 @@ import Home from './pages/Home'
 import BlogList from './pages/BlogList'
 import BlogPost from './pages/BlogPost'
 import About from './pages/About'
+import Projects from './pages/Projects'
+import Contact from './pages/Contact'
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </Layout>
     </BrowserRouter>

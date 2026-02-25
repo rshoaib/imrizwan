@@ -64,6 +64,10 @@
       <h2>SPFx Webparts, Power Platform Solutions & SharePoint Development Blog</h2>
       <p>Developer blog by Rizwan covering SPFx webparts, Power Platform solutions, SharePoint customizations, and Microsoft 365 development. Real problems solved with code, screenshots, and step-by-step guides.</p>
     </div>
+    <script>
+      // Restore theme before paint to prevent flash
+      (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- GA4 moved to bottom so it doesn't block render -->

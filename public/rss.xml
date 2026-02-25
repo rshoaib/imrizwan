@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>iamrizwan</title>
+    <link>https://imrizwan.com</link>
+    <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 25 Feb 2026 14:08:37 GMT</lastBuildDate>
+    <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Building Declarative Agents for Microsoft 365 Copilot with Teams Toolkit</title>
+      <link>https://imrizwan.com/blog/building-copilot-declarative-agents-teams-toolkit</link>
+      <description>A hands-on guide to creating your first Copilot declarative agent — from scaffolding with Teams Toolkit to defining capabilities, adding API plugins, and deploying to your tenant.</description>
+      <pubDate>Tue, 24 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/building-copilot-declarative-agents-teams-toolkit</guid>
+      <category>Microsoft 365</category>
+    </item>
+    <item>
+      <title>SharePoint Agents: Build AI-Powered Assistants for Your Intranet</title>
+      <link>https://imrizwan.com/blog/sharepoint-agents-ai-powered-assistants</link>
+      <description>Learn how to create AI-powered agents that use your SharePoint site content as a knowledge base — from setup in Copilot Studio to deploying in Teams chat.</description>
+      <pubDate>Tue, 24 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-agents-ai-powered-assistants</guid>
+      <category>SharePoint</category>
+    </item>
+    <item>
+      <title>Building Your First SPFx Web Part: A Complete Hello World Guide</title>
+      <link>https://imrizwan.com/blog/building-spfx-hello-world-webpart</link>
+      <description>Step-by-step guide to creating your first SharePoint Framework (SPFx) web part — from scaffolding to deployment, with real screenshots from my tenant.</description>
+      <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/building-spfx-hello-world-webpart</guid>
+      <category>SPFx</category>
+    </item>
+    <item>
+      <title>Building a SharePoint Approval Flow with Power Automate</title>
+      <link>https://imrizwan.com/blog/power-automate-sharepoint-approval-flow</link>
+      <description>How I built a document approval workflow using Power Automate that sends Teams notifications and updates SharePoint list status — complete walkthrough.</description>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-sharepoint-approval-flow</guid>
+      <category>Power Platform</category>
+    </item>
+    <item>
+      <title>SharePoint Column Formatting: Beautiful List Views with JSON</title>
+      <link>https://imrizwan.com/blog/sharepoint-column-formatting-json</link>
+      <description>Transform boring SharePoint lists into visual dashboards using JSON column formatting. Status badges, progress bars, and conditional icons — no code deployment needed.</description>
+      <pubDate>Sat, 14 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-column-formatting-json</guid>
+      <category>SharePoint</category>
+    </item>
+  </channel>
+</rss>

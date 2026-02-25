@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
 import BlogCard from '../components/BlogCard'
+import NewsletterCTA from '../components/NewsletterCTA'
 import { getAllPosts } from '../lib/blogService'
 import type { BlogPost } from '../data/blog'
 
@@ -74,6 +75,13 @@ export default function Home() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="section">
+        <div className="container">
+          <NewsletterCTA />
         </div>
       </section>
     </>

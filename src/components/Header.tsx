@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 
 const navLinks = [
   { path: '/', label: 'Home' },
   { path: '/blog', label: 'Blog' },
+  { path: '/projects', label: 'Projects' },
   { path: '/about', label: 'About' },
+  { path: '/contact', label: 'Contact' },
 ]
 
 export default function Header() {
@@ -34,6 +37,7 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
 
         <button

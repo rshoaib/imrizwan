@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import SEO from '../components/SEO'
 import BlogCard from '../components/BlogCard'
 import { getAllPosts } from '../lib/blogService'
@@ -10,22 +11,60 @@ export default function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([])
   const [activeCategory, setActiveCategory] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     getAllPosts().then((data) => {
       setPosts(data)
-      setFilteredPosts(data)
       setLoading(false)
+
+      // Check for tag query param
+      const tagParam = searchParams.get('tag')
+      if (tagParam) {
+        setSearchQuery(`#${tagParam}`)
+      }
     })
-  }, [])
+  }, [searchParams])
+
+  // Filter posts when search or category changes
+  useEffect(() => {
+    let result = posts
+
+    // Category filter
+    if (activeCategory !== 'All') {
+      result = result.filter((p) => p.category === activeCategory)
+    }
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim()
+      if (q.startsWith('#')) {
+        // Tag search
+        const tag = q.slice(1)
+        result = result.filter((p) =>
+          (p.tags || []).some((t) => t.toLowerCase().includes(tag))
+        )
+      } else {
+        result = result.filter(
+          (p) =>
+            p.title.toLowerCase().includes(q) ||
+            p.excerpt.toLowerCase().includes(q) ||
+            (p.tags || []).some((t) => t.toLowerCase().includes(q))
+        )
+      }
+    }
+
+    setFilteredPosts(result)
+  }, [posts, activeCategory, searchQuery])
 
   const handleFilter = (category: string) => {
     setActiveCategory(category)
-    if (category === 'All') {
-      setFilteredPosts(posts)
-    } else {
-      setFilteredPosts(posts.filter((p) => p.category === category))
+    // Clear tag param when switching category
+    if (searchParams.has('tag')) {
+      setSearchParams({})
+      setSearchQuery('')
     }
   }
 
@@ -41,6 +80,30 @@ export default function BlogList() {
         <div className="page-title">
           <h1>Blog</h1>
           <p>Real-world solutions with code and screenshots</p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="search-bar">
+          <span className="search-bar__icon">🔍</span>
+          <input
+            type="text"
+            className="search-bar__input"
+            placeholder="Search posts or #tag..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              className="search-bar__clear"
+              onClick={() => {
+                setSearchQuery('')
+                if (searchParams.has('tag')) setSearchParams({})
+              }}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         {/* Category Filters */}
@@ -65,7 +128,9 @@ export default function BlogList() {
             <div className="empty-state__icon">🔍</div>
             <h3 className="empty-state__title">No posts found</h3>
             <p className="empty-state__text">
-              No posts in this category yet. Check back soon!
+              {searchQuery
+                ? 'No posts match your search. Try a different term.'
+                : 'No posts in this category yet. Check back soon!'}
             </p>
           </div>
         ) : (

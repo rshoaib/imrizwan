@@ -41,6 +41,16 @@ export default function BlogCard({ post }: BlogCardProps) {
 
         <h3 className="blog-card__title">{post.title}</h3>
         <p className="blog-card__excerpt">{post.excerpt}</p>
+
+        {post.tags && post.tags.length > 0 && (
+          <div className="blog-card__tags">
+            {post.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="tag-pill tag-pill--sm">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="blog-card__footer">
