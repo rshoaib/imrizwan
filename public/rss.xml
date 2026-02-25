@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Feb 2026 14:08:37 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 25 Feb 2026 14:18:45 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>SPFx 1.23: The New CLI That Replaces Yeoman — What You Need to Know</title>
+      <link>https://imrizwan.com/blog/spfx-1-23-new-cli-replacing-yeoman-migration-guide</link>
+      <description>Microsoft is replacing the Yeoman generator with a new open-source SPFx CLI in version 1.23. Here\</description>
+      <pubDate>Wed, 25 Feb 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/spfx-1-23-new-cli-replacing-yeoman-migration-guide</guid>
+      <category>SPFx</category>
+    </item>
     <item>
       <title>Building Declarative Agents for Microsoft 365 Copilot with Teams Toolkit</title>
       <link>https://imrizwan.com/blog/building-copilot-declarative-agents-teams-toolkit</link>

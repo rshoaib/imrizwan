@@ -14,6 +14,195 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '6',
+    slug: 'spfx-1-23-new-cli-replacing-yeoman-migration-guide',
+    title: 'SPFx 1.23: The New CLI That Replaces Yeoman — What You Need to Know',
+    excerpt:
+      'Microsoft is replacing the Yeoman generator with a new open-source SPFx CLI in version 1.23. Here\'s what changes, how to migrate, and why this is the biggest SPFx tooling shift in years.',
+    content: `
+## The Biggest SPFx Tooling Change in Years
+
+If you've been building SPFx solutions, you've typed \`yo @microsoft/sharepoint\` hundreds of times. That's about to change. **SPFx 1.23** (rolling out February–March 2026) introduces a brand-new, open-source CLI that replaces the Yeoman generator entirely.
+
+This isn't just a cosmetic update — it's a fundamental shift in how SPFx projects are scaffolded, built, and maintained. Combined with the Gulp-to-Heft migration from SPFx 1.22, the entire developer toolchain is being modernized.
+
+## What's Changing in SPFx 1.23
+
+Here's the short version:
+
+| What | Before (SPFx ≤ 1.22) | After (SPFx 1.23+) |
+|------|----------------------|---------------------|
+| Project scaffolding | Yeoman generator | New SPFx CLI |
+| Build system | Gulp | Heft + Webpack |
+| Templates | Closed-source, bundled | Open-source on GitHub |
+| Custom templates | Not supported | Fully supported |
+| CLI versioning | Tied to SPFx version | Decoupled — independent releases |
+
+### The New SPFx CLI
+
+The new CLI is a standalone tool, **decoupled from the SPFx release cycle**. This means:
+
+- **Faster updates:** CLI improvements ship independently of SPFx versioning
+- **Open-source templates:** All scaffolding templates are on GitHub — you can fork, modify, and contribute
+- **Company-specific templates:** Organizations can create custom scaffolding baselines with pre-configured linting, testing frameworks, and folder structures
+- **Community contributions:** Anyone can submit PRs to improve the default templates
+
+### How to Use the New CLI
+
+Install it globally (replaces \`yo @microsoft/sharepoint\`):
+
+\`\`\`bash
+npm install -g @microsoft/spfx-cli
+\`\`\`
+
+Scaffold a new project:
+
+\`\`\`bash
+spfx new webpart --name hello-world --framework react
+\`\`\`
+
+The command structure is more intuitive than Yeoman's interactive prompts. You can also run it non-interactively for CI/CD pipelines:
+
+\`\`\`bash
+spfx new webpart --name my-webpart --framework react --skip-install
+\`\`\`
+
+### Custom Company Templates
+
+This is the feature enterprise developers have been asking for. You can now create your own template repository:
+
+\`\`\`bash
+spfx new webpart --template https://github.com/your-org/spfx-template
+\`\`\`
+
+Your template can include:
+- Pre-configured ESLint rules
+- Company-standard folder structure
+- Built-in PnP JS setup
+- Standard CI/CD files (GitHub Actions, Azure DevOps)
+- Shared utility libraries
+
+## The Build System: Gulp Is Gone
+
+SPFx 1.22 already introduced the new build toolchain, and 1.23 makes it the default:
+
+### Old Pipeline (Gulp-based)
+
+\`\`\`bash
+gulp serve        # Local development
+gulp bundle --ship     # Bundle for production
+gulp package-solution --ship  # Create .sppkg
+\`\`\`
+
+### New Pipeline (Heft-based)
+
+\`\`\`bash
+npm run serve     # Local development (uses Heft + Webpack)
+npm run build     # Production build
+npm run package   # Create .sppkg
+\`\`\`
+
+Under the hood, **Heft** (from the Rush Stack family) replaces Gulp as the task runner, and **Webpack** handles bundling directly. This brings several advantages:
+
+- **Faster builds:** Heft parallelizes tasks better than Gulp's sequential pipeline
+- **Better tree-shaking:** Direct Webpack integration means smaller bundle sizes
+- **Modern tooling:** No more Gulp plugins that haven't been updated in years
+- **Standard npm scripts:** \`npm run build\` just works — no global Gulp CLI needed
+
+## Migration Guide: Yeoman to New CLI
+
+If you have existing SPFx projects, here's what you need to do:
+
+### For New Projects
+
+Simply use the new CLI instead of Yeoman. No migration needed:
+
+\`\`\`bash
+# Old way (still works but deprecated)
+yo @microsoft/sharepoint
+
+# New way
+spfx new webpart --name my-webpart
+\`\`\`
+
+### For Existing Projects
+
+Existing projects built with Yeoman **will continue to work**. Microsoft isn't breaking backward compatibility. However, to get the benefits of the new build toolchain:
+
+1. **Update SPFx version** in your \`package.json\` to 1.23
+2. **Run the upgrade report:** Use the Microsoft 365 CLI to see exactly what needs to change:
+
+\`\`\`bash
+npx @pnp/cli-microsoft365 spfx project upgrade --output md
+\`\`\`
+
+3. **Follow the generated report** — it lists every file change, dependency update, and config migration needed
+4. **Replace Gulp tasks** with npm scripts in \`package.json\`
+5. **Test thoroughly** — run \`npm run serve\` and verify everything works in the local workbench
+
+### Key Dependency Changes
+
+\`\`\`json
+{
+  "devDependencies": {
+    "@microsoft/sp-build-web": "1.23.0",
+    "@rushstack/heft": "^0.67.0",
+    "webpack": "^5.90.0"
+  }
+}
+\`\`\`
+
+Remove these deprecated packages:
+- \`gulp\`
+- \`@microsoft/sp-build-core-tasks\`
+- \`@microsoft/sp-module-interfaces\`
+
+## Other SPFx 1.23 Features
+
+### Command Set Enhancements
+
+Command Sets (toolbar buttons) for lists and libraries get new capabilities:
+
+- **Command grouping:** Group related commands under a dropdown menu instead of cluttering the toolbar
+- **Conditional visibility:** Show/hide commands based on item metadata, not just selection count
+- **Panel-level overrides:** Replace the default side panel in Microsoft Lists with your own SPFx component
+
+### Debugging Toolbar
+
+The new server-side debugging toolbar (introduced in 1.22.2) is now stable:
+
+- Debug SPFx solutions directly in live SharePoint pages
+- View component props, state, and render timing
+- No need to use the workbench for testing
+- Toggle it on/off with a URL parameter: \`?debugManifestsFile=...\`
+
+## What's Coming Next: SPFx 1.24
+
+Looking ahead to May/June 2026:
+
+- **Navigation customizers:** Override SharePoint navigation nodes with SPFx components — build fully custom nav experiences
+- **Enhanced form customizers:** More control over list form rendering
+- **AI-assisted development:** Integration with Copilot for generating SPFx components from natural language descriptions
+
+## My Recommendations
+
+After testing the SPFx 1.23 preview extensively, here's my advice:
+
+1. **Start using the new CLI now** for all new projects. The old Yeoman generator still works, but it's deprecated and won't get new features
+2. **Don't rush to migrate existing projects.** Wait until your next major feature release, then do the upgrade alongside other changes
+3. **Create company templates** if you're building multiple SPFx solutions. The time investment pays off quickly when every project starts with your standard setup
+4. **Embrace Heft.** The Gulp ecosystem for SPFx was always fragile — Heft is a significant improvement in reliability and performance
+5. **Use the M365 CLI upgrade report.** Don't manually figure out what to change — let the tooling tell you exactly what's needed
+
+The transition from Yeoman to the new CLI is the biggest SPFx tooling shift since SPFx was first released. But unlike some Microsoft migrations, this one is actually well-planned, backward-compatible, and genuinely improves the developer experience.
+`,
+    date: '2026-02-25',
+    displayDate: 'February 25, 2026',
+    readTime: '10 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'cli', 'yeoman', 'migration', 'heft', 'webpack'],
+  },
+  {
     id: '5',
     slug: 'building-copilot-declarative-agents-teams-toolkit',
     title: 'Building Declarative Agents for Microsoft 365 Copilot with Teams Toolkit',
