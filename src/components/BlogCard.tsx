@@ -22,7 +22,7 @@ function getCategoryIcon(category: string): string {
 
 export default function BlogCard({ post }: BlogCardProps) {
   return (
-    <Link to={`/blog/${post.slug}`} className="blog-card">
+    <Link to={`/blog/${post.slug}`} className="blog-card reveal">
       {post.image ? (
         <img src={post.image} alt={post.title} className="blog-card__image" />
       ) : (

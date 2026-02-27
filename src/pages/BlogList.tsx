@@ -77,7 +77,7 @@ export default function BlogList() {
       />
 
       <div className="container">
-        <div className="page-title">
+        <div className="page-title reveal">
           <h1>Blog</h1>
           <p>Real-world solutions with code and screenshots</p>
         </div>
@@ -134,7 +134,7 @@ export default function BlogList() {
             </p>
           </div>
         ) : (
-          <div className="blog-grid">
+          <div className="blog-grid reveal-stagger">
             {filteredPosts.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}

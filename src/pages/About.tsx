@@ -25,13 +25,13 @@ export default function About() {
       />
 
       <div className="about">
-        <header className="about__header">
+        <header className="about__header reveal">
           <div className="about__avatar">R</div>
           <h1 className="about__name">Rizwan</h1>
           <p className="about__role">SharePoint & Power Platform Developer</p>
         </header>
 
-        <div className="about__content">
+        <div className="about__content reveal">
           <p>
             I'm a Microsoft 365 developer with deep experience in SharePoint
             Framework (SPFx), Power Platform, and modern SharePoint
@@ -51,10 +51,10 @@ export default function About() {
           </p>
         </div>
 
-        <h2 className="section__title" style={{ marginTop: '2rem' }}>
+        <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
           Skills & Technologies
         </h2>
-        <div className="about__skills">
+        <div className="about__skills reveal">
           {skills.map((skill) => (
             <span key={skill} className="about__skill">
               {skill}
@@ -62,7 +62,7 @@ export default function About() {
           ))}
         </div>
 
-        <div className="about__links">
+        <div className="about__links reveal">
           <a
             href="/resume.pdf"
             download

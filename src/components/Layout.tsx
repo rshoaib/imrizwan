@@ -1,14 +1,12 @@
 import Header from './Header'
 import Footer from './Footer'
+import ScrollAnimations from './ScrollAnimations'
 
-interface LayoutProps {
-  children: React.ReactNode
-}
-
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
+      <ScrollAnimations />
       <main>{children}</main>
       <Footer />
     </>

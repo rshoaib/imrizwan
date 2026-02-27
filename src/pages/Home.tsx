@@ -40,16 +40,21 @@ export default function Home() {
             customizations. This blog documents real problems I've solved — with
             code, screenshots, and step-by-step guides.
           </p>
-          <Link to="/blog" className="hero__cta">
-            Read the Blog →
-          </Link>
+          <div className="hero__actions">
+            <Link to="/blog" className="hero__cta">
+              Read the Blog →
+            </Link>
+            <Link to="/projects" className="hero__cta hero__cta--secondary">
+              View Projects
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Recent Posts */}
       <section className="section">
         <div className="container">
-          <div className="section__header">
+          <div className="section__header reveal">
             <h2 className="section__title">Recent Posts</h2>
             <Link to="/blog" className="section__link">
               View all →
@@ -69,7 +74,7 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <div className="blog-grid">
+            <div className="blog-grid reveal-stagger">
               {posts.map((post) => (
                 <BlogCard key={post.id} post={post} />
               ))}
@@ -79,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* Newsletter */}
-      <section className="section">
+      <section className="section reveal">
         <div className="container">
           <NewsletterCTA />
         </div>
