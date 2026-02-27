@@ -6,6 +6,8 @@ import BlogPost from './pages/BlogPost'
 import About from './pages/About'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
+import Tasks from './pages/Tasks'
+import TaskBoard from './pages/TaskBoard'
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/board" element={<TaskBoard />} />
         </Routes>
       </Layout>
     </BrowserRouter>
