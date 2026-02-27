@@ -8,6 +8,7 @@ import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
+import PinGate from './components/PinGate'
 
 function App() {
   return (
@@ -20,8 +21,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/board" element={<TaskBoard />} />
+          <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
+          <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />
         </Routes>
       </Layout>
     </BrowserRouter>

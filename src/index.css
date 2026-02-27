@@ -2783,3 +2783,95 @@ pre:hover .copy-btn {
     padding-right: var(--space-5);
   }
 }
+
+/* --- PIN Gate --- */
+.pin-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-6);
+}
+
+.pin-gate__box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-8);
+  text-align: center;
+  max-width: 380px;
+  width: 100%;
+  animation: slideUp 0.3s ease;
+}
+
+.pin-gate__icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+}
+
+.pin-gate__title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.pin-gate__desc {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
+}
+
+.pin-gate__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+  font-family: var(--font-body);
+  text-align: center;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-4);
+  transition: border-color var(--transition-fast);
+}
+
+.pin-gate__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.pin-gate__input--error {
+  border-color: #ef4444;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-6px);
+  }
+
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.pin-gate__btn {
+  width: 100%;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+.pin-gate__error {
+  margin-top: var(--space-3);
+  color: #f87171;
+  font-size: var(--fs-sm);
+}
