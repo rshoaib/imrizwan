@@ -21,33 +21,35 @@ export default function Header() {
   }
 
   return (
-    <header className="header">
-      <div className="header__inner">
-        <Link to="/" className="header__logo" onClick={() => setMenuOpen(false)}>
-          <span className="header__logo-accent">&lt;/&gt;</span> iamrizwan
-        </Link>
+    <header className="header-wrapper">
+      <div className="header glass-panel">
+        <div className="header__inner">
+          <Link to="/" className="header__logo" onClick={() => setMenuOpen(false)}>
+            <span className="header__logo-accent">&lt;/&gt;</span> iamrizwan
+          </Link>
 
-        <nav className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`header__link ${isActive(link.path) ? 'header__link--active' : ''}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <ThemeToggle />
-        </nav>
+          <nav className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`header__link ${isActive(link.path) ? 'header__link--active' : ''}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <ThemeToggle />
+          </nav>
 
-        <button
-          className="header__burger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle navigation"
-        >
-          <span className="header__burger-icon" />
-        </button>
+          <button
+            className="header__burger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation"
+          >
+            <span className="header__burger-icon" />
+          </button>
+        </div>
       </div>
     </header>
   )
