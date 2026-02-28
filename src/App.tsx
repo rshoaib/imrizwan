@@ -6,6 +6,8 @@ import BlogPost from './pages/BlogPost'
 import About from './pages/About'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
+import Tools from './pages/Tools'
+import GuidGenerator from './pages/GuidGenerator'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
@@ -20,6 +22,8 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/tools" element={<Tools />} />
+          <Route path="/tools/guid-generator" element={<GuidGenerator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
           <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />
