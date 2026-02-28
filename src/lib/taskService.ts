@@ -6,7 +6,7 @@ export interface Task {
     title: string
     description: string
     priority: 'low' | 'medium' | 'high' | 'critical'
-    status: 'todo' | 'in_progress' | 'testing' | 'done' | 'blocked'
+    status: 'todo' | 'in_progress' | 'testing' | 'done' | 'blocked' | 'open' | 'fixed' | 'closed'
     assigned_to: string
     app_name: string
     test_cases: string

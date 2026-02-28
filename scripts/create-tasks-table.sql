@@ -4,7 +4,7 @@ CREATE TABLE tasks (
   title       TEXT NOT NULL,
   description TEXT DEFAULT '',
   priority    TEXT DEFAULT 'medium' CHECK (priority IN ('low','medium','high','critical')),
-  status      TEXT DEFAULT 'todo' CHECK (status IN ('todo','in_progress','testing','done','blocked')),
+  status      TEXT DEFAULT 'todo' CHECK (status IN ('todo','in_progress','testing','done','blocked','open','fixed','closed')),
   assigned_to TEXT DEFAULT 'Tester',
   app_name    TEXT DEFAULT '',
   test_cases  TEXT DEFAULT '',
