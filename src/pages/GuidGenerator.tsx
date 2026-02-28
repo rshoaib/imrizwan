@@ -126,7 +126,7 @@ export default function GuidGenerator() {
       />
 
       <div className="container">
-        <div className="tool-page reveal">
+        <div className="tool-page glass-panel reveal-stagger">
           {/* Breadcrumb */}
           <nav className="tool-breadcrumb">
             <Link to="/tools">Tools</Link>
@@ -148,11 +148,11 @@ export default function GuidGenerator() {
           {/* Controls */}
           <div className="tool-section">
             <h2 className="tool-section__label">Format</h2>
-            <div className="tool-pills">
+            <div className="segmented-control">
               {FORMAT_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
-                  className={`tool-pill ${format === opt.value ? 'tool-pill--active' : ''}`}
+                  className={`segment-btn ${format === opt.value ? 'segment-btn--active' : ''}`}
                   onClick={() => handleFormatChange(opt.value)}
                   title={opt.example}
                 >
@@ -164,11 +164,11 @@ export default function GuidGenerator() {
 
           <div className="tool-section">
             <h2 className="tool-section__label">Quantity</h2>
-            <div className="tool-pills">
+            <div className="segmented-control">
               {BULK_OPTIONS.map((n) => (
                 <button
                   key={n}
-                  className={`tool-pill ${count === n ? 'tool-pill--active' : ''}`}
+                  className={`segment-btn ${count === n ? 'segment-btn--active' : ''}`}
                   onClick={() => handleCountChange(n)}
                 >
                   {n}
@@ -189,7 +189,7 @@ export default function GuidGenerator() {
           {/* Results */}
           {results.length > 0 && (
             <div className="tool-results">
-              <div className="tool-results__header">
+              <div className="tool-results-header">
                 <h2 className="tool-section__label">
                   {results.length === 1 ? 'Result' : `Results (${results.length})`}
                 </h2>
