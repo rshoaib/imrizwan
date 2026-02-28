@@ -2351,7 +2351,7 @@ pre:hover .copy-btn {
 }
 
 /* ============================================
-   Tester Board Page
+   Bug Tracker Board
    ============================================ */
 .board-page {
   min-height: calc(100vh - var(--header-height));
@@ -2384,6 +2384,7 @@ pre:hover .copy-btn {
   display: flex;
   gap: var(--space-3);
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .board-filter {
@@ -2396,18 +2397,43 @@ pre:hover .copy-btn {
   font-family: var(--font-body);
 }
 
+/* --- Role Switcher --- */
+.bug-role-switch {
+  display: flex;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.bug-role-btn {
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.bug-role-btn:hover {
+  color: var(--text-primary);
+}
+
+.bug-role-btn--active {
+  background: var(--accent);
+  color: white;
+}
+
 /* --- Kanban Board --- */
 .board-kanban {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
   align-items: start;
-}
-
-@media (max-width: 1200px) {
-  .board-kanban {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 @media (max-width: 768px) {
@@ -2451,29 +2477,34 @@ pre:hover .copy-btn {
   font-weight: var(--fw-bold);
 }
 
-.board-column--todo .board-column__header {
-  border-top: 3px solid #94a3b8;
+.board-column--open .board-column__header {
+  border-top: 3px solid #f87171;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-.board-column--in_progress .board-column__header {
+.board-column--open .board-column__count {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
+.board-column--fixed .board-column__header {
   border-top: 3px solid #60a5fa;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-.board-column--testing .board-column__header {
-  border-top: 3px solid #a78bfa;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+.board-column--fixed .board-column__count {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
 }
 
-.board-column--done .board-column__header {
+.board-column--closed .board-column__header {
   border-top: 3px solid #34d399;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-.board-column--blocked .board-column__header {
-  border-top: 3px solid #f87171;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+.board-column--closed .board-column__count {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
 }
 
 .board-column__cards {
@@ -2511,6 +2542,11 @@ pre:hover .copy-btn {
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--space-2);
+}
+
+.board-card__time {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
 }
 
 .board-card__title {
@@ -2594,6 +2630,13 @@ pre:hover .copy-btn {
   display: flex;
   gap: var(--space-3);
   margin-bottom: var(--space-6);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bug-detail__time {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
 }
 
 .board-panel__section {
@@ -2617,106 +2660,6 @@ pre:hover .copy-btn {
   border: 1px solid var(--border-light);
 }
 
-/* --- Status Grid --- */
-.board-panel__status-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-2);
-}
-
-@media (max-width: 480px) {
-  .board-panel__status-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.board-panel__status-btn {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.board-panel__status-btn:hover {
-  border-color: var(--accent);
-  color: var(--text-primary);
-}
-
-.board-panel__status-btn--active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-
-.board-panel__status-btn--active.board-panel__status-btn--done {
-  background: #10b981;
-  border-color: #10b981;
-}
-
-.board-panel__status-btn--active.board-panel__status-btn--blocked {
-  background: #ef4444;
-  border-color: #ef4444;
-}
-
-/* --- Result Grid --- */
-.board-panel__result-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
-}
-
-@media (max-width: 480px) {
-  .board-panel__result-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.board-panel__result-btn {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.board-panel__result-btn:hover {
-  border-color: var(--accent);
-}
-
-.board-panel__result-btn--active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-
-.board-panel__result-btn--active.board-panel__result-btn--pass {
-  background: #10b981;
-  border-color: #10b981;
-}
-
-.board-panel__result-btn--active.board-panel__result-btn--fail {
-  background: #ef4444;
-  border-color: #ef4444;
-}
-
-.board-panel__result-btn--active.board-panel__result-btn--partial {
-  background: #f59e0b;
-  border-color: #f59e0b;
-}
-
-/* --- Textarea --- */
 .board-panel__textarea {
   width: 100%;
   padding: var(--space-4);
@@ -2746,8 +2689,54 @@ pre:hover .copy-btn {
   display: flex;
   gap: var(--space-3);
   justify-content: flex-end;
+  align-items: center;
   padding: var(--space-5) var(--space-8);
   border-top: 1px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+/* --- Action Button Variants --- */
+.tasks-btn--success {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tasks-btn--success:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.tasks-btn--danger {
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tasks-btn--danger:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: #f87171;
+}
+
+.bug-closed-badge {
+  font-size: var(--fs-sm);
+  color: #34d399;
+  font-weight: var(--fw-medium);
+  margin-right: auto;
 }
 
 /* --- Mobile Responsiveness --- */
@@ -2781,6 +2770,10 @@ pre:hover .copy-btn {
   .board-panel__footer {
     padding-left: var(--space-5);
     padding-right: var(--space-5);
+  }
+
+  .board-controls {
+    width: 100%;
   }
 }
 

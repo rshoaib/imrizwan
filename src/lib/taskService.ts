@@ -16,8 +16,11 @@ export interface Task {
     updated_at: string
 }
 
+export type BugStatus = 'open' | 'fixed' | 'closed'
+
 export type NewTask = Pick<Task, 'title' | 'description' | 'priority' | 'app_name'> & {
     assigned_to?: string
+    status?: string
 }
 
 export type TaskUpdate = Partial<Omit<Task, 'id' | 'created_at'>>
@@ -68,6 +71,7 @@ export async function createTask(task: NewTask): Promise<Task | null> {
             priority: task.priority || 'medium',
             app_name: task.app_name || '',
             assigned_to: task.assigned_to || 'Tester',
+            ...(task.status ? { status: task.status } : {}),
         }])
         .select()
         .single()
