@@ -11,6 +11,9 @@ const STATUS_LABELS: Record<Task['status'], string> = {
     testing: 'Testing',
     done: 'Done',
     blocked: 'Blocked',
+    open: 'Open',
+    fixed: 'Fixed',
+    closed: 'Closed',
 }
 
 const PRIORITY_LABELS: Record<Task['priority'], string> = {
