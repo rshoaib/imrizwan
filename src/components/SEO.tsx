@@ -50,6 +50,37 @@ export default function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       {image && <meta name="twitter:image" content={image} />}
+
+      {/* Article Schema (Structured Data) */}
+      {type === 'article' && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: title,
+            description: description,
+            image: image ? [image] : [],
+            datePublished: publishedTime,
+            author: {
+              '@type': 'Person',
+              name: 'Rizwan',
+              url: 'https://imrizwan.com/about'
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'ImRizwan',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://imrizwan.com/favicon.svg'
+              }
+            },
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': fullUrl
+            }
+          })
+        }} />
+      )}
     </Helmet>
   )
 }
