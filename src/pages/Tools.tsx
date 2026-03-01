@@ -10,6 +10,14 @@ const tools = [
     emoji: '🔑',
     tags: ['SPFx', 'Azure AD', 'Teams'],
   },
+  {
+    name: 'JSON Column Formatter',
+    slug: 'json-column-formatter',
+    description:
+      'Write, validate, and preview SharePoint JSON column formatting — with built-in templates and a live preview.',
+    emoji: '🎨',
+    tags: ['SharePoint', 'JSON', 'Formatting'],
+  },
 ]
 
 export default function Tools() {

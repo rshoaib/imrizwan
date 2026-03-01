@@ -31,7 +31,7 @@ description: Comprehensive content pipeline for all sites using Google Ultra sub
 | 3 | **onlineimageshrinker.com** | Static/Next.js | Image compression | AdSense |
 | 4 | **legalpolicygen.com** | Static/Next.js | Legal policy generator | AdSense |
 | 5 | **mycalcfinance.com** | Static/Next.js | Finance calculators | AdSense |
-| 6 | **imrizwan.com** | Next.js | Developer blog | Portfolio |
+| 6 | **imrizwan.com** | Next.js | Developer blog | Portfolio | AdSense |
 | 7 | **azanapp** | React Native (Expo) | Prayer times app | Free/Ads |
 
 ---

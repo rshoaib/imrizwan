@@ -3515,3 +3515,301 @@ pre:hover .copy-btn {
     text-align: center;
   }
 }
+
+/* ============================================
+   JSON Column Formatter
+   ============================================ */
+
+/* --- Template Picker --- */
+.formatter-templates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.formatter-template-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.formatter-template-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.formatter-template-btn--active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+.formatter-template-hint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* --- Actions Toolbar --- */
+.formatter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-6) 0 var(--space-4);
+}
+
+.formatter-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.formatter-action-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.formatter-action-btn--success {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.formatter-action-btn--danger {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.formatter-action-btn--danger:hover {
+  border-color: #f87171;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* --- Error Banner --- */
+.formatter-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: #fca5a5;
+  font-size: var(--fs-sm);
+  font-family: var(--font-mono);
+  margin-bottom: var(--space-4);
+  word-break: break-word;
+}
+
+.formatter-error__icon {
+  flex-shrink: 0;
+}
+
+/* --- Layout: Editor + Preview --- */
+.formatter-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-2);
+}
+
+.formatter-editor-wrapper,
+.formatter-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* --- JSON Editor --- */
+.formatter-editor {
+  display: flex;
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 420px;
+  transition: border-color var(--transition-fast);
+}
+
+.formatter-editor:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.formatter-line-numbers {
+  flex-shrink: 0;
+  width: 44px;
+  padding: var(--space-3) var(--space-2);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.65;
+  text-align: right;
+  user-select: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.formatter-textarea {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  tab-size: 2;
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.formatter-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.formatter-textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formatter-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.formatter-textarea::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+/* --- Preview Panel --- */
+.formatter-preview {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 420px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+}
+
+/* --- Mock SharePoint Table --- */
+.sp-table {
+  width: 100%;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  color: #323130;
+}
+
+.sp-table__header {
+  display: flex;
+  border-bottom: 1px solid #edebe9;
+  background: #faf9f8;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.sp-table__header-cell {
+  flex: 1;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #605e5c;
+  text-transform: none;
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.sp-table__header-cell--formatted {
+  border-left: 1px solid #edebe9;
+}
+
+.sp-table__row {
+  display: flex;
+  border-bottom: 1px solid #f3f2f1;
+  transition: background 0.15s ease;
+}
+
+.sp-table__row:hover {
+  background: #f3f2f1;
+}
+
+.sp-table__row:last-child {
+  border-bottom: none;
+}
+
+.sp-table__cell {
+  flex: 1;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: #323130;
+}
+
+.sp-table__cell--formatted {
+  border-left: 1px solid #f3f2f1;
+}
+
+.sp-table__cell--raw {
+  color: #a19f9d;
+  font-style: italic;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .formatter-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .formatter-editor,
+  .formatter-preview {
+    height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formatter-templates {
+    gap: var(--space-1);
+  }
+
+  .formatter-template-btn {
+    font-size: var(--fs-xs);
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .formatter-actions {
+    gap: var(--space-1);
+  }
+
+  .formatter-action-btn {
+    font-size: var(--fs-xs);
+    padding: var(--space-1) var(--space-3);
+  }
+}
