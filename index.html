@@ -19,6 +19,12 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
     <link rel="canonical" href="https://imrizwan.com/" />
 
+    <!-- Prevent white flash before Vite loads index.css -->
+    <style>
+      body { background-color: #0B1120; margin: 0; }
+      html[data-theme="light"] body { background-color: #f8fafc; }
+    </style>
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -58,16 +64,12 @@
     <meta name="twitter:description" content="SPFx webparts, Power Platform solutions, and SharePoint development tips with code and screenshots." />
   </head>
   <body>
-    <div id="root">
-      <!-- Static SEO fallback for crawlers that don't execute JavaScript -->
-      <h1>Rizwan — SharePoint & Power Platform Developer</h1>
-      <h2>SPFx Webparts, Power Platform Solutions & SharePoint Development Blog</h2>
-      <p>Developer blog by Rizwan covering SPFx webparts, Power Platform solutions, SharePoint customizations, and Microsoft 365 development. Real problems solved with code, screenshots, and step-by-step guides.</p>
-    </div>
+    <!-- Theme restoration script before body renders to avoid theme flash -->
     <script>
-      // Restore theme before paint to prevent flash
       (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
     </script>
+    <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- AdSense Configuration (Deferred to not block Core Web Vitals) -->
