@@ -5,7 +5,7 @@ interface SEOProps {
   description: string
   url?: string
   image?: string
-  type?: 'website' | 'article'
+  type?: 'website' | 'article' | 'webapp'
   publishedTime?: string
   tags?: string[]
 }
@@ -77,6 +77,26 @@ export default function SEO({
             mainEntityOfPage: {
               '@type': 'WebPage',
               '@id': fullUrl
+            }
+          })
+        }} />
+      )}
+
+      {/* Web Application Schema */}
+      {type === 'webapp' && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: title,
+            description: description,
+            url: fullUrl,
+            applicationCategory: 'DeveloperApplication',
+            operatingSystem: 'All',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD'
             }
           })
         }} />

@@ -480,6 +480,7 @@ export default function JsonColumnFormatter() {
         title="JSON Column Formatter — SharePoint Column Formatting Editor"
         description="Write, validate, and preview SharePoint JSON column formatting with built-in templates and a live preview. Free, browser-based, no login required."
         url="/tools/json-column-formatter"
+        type="webapp"
       />
 
       <div className="container">

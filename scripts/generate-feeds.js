@@ -68,6 +68,9 @@ console.log(`✅ Generated rss.xml with ${posts.length} posts`)
 const staticPages = [
   { loc: '/', priority: '1.0', changefreq: 'weekly' },
   { loc: '/blog', priority: '0.9', changefreq: 'weekly' },
+  { loc: '/tools', priority: '0.9', changefreq: 'weekly' },
+  { loc: '/tools/json-column-formatter', priority: '0.8', changefreq: 'monthly' },
+  { loc: '/tools/guid-generator', priority: '0.8', changefreq: 'monthly' },
   { loc: '/projects', priority: '0.8', changefreq: 'monthly' },
   { loc: '/about', priority: '0.7', changefreq: 'monthly' },
   { loc: '/contact', priority: '0.6', changefreq: 'monthly' },

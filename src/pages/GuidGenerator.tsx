@@ -123,6 +123,7 @@ export default function GuidGenerator() {
         title="GUID Generator — Free UUID v4 Generator for SPFx & Azure"
         description="Generate GUIDs/UUIDs instantly for SPFx manifests, Azure AD app registrations, Teams apps, and Power Platform solutions. Free, browser-based, no login required."
         url="/tools/guid-generator"
+        type="webapp"
       />
 
       <div className="container">
