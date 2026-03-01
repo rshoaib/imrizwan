@@ -9,6 +9,7 @@ import Contact from './pages/Contact'
 import Tools from './pages/Tools'
 import GuidGenerator from './pages/GuidGenerator'
 import JsonColumnFormatter from './pages/JsonColumnFormatter'
+import CamlQueryBuilder from './pages/CamlQueryBuilder'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
@@ -28,6 +29,7 @@ function App() {
           <Route path="/tools" element={<Tools />} />
           <Route path="/tools/guid-generator" element={<GuidGenerator />} />
           <Route path="/tools/json-column-formatter" element={<JsonColumnFormatter />} />
+          <Route path="/tools/caml-query-builder" element={<CamlQueryBuilder />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
           <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />

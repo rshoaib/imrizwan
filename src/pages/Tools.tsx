@@ -18,6 +18,14 @@ const tools = [
     emoji: '🎨',
     tags: ['SharePoint', 'JSON', 'Formatting'],
   },
+  {
+    name: 'CAML Query Builder',
+    slug: 'caml-query-builder',
+    description:
+      'Construct XML CAML Queries visually for SharePoint REST APIs, PnP JS, CSOM, or SPFx. Add conditions, select fields, and generate the raw XML.',
+    emoji: '🔍',
+    tags: ['SharePoint', 'CAML', 'XML'],
+  },
 ]
 
 export default function Tools() {
