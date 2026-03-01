@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import SEO from '../components/SEO'
 import BlogCard from '../components/BlogCard'
+import BlogSearch from '../components/BlogSearch'
 import { getAllPosts } from '../lib/blogService'
 import type { BlogPost } from '../data/blog'
 
@@ -83,28 +84,14 @@ export default function BlogList() {
         </div>
 
         {/* Search Bar */}
-        <div className="search-bar">
-          <span className="search-bar__icon">🔍</span>
-          <input
-            type="text"
-            className="search-bar__input"
-            placeholder="Search posts or #tag..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button
-              className="search-bar__clear"
-              onClick={() => {
-                setSearchQuery('')
-                if (searchParams.has('tag')) setSearchParams({})
-              }}
-              aria-label="Clear search"
-            >
-              ✕
-            </button>
-          )}
-        </div>
+        <BlogSearch 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery} 
+          onClear={() => {
+            setSearchQuery('')
+            if (searchParams.has('tag')) setSearchParams({})
+          }}
+        />
 
         {/* Category Filters */}
         <div className="filters">
