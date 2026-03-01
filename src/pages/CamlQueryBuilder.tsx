@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
+import RelatedTools from '../components/RelatedTools'
 
 /* ───────────── Types ───────────── */
 type CamlOperator = 
@@ -361,6 +362,8 @@ export default function CamlQueryBuilder() {
               <li>Limiting the response size manually using <code>&lt;RowLimit&gt;</code> and <code>&lt;ViewFields&gt;</code>.</li>
             </ul>
           </section>
+
+          <RelatedTools currentSlug="caml-query-builder" />
         </div>
       </div>
     </>

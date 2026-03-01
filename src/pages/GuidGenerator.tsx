@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
+import RelatedTools from '../components/RelatedTools'
 
 type GuidFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces' | 'urn'
 
@@ -273,6 +274,8 @@ export default function GuidGenerator() {
               <li><strong>SharePoint Content Types</strong> — custom content type IDs</li>
             </ul>
           </section>
+
+          <RelatedTools currentSlug="guid-generator" />
         </div>
       </div>
     </>

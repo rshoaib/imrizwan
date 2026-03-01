@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
 
-const tools = [
+export const tools = [
   {
     name: 'GUID / UUID Generator',
     slug: 'guid-generator',

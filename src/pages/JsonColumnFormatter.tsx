@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import SEO from '../components/SEO'
+import RelatedTools from '../components/RelatedTools'
 
 /* ───────────── Templates ───────────── */
 interface Template {
@@ -686,6 +687,8 @@ export default function JsonColumnFormatter() {
               </li>
             </ul>
           </section>
+
+          <RelatedTools currentSlug="json-column-formatter" />
         </div>
       </div>
     </>
