@@ -220,64 +220,66 @@ export default function CamlQueryBuilder() {
 
                 <div className="caml-conditions-list" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {conditions.map((cond, index) => (
-                    <div key={cond.id} className="caml-condition-row glass-card" style={{ padding: '0.75rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <div key={cond.id} className="caml-condition-row glass-card" style={{ padding: '0.75rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                       {conditions.length > 1 && (
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)', width: '24px', flexShrink: 0 }}>
-                          {index === 0 ? '' : joinType}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', height: '36px' }}>
+                          <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)', width: '24px', flexShrink: 0 }}>
+                            {index === 0 ? '' : joinType}
+                          </span>
+                        </div>
                       )}
                       
-                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, 1fr) 110px minmax(130px, auto) minmax(100px, 1fr) 32px', gap: '0.5rem', flex: 1, alignItems: 'center' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', flex: 1, alignItems: 'center' }}>
                         
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group" style={{ flex: '1 1 100px', marginBottom: 0 }}>
                           <input 
                             type="text" 
                             placeholder="FieldRef (e.g. Title)" 
                             value={cond.fieldRef}
                             onChange={(e) => updateCondition(cond.id, { fieldRef: e.target.value })}
                             className="form-input"
-                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%' }}
+                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%', height: '36px' }}
                           />
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group" style={{ flex: '1 1 100px', marginBottom: 0 }}>
                           <select 
                             value={cond.fieldType}
                             onChange={(e) => updateCondition(cond.id, { fieldType: e.target.value as FieldType })}
                             className="form-input"
-                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%' }}
+                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%', height: '36px' }}
                           >
                             {FIELD_TYPES.map(ft => <option key={ft} value={ft}>{ft}</option>)}
                           </select>
                         </div>
 
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group" style={{ flex: '1 1 110px', marginBottom: 0 }}>
                           <select 
                             value={cond.operator}
                             onChange={(e) => updateCondition(cond.id, { operator: e.target.value as CamlOperator })}
                             className="form-input"
-                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%' }}
+                            style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%', height: '36px' }}
                           >
                             {OPERATORS.map(op => <option key={op.value} value={op.value}>{op.label}</option>)}
                           </select>
                         </div>
 
-                        {OPERATORS.find(o => o.value === cond.operator)?.requiresValue ? (
-                          <div className="form-group" style={{ marginBottom: 0 }}>
+                        {OPERATORS.find(o => o.value === cond.operator)?.requiresValue && (
+                          <div className="form-group" style={{ flex: '1 1 100px', marginBottom: 0 }}>
                             <input 
                               type="text" 
                               placeholder="Value" 
                               value={cond.value}
                               onChange={(e) => updateCondition(cond.id, { value: e.target.value })}
                               className="form-input"
-                              style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%' }}
+                              style={{ padding: '0.4rem 0.5rem', fontSize: '13px', width: '100%', height: '36px' }}
                             />
                           </div>
-                        ) : <div />}
+                        )}
 
                         <button 
                           onClick={() => removeCondition(cond.id)}
-                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.4rem', opacity: conditions.length === 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px' }}
+                          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0', opacity: conditions.length === 1 ? 0.3 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', flex: '0 0 24px', height: '36px' }}
                           disabled={conditions.length === 1}
                           title="Remove Condition"
                         >

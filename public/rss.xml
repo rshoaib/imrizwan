@@ -5,7 +5,7 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 01 Mar 2026 23:32:36 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 01 Mar 2026 23:35:51 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data</title>
