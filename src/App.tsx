@@ -12,10 +12,12 @@ import JsonColumnFormatter from './pages/JsonColumnFormatter'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
+import GoogleAnalytics from './components/GoogleAnalytics'
 
 function App() {
   return (
     <BrowserRouter>
+      <GoogleAnalytics />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />

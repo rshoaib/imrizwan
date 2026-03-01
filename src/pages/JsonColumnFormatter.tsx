@@ -438,12 +438,33 @@ export default function JsonColumnFormatter() {
   const applyTemplate = (index: number) => {
     setSelectedTemplate(index)
     setJson(JSON.stringify(TEMPLATES[index].json, null, 2))
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'tool_used', {
+        tool_name: 'json_column_formatter',
+        action: 'apply_template',
+        template_name: TEMPLATES[index].name
+      })
+    }
   }
 
-  const handleFormat = () => setJson(beautify(json))
-  const handleMinify = () => setJson(minify(json))
+  const handleFormat = () => {
+    setJson(beautify(json))
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'tool_used', { tool_name: 'json_column_formatter', action: 'format' })
+    }
+  }
+
+  const handleMinify = () => {
+    setJson(minify(json))
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'tool_used', { tool_name: 'json_column_formatter', action: 'minify' })
+    }
+  }
 
   const handleCopy = async () => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'copy_clicked', { tool_name: 'json_column_formatter' })
+    }
     try {
       await navigator.clipboard.writeText(json)
       setCopied(true)

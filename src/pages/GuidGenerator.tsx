@@ -62,6 +62,14 @@ export default function GuidGenerator() {
     const activeFormat = overrideFormat || format
     const activeCount = overrideCount || count
     
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'tool_used', {
+        tool_name: 'guid_generator',
+        format: activeFormat,
+        count: activeCount
+      })
+    }
+
     const newGuids = Array.from({ length: activeCount }, () =>
       formatGuid(generateRawGuid(), activeFormat)
     )
@@ -82,6 +90,9 @@ export default function GuidGenerator() {
   }
 
   const copyToClipboard = async (text: string, index: number) => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'copy_clicked', { tool_name: 'guid_generator', type: 'single' })
+    }
     try {
       await navigator.clipboard.writeText(text)
       setCopied(index)
@@ -100,6 +111,9 @@ export default function GuidGenerator() {
   }
 
   const copyAll = async () => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'copy_clicked', { tool_name: 'guid_generator', type: 'all' })
+    }
     const text = results.join('\n')
     try {
       await navigator.clipboard.writeText(text)
