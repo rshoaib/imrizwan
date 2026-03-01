@@ -14,6 +14,346 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '8',
+    slug: 'microsoft-graph-api-spfx-user-profiles-teams',
+    title: 'Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data',
+    excerpt:
+      'Learn how to use Microsoft Graph API in SharePoint Framework web parts — from setting up permissions to fetching user profiles, Teams memberships, and SharePoint site data with real code examples.',
+    content: `
+## Why Microsoft Graph API in SPFx?
+
+If you're building SharePoint Framework web parts, you'll quickly hit the limits of what pure SharePoint APIs can do. Need to show the current user's photo? Display their Teams memberships? Pull calendar events? Send emails?  That's where **Microsoft Graph** comes in.
+
+Microsoft Graph is the **unified API for all of Microsoft 365**. From a single endpoint (\\\`https://graph.microsoft.com\\\`), you can access:
+
+- **User profiles** — photos, job titles, managers, direct reports
+- **Teams and channels** — list teams, post messages, get channel members
+- **Calendar events** — upcoming meetings, availability, free/busy status
+- **OneDrive files** — recent files, shared documents, file previews
+- **Mail** — read, send, and search emails
+- **Planner** — tasks, buckets, plans across your organization
+- **SharePoint** — sites, lists, and pages (beyond what the SP REST API offers)
+
+The best part? **SPFx has built-in Graph support** through the \\\`MSGraphClientV3\\\` — no need to manually handle OAuth tokens.
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+- **SPFx 1.19+** development environment set up ([see my SPFx Hello World guide](/blog/building-spfx-hello-world-webpart))
+- **Microsoft 365 developer tenant** or access to a SharePoint Online site
+- **API permissions** configured in your \\\`package-solution.json\\\`
+- **Admin consent** granted for the Graph scopes you need
+
+## Step 1: Request API Permissions
+
+The first thing you need is to declare which Graph permissions your web part requires. Open \\\`config/package-solution.json\\\` and add the \\\`webApiPermissionRequests\\\` section:
+
+\\\`\\\`\\\`json
+{
+  "solution": {
+    "name": "graph-webpart-client-side-solution",
+    "id": "your-guid-here",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false,
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.Read"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.ReadBasic.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Team.ReadBasic.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Sites.Read.All"
+      }
+    ]
+  }
+}
+\\\`\\\`\\\`
+
+### Understanding Permission Scopes
+
+Choose the **least privileged scope** that works for your scenario:
+
+| What You Need | Scope | Permission Type |
+|--------------|-------|----------------|
+| Current user's profile | \\\`User.Read\\\` | Delegated |
+| Any user's basic profile | \\\`User.ReadBasic.All\\\` | Delegated |
+| User photos | \\\`User.Read.All\\\` | Delegated |
+| List Teams memberships | \\\`Team.ReadBasic.All\\\` | Delegated |
+| Read SharePoint sites | \\\`Sites.Read.All\\\` | Delegated |
+| Send mail | \\\`Mail.Send\\\` | Delegated |
+| Read calendars | \\\`Calendars.Read\\\` | Delegated |
+
+**Important:** After deploying your \\\`.sppkg\\\` package, a **tenant admin** must approve these permissions in the SharePoint Admin Center → **API access** page. Without admin consent, your Graph calls will fail with a 403.
+
+## Step 2: Initialize the Graph Client
+
+In your web part file (e.g., \\\`GraphDemoWebPart.ts\\\`), get the Graph client from the SPFx context:
+
+\\\`\\\`\\\`typescript
+import { MSGraphClientV3 } from '@microsoft/sp-http';
+
+// Inside your web part class:
+private async getGraphClient(): Promise<MSGraphClientV3> {
+  return await this.context.msGraphClientFactory.getClient('3');
+}
+\\\`\\\`\\\`
+
+That's it. No OAuth configuration, no client secrets, no token management. SPFx handles the entire authentication flow for you using the current user's Azure AD session.
+
+## Step 3: Fetch the Current User's Profile
+
+Let's start with the most common scenario — getting the signed-in user's profile data:
+
+\\\`\\\`\\\`typescript
+interface UserProfile {
+  displayName: string;
+  mail: string;
+  jobTitle: string;
+  officeLocation: string;
+  department: string;
+  businessPhones: string[];
+}
+
+private async getCurrentUser(): Promise<UserProfile> {
+  const client = await this.getGraphClient();
+  
+  const response: UserProfile = await client
+    .api('/me')
+    .select('displayName,mail,jobTitle,officeLocation,department,businessPhones')
+    .get();
+  
+  return response;
+}
+\\\`\\\`\\\`
+
+### Get the User's Photo
+
+User photos are returned as binary blobs, so you need to convert them to a data URL:
+
+\\\`\\\`\\\`typescript
+private async getUserPhoto(): Promise<string> {
+  const client = await this.getGraphClient();
+  
+  try {
+    const photoBlob: Blob = await client
+      .api('/me/photo/$value')
+      .responseType('blob' as any)
+      .get();
+    
+    return URL.createObjectURL(photoBlob);
+  } catch {
+    // User has no photo — return a placeholder
+    return '';
+  }
+}
+\\\`\\\`\\\`
+
+## Step 4: List the User's Teams
+
+Show which Microsoft Teams the current user belongs to:
+
+\\\`\\\`\\\`typescript
+interface Team {
+  id: string;
+  displayName: string;
+  description: string;
+}
+
+private async getMyTeams(): Promise<Team[]> {
+  const client = await this.getGraphClient();
+  
+  const response = await client
+    .api('/me/joinedTeams')
+    .select('id,displayName,description')
+    .get();
+  
+  return response.value;
+}
+\\\`\\\`\\\`
+
+## Step 5: Search SharePoint Sites
+
+Use Graph to search across all SharePoint sites in the tenant:
+
+\\\`\\\`\\\`typescript
+interface SiteResult {
+  id: string;
+  displayName: string;
+  webUrl: string;
+  description: string;
+}
+
+private async searchSites(query: string): Promise<SiteResult[]> {
+  const client = await this.getGraphClient();
+  
+  const response = await client
+    .api('/sites')
+    .query({ search: query })
+    .select('id,displayName,webUrl,description')
+    .get();
+  
+  return response.value;
+}
+\\\`\\\`\\\`
+
+## Step 6: Put It All Together in React
+
+Here's how to wire everything up in a React component:
+
+\\\`\\\`\\\`typescript
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+
+const GraphDemo: React.FC<{ graphClient: MSGraphClientV3 }> = ({ graphClient }) => {
+  const [user, setUser] = useState<any>(null);
+  const [teams, setTeams] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [userData, teamsData] = await Promise.all([
+          graphClient.api('/me')
+            .select('displayName,mail,jobTitle,department')
+            .get(),
+          graphClient.api('/me/joinedTeams')
+            .select('id,displayName,description')
+            .get()
+        ]);
+        
+        setUser(userData);
+        setTeams(teamsData.value);
+      } catch (error) {
+        console.error('Graph API error:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadData();
+  }, [graphClient]);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h2>Welcome, {user?.displayName}</h2>
+      <p>{user?.jobTitle} — {user?.department}</p>
+      
+      <h3>Your Teams ({teams.length})</h3>
+      <ul>
+        {teams.map(team => (
+          <li key={team.id}>
+            <strong>{team.displayName}</strong>
+            <span>{team.description}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+\\\`\\\`\\\`
+
+## Error Handling Patterns
+
+Graph API calls can fail for many reasons. Here's a robust pattern:
+
+\\\`\\\`\\\`typescript
+private async safeGraphCall<T>(
+  apiCall: () => Promise<T>,
+  fallback: T
+): Promise<T> {
+  try {
+    return await apiCall();
+  } catch (error: any) {
+    if (error.statusCode === 403) {
+      console.warn('Permission denied. Has admin approved the API permissions?');
+    } else if (error.statusCode === 404) {
+      console.warn('Resource not found.');
+    } else if (error.statusCode === 429) {
+      console.warn('Throttled. Retry after:', error.headers?.['Retry-After']);
+    }
+    return fallback;
+  }
+}
+\\\`\\\`\\\`
+
+## Batching Multiple Requests
+
+Instead of making 5 separate Graph calls, batch them into one:
+
+\\\`\\\`\\\`typescript
+private async batchGraphCalls(): Promise<any> {
+  const client = await this.getGraphClient();
+  
+  const batchContent = {
+    requests: [
+      { id: '1', method: 'GET', url: '/me' },
+      { id: '2', method: 'GET', url: '/me/joinedTeams' },
+      { id: '3', method: 'GET', url: '/me/manager' },
+      { id: '4', method: 'GET', url: '/me/events?$top=5' },
+    ]
+  };
+  
+  const response = await client
+    .api('/$batch')
+    .post(batchContent);
+  
+  return response.responses;
+}
+\\\`\\\`\\\`
+
+This is **significantly faster** than sequential calls, especially on slower connections.
+
+## PnP JS Alternative
+
+If you prefer a more developer-friendly wrapper, **PnP JS** provides a Graph client with chainable, typed methods:
+
+\\\`\\\`\\\`typescript
+import { graphfi, SPFx } from "@pnp/graph";
+import "@pnp/graph/users";
+import "@pnp/graph/teams";
+
+// In onInit():
+const graph = graphfi().using(SPFx(this.context));
+
+// Usage:
+const me = await graph.me();
+const teams = await graph.me.joinedTeams();
+const photo = await graph.me.photo.getBlob();
+\\\`\\\`\\\`
+
+PnP JS handles batching, caching, and error handling for you. If you're building complex Graph integrations, it's worth the extra dependency.
+
+## Common Mistakes
+
+After building dozens of Graph-powered SPFx web parts, these are the issues I see most:
+
+- **Forgetting admin consent.** Your web part silently gets 403 errors. Always check the API access page first
+- **Requesting too many scopes.** Only request what you need. \\\`User.Read\\\` is enough for the current user
+- **Not using \\\`$select\\\`.** Without it, Graph returns every field. Always specify exactly what you need
+- **Ignoring throttling.** On pages with many Graph web parts, you'll hit rate limits. Batch your calls and cache responses
+- **Hardcoding tenant URLs.** Use Graph's relative paths (\\\`/me\\\`, \\\`/sites\\\`) instead of hardcoded SharePoint URLs
+
+Microsoft Graph turns your SPFx web parts from "SharePoint only" to "Microsoft 365 powered." Once you start pulling in Teams, calendar, and user data, your web parts become genuinely useful productivity tools — not just SharePoint widgets.
+`,
+    date: '2026-03-01',
+    displayDate: 'March 1, 2026',
+    readTime: '12 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'microsoft-graph', 'pnp-js', 'sharepoint-online', 'react', 'teams'],
+  },
+  {
     id: '7',
     slug: 'power-apps-canvas-app-sharepoint-complete-guide',
     title: 'Building a Power Apps Canvas App with SharePoint: A Complete Guide',
