@@ -14,6 +14,509 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '9',
+    slug: 'building-viva-connections-adaptive-card-extensions-spfx',
+    title: 'Building Viva Connections Adaptive Card Extensions (ACEs) with SPFx',
+    excerpt:
+      'A complete hands-on guide to creating Adaptive Card Extensions for Microsoft Viva Connections dashboards — from scaffolding your first ACE with SPFx to building interactive Quick View cards with real data.',
+    content: `
+## What Are Adaptive Card Extensions?
+
+**Adaptive Card Extensions (ACEs)** are the building blocks of the **Microsoft Viva Connections** dashboard — the employee experience hub in Microsoft 365. Every card on the Viva Connections dashboard is an ACE.
+
+As an SPFx developer, ACEs let you build compact, interactive dashboard widgets that surface real-time business data directly on the Viva Connections home screen. Think of them as SPFx web parts, but purpose-built for mobile-first, glanceable dashboards.
+
+An ACE has two visual states:
+
+- **Card View** — The compact card shown on the dashboard (like a widget on your phone home screen)
+- **Quick View** — A richer, larger panel that opens when the user clicks the card (like tapping a widget to expand it)
+
+Both are rendered using **Adaptive Card JSON** — the same cross-platform card format used in Teams, Outlook, and Bot Framework.
+
+## Why Build ACEs in 2026?
+
+With Viva Connections rolling out as the default Teams home experience for many enterprise organizations, the Viva dashboard is now the first screen employees see every day. This makes ACEs one of the highest-visibility touchpoints in the entire Microsoft 365 ecosystem.
+
+Real-world ACE use cases that are trending right now:
+
+- **IT Service Desk** — Show open ticket count, let users submit new tickets
+- **Leave Balance Tracker** — Display remaining leave days, link to the request form
+- **Company News Feed** — Surface the latest announcements from SharePoint News
+- **Attendance Summary** — Show today's in-office vs. remote headcount
+- **Project Status Tracker** — At-a-glance KPIs for active projects from Planner or Dataverse
+- **Birthday & Anniversary Cards** — Celebrate team milestones pulled from HR data
+
+## Prerequisites
+
+Set up your environment before starting:
+
+- **SPFx 1.19+** (ACE improvements require at minimum 1.18; 1.21+ recommended for latest ACE features)
+- **Node.js 18.x LTS** — use \`nvm\` to manage versions
+- **Yeoman + SPFx generator** (or the new \`@microsoft/spfx-cli\` for SPFx 1.23+)
+- **Microsoft 365 developer tenant** with Viva Connections enabled
+- **Viva Connections license** — included in Microsoft 365 E3/E5, or available as standalone
+
+Verify your environment:
+
+\`\`\`bash
+node --version   # Should be 18.x
+npm --version    # Should be 9.x or higher
+yo --version     # Should be installed globally
+\`\`\`
+
+## Step 1: Scaffold Your First ACE
+
+Create a new project using the SPFx generator:
+
+\`\`\`bash
+yo @microsoft/sharepoint
+\`\`\`
+
+When prompted:
+
+1. **Solution name:** \`leave-balance-ace\`
+2. **Target:** SharePoint Online only (latest)
+3. **Place files:** Current folder
+4. **Type of client-side component:** Adaptive Card Extension
+5. **Template:** Generic Card Template
+6. **ACE name:** \`LeaveBalanceACE\`
+
+This creates the following structure:
+
+\`\`\`
+leave-balance-ace/
+├── src/
+│   └── adaptiveCardExtensions/
+│       └── leaveBalance/
+│           ├── LeaveBalanceAdaptiveCardExtension.ts   ← Main ACE class
+│           ├── LeaveBalanceAdaptiveCardExtension.manifest.json
+│           ├── cardView/
+│           │   └── CardView.ts                        ← Card view definition
+│           ├── quickView/
+│           │   └── QuickView.ts                       ← Quick view definition
+│           └── loc/
+│               └── en-us.js
+├── config/
+├── package.json
+└── gulpfile.js
+\`\`\`
+
+## Step 2: Understand the ACE Architecture
+
+Open \`LeaveBalanceAdaptiveCardExtension.ts\`. This is the brain of your ACE:
+
+\`\`\`typescript
+import { IAdaptiveCardExtensionCard, BaseAdaptiveCardExtension } from '@microsoft/sp-adaptive-card-extension-base';
+
+export interface ILeaveBalanceACEState {
+  annualLeaveRemaining: number;
+  sickLeaveRemaining: number;
+  lastUpdated: string;
+}
+
+export interface ILeaveBalanceACEProperties {
+  title: string;
+}
+
+const CARD_VIEW_REGISTRY_ID = 'LeaveBalance_CARD_VIEW';
+export const QUICK_VIEW_REGISTRY_ID = 'LeaveBalance_QUICK_VIEW';
+
+export default class LeaveBalanceACE extends BaseAdaptiveCardExtension<
+  ILeaveBalanceACEProperties,
+  ILeaveBalanceACEState
+> {
+  public async onInit(): Promise<void> {
+    this.state = {
+      annualLeaveRemaining: 0,
+      sickLeaveRemaining: 0,
+      lastUpdated: '',
+    };
+
+    this.cardNavigator.register(CARD_VIEW_REGISTRY_ID, () => new CardView());
+    this.quickViewNavigator.register(QUICK_VIEW_REGISTRY_ID, () => new QuickView());
+
+    await this._fetchLeaveData();
+    return Promise.resolve();
+  }
+
+  private async _fetchLeaveData(): Promise<void> {
+    // Fetch from SharePoint list, Graph API, or any REST endpoint
+    // For this example, we'll use a SharePoint list
+    const response = await this.context.spHttpClient.get(
+      \`\${this.context.pageContext.web.absoluteUrl}/_api/web/lists/getbytitle('Leave Balances')/items?$filter=EmployeeEmail eq '\${this.context.pageContext.user.email}'&$select=AnnualLeave,SickLeave\`,
+      SPHttpClient.configurations.v1
+    );
+    
+    const data = await response.json();
+    
+    if (data.value && data.value.length > 0) {
+      this.setState({
+        annualLeaveRemaining: data.value[0].AnnualLeave,
+        sickLeaveRemaining: data.value[0].SickLeave,
+        lastUpdated: new Date().toLocaleDateString(),
+      });
+    }
+  }
+
+  protected get iconProperty(): string {
+    return 'Calendar';  // Fluent UI icon name
+  }
+
+  protected loadPropertyPaneResources(): Promise<void> {
+    return import('./LeaveBalancePropertyPane')
+      .then(component => {
+        this._deferredPropertyPane = new component.LeaveBalancePropertyPane();
+      });
+  }
+
+  protected renderCard(): string | undefined {
+    return CARD_VIEW_REGISTRY_ID;
+  }
+}
+\`\`\`
+
+The key concepts:
+
+- **\`onInit()\`** — Called when the ACE loads. Fetch your data here and set the initial state
+- **\`setState()\`** — Updates state and triggers re-render of both card and quick views
+- **\`renderCard()\`** — Returns the ID of the card view to display
+- **\`cardNavigator\` / \`quickViewNavigator\`** — Navigation stacks for view routing
+
+## Step 3: Build the Card View
+
+Open \`cardView/CardView.ts\`. The card view defines what users see on the dashboard:
+
+\`\`\`typescript
+import {
+  BasePrimaryTextCardView,
+  IPrimaryTextCardViewParameters,
+} from '@microsoft/sp-adaptive-card-extension-base';
+import { QUICK_VIEW_REGISTRY_ID } from '../LeaveBalanceAdaptiveCardExtension';
+
+export class CardView extends BasePrimaryTextCardView<
+  ILeaveBalanceACEProperties,
+  ILeaveBalanceACEState
+> {
+  public get data(): IPrimaryTextCardViewParameters {
+    return {
+      title: this.properties.title || 'Leave Balance',
+      primaryText: \`\${this.state.annualLeaveRemaining} days\`,
+      description: \`Annual leave remaining · Updated \${this.state.lastUpdated}\`,
+    };
+  }
+
+  public get cardButtons(): [ICardButton] | [ICardButton, ICardButton] | undefined {
+    return [
+      {
+        title: 'View Details',
+        action: {
+          type: 'QuickView',
+          parameters: {
+            view: QUICK_VIEW_REGISTRY_ID,
+          },
+        },
+      },
+    ];
+  }
+}
+\`\`\`
+
+### Built-in Card View Templates
+
+SPFx provides several pre-built card view base classes so you don't need to design from scratch:
+
+| Class | When to Use |
+|-------|------------|
+| \`BasePrimaryTextCardView\` | Title + primary text + description |
+| \`BaseImageCardView\` | Card with a featured image |
+| \`BaseTextInputCardView\` | Card with an inline text input (search, quick submit) |
+| \`BaseBasicCardView\` | Minimal card — just title and buttons |
+
+Pick the template that fits your content type. Most dashboard widgets use \`BasePrimaryTextCardView\`.
+
+## Step 4: Build the Quick View
+
+The Quick View is a full Adaptive Card that opens when users click your card. Edit \`quickView/QuickView.ts\`:
+
+\`\`\`typescript
+import {
+  BaseAdaptiveCardView,
+  IAdaptiveCardViewParameters,
+} from '@microsoft/sp-adaptive-card-extension-base';
+
+export class QuickView extends BaseAdaptiveCardView<
+  ILeaveBalanceACEProperties,
+  ILeaveBalanceACEState,
+  ILeaveBalanceData
+> {
+  public get data(): ILeaveBalanceData {
+    return {
+      annualLeave: this.state.annualLeaveRemaining,
+      sickLeave: this.state.sickLeaveRemaining,
+      lastUpdated: this.state.lastUpdated,
+    };
+  }
+
+  public get template(): ISPFxAdaptiveCard {
+    return {
+      "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+      "type": "AdaptiveCard",
+      "version": "1.5",
+      "body": [
+        {
+          "type": "TextBlock",
+          "text": "Your Leave Balance",
+          "size": "Large",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Annual Leave",
+              "value": "\${annualLeave} days remaining"
+            },
+            {
+              "title": "Sick Leave",
+              "value": "\${sickLeave} days remaining"
+            },
+            {
+              "title": "Last Updated",
+              "value": "\${lastUpdated}"
+            }
+          ]
+        },
+        {
+          "type": "ActionSet",
+          "actions": [
+            {
+              "type": "Action.OpenUrl",
+              "title": "Request Leave",
+              "url": "https://yourcompany.sharepoint.com/sites/HR/leave-request"
+            }
+          ]
+        }
+      ]
+    };
+  }
+}
+\`\`\`
+
+### Adaptive Card Templating
+
+Notice the \`\${annualLeave}\` syntax — this is **Adaptive Card Templating**. The \`data()\` getter provides the data object, and the template binds to it using \`\${...}\` expressions. This separation of data and presentation makes cards easy to maintain.
+
+You can design and test your Adaptive Card JSON at [adaptivecards.io/designer](https://adaptivecards.io/designer/) before embedding it in your Quick View.
+
+## Step 5: Test in the Local Workbench
+
+\`\`\`bash
+gulp serve
+\`\`\`
+
+This opens the Viva Connections workbench at \`https://localhost:4321/temp/workbench.html\`. You can add your ACE to the preview canvas and interact with both the card view and quick view.
+
+For testing against real SharePoint data, use the hosted workbench:
+
+\`\`\`
+https://YOUR_TENANT.sharepoint.com/_layouts/15/workbench.aspx
+\`\`\`
+
+## Step 6: Add a Property Pane for Configuration
+
+Let administrators configure the ACE without code changes. Create \`LeaveBalancePropertyPane.ts\`:
+
+\`\`\`typescript
+import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
+
+export class LeaveBalancePropertyPane {
+  public getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    return {
+      pages: [
+        {
+          header: {
+            description: 'Configure Leave Balance Card',
+          },
+          groups: [
+            {
+              groupName: 'Settings',
+              groupFields: [
+                PropertyPaneTextField('title', {
+                  label: 'Card Title',
+                  placeholder: 'e.g. My Leave Balance',
+                }),
+                PropertyPaneTextField('listName', {
+                  label: 'SharePoint List Name',
+                  placeholder: 'e.g. Leave Balances',
+                }),
+              ],
+            },
+          ],
+        },
+      ],
+    };
+  }
+}
+\`\`\`
+
+Reference it in the main ACE class:
+
+\`\`\`typescript
+protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+  return this._deferredPropertyPane!.getPropertyPaneConfiguration();
+}
+\`\`\`
+
+## Step 7: Deploy to Viva Connections
+
+Build and package your ACE:
+
+\`\`\`bash
+gulp bundle --ship
+gulp package-solution --ship
+\`\`\`
+
+This creates a \`.sppkg\` file in the \`sharepoint/solution/\` folder.
+
+**Deploy to App Catalog:**
+1. Go to your **SharePoint Admin Center** → **Advanced** → **App catalog**
+2. Go to **Apps for SharePoint** → **Upload** your \`.sppkg\`
+3. Click **Deploy** when prompted
+4. Check **Make this solution available to all sites**
+
+**Add to Viva Connections Dashboard:**
+1. Open your **Viva Connections** home page in Teams
+2. Click **Edit** (requires SharePoint Admin or the Viva Connections Admin role)
+3. Click **Add a card** → find your ACE in the list
+4. Configure it using the property pane
+5. **Save** and **Publish**
+
+Your card is now live on the Viva Connections dashboard for your entire organization.
+
+## Advanced: Real-time State Updates
+
+ACEs support periodic background data refreshes. Add a timer to your \`onInit()\`:
+
+\`\`\`typescript
+public async onInit(): Promise<void> {
+  // ... existing init code ...
+
+  // Refresh data every 5 minutes
+  setInterval(async () => {
+    await this._fetchLeaveData();
+  }, 5 * 60 * 1000);
+
+  return Promise.resolve();
+}
+\`\`\`
+
+This keeps dashboard cards current without requiring page reloads — critical for time-sensitive data like IT tickets or on-call rotations.
+
+## Advanced: Deep-Linking to Teams
+
+Open a Teams channel, chat, or app directly from your ACE action:
+
+\`\`\`typescript
+public get cardButtons(): [ICardButton] {
+  return [
+    {
+      title: 'Open in Teams',
+      action: {
+        type: 'ExternalLink',
+        parameters: {
+          isTeamsDeepLink: true,
+          target: 'https://teams.microsoft.com/l/channel/...',
+        },
+      },
+    },
+  ];
+}
+\`\`\`
+
+This is especially powerful for service desk ACEs where clicking the card drops the user directly into the IT support channel.
+
+## Common ACE Patterns
+
+After building ACEs for enterprise dashboards, here are the patterns I reach for repeatedly:
+
+### 1. Loading State Pattern
+
+Always show a loading state while data fetches:
+
+\`\`\`typescript
+public async onInit(): Promise<void> {
+  this.state = { isLoading: true, data: null };
+  
+  this.cardNavigator.register(CARD_VIEW_REGISTRY_ID, () => new CardView());
+
+  try {
+    const data = await this._fetchData();
+    this.setState({ isLoading: false, data });
+  } catch (error) {
+    this.setState({ isLoading: false, error: 'Failed to load data' });
+  }
+}
+\`\`\`
+
+### 2. Conditional Card Buttons
+
+Show different buttons based on state — like hiding "Submit" after a form is completed:
+
+\`\`\`typescript
+public get cardButtons(): [ICardButton] | undefined {
+  if (this.state.isLoading) return undefined;
+  if (this.state.submitted) return undefined;
+
+  return [{ title: 'Submit Request', action: { type: 'QuickView', parameters: { view: FORM_VIEW } } }];
+}
+\`\`\`
+
+### 3. Multi-View Navigation
+
+Navigate between multiple Quick Views like a mini wizard:
+
+\`\`\`typescript
+// In QuickView 1 — navigate to QuickView 2 on action
+public onAction(action: IActionArguments): void {
+  if (action.type === 'Submit') {
+    this.quickViewNavigator.push(CONFIRM_VIEW_ID);
+  }
+}
+
+// Navigate back
+this.quickViewNavigator.pop();
+
+// Reset to card view
+this.quickViewNavigator.close();
+\`\`\`
+
+## Performance Tips
+
+- **Cache API responses.** Store fetched data in the ACE state and only re-fetch on explicit refresh. Viva Connections can display dozens of cards — unnecessary API calls compound quickly
+- **Use Adaptive Card v1.5.** It supports more features and renders better on mobile
+- **Keep card view minimal.** Show 2-3 key numbers maximum. The quick view is for details
+- **Test on mobile.** Viva Connections is heavily used on Teams mobile. Design your card views for a 390px-wide phone screen first
+- **Handle 403 errors gracefully.** If the user doesn't have access to your data source, show a friendly fallback message instead of a broken card
+
+## What's Coming for ACEs in SPFx 1.24
+
+Looking at Microsoft's roadmap for mid-2026:
+
+- **ACE actions without Quick View** — Trigger Power Automate flows or Graph API calls directly from card view buttons, with an in-place confirmation
+- **Image Card View improvements** — Animated images and richer layout options for visual cards
+- **Enhanced mobile gestures** — Swipe actions on cards for quick approvals
+- **AI-generated card content** — Integration point for Copilot-generated summaries directly in ACE card views
+
+Viva Connections ACEs are the most direct way for SPFx developers to impact the daily experience of every employee in an organization. With mobile-first usage growing and Viva becoming the default Teams home page, the investment in learning ACEs pays dividends quickly.
+`,
+    date: '2026-03-02',
+    displayDate: 'March 2, 2026',
+    readTime: '14 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'viva-connections', 'adaptive-card-extensions', 'ace', 'microsoft-365', 'dashboard'],
+  },
+  {
     id: '8',
     slug: 'microsoft-graph-api-spfx-user-profiles-teams',
     title: 'Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data',
