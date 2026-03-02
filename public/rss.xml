@@ -5,8 +5,24 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 01 Mar 2026 23:40:43 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 02 Mar 2026 23:19:43 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Power Automate + AI Builder: Intelligent Document Processing Complete Guide</title>
+      <link>https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</link>
+      <description>Learn how to build automated document processing pipelines using Power Automate and AI Builder — extract data from invoices, receipts, and forms with prebuilt and custom AI models, no code required.</description>
+      <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</guid>
+      <category>Power Platform</category>
+    </item>
+    <item>
+      <title>Building Viva Connections Adaptive Card Extensions (ACEs) with SPFx</title>
+      <link>https://imrizwan.com/blog/building-viva-connections-adaptive-card-extensions-spfx</link>
+      <description>A complete hands-on guide to creating Adaptive Card Extensions for Microsoft Viva Connections dashboards — from scaffolding your first ACE with SPFx to building interactive Quick View cards with real data.</description>
+      <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/building-viva-connections-adaptive-card-extensions-spfx</guid>
+      <category>SPFx</category>
+    </item>
     <item>
       <title>Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-spfx-user-profiles-teams</link>

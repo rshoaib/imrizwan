@@ -14,6 +14,248 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '10',
+    slug: 'power-automate-ai-builder-intelligent-document-processing',
+    title: 'Power Automate + AI Builder: Intelligent Document Processing Complete Guide',
+    excerpt:
+      'Learn how to build automated document processing pipelines using Power Automate and AI Builder — extract data from invoices, receipts, and forms with prebuilt and custom AI models, no code required.',
+    content: `
+## What Is Intelligent Document Processing?
+
+**Intelligent Document Processing (IDP)** uses AI to automatically extract, classify, and process data from unstructured documents like invoices, receipts, contracts, and forms. Instead of manually typing data from a PDF into a spreadsheet, IDP reads the document for you.
+
+In the Microsoft ecosystem, this is powered by **AI Builder** — a low-code AI capability built directly into the **Power Platform**. Combined with **Power Automate**, you can build end-to-end pipelines that:
+
+1. Receive a document (via email, SharePoint upload, or Teams message)
+2. Extract structured data using an AI model
+3. Validate and route the data to downstream systems
+4. Notify stakeholders and log an audit trail
+
+All without writing a single line of traditional code.
+
+## Why This Matters in 2026
+
+The push toward **hyperautomation** — automating entire business processes rather than individual tasks — has made document processing one of the highest-ROI automation targets. Here's why:
+
+- **80% of enterprise data is unstructured** (PDFs, scanned images, emails). Traditional RPA tools can't handle them reliably
+- **AI Builder models are pre-trained on millions of documents**, so they work out of the box for common document types (invoices, receipts, business cards, passports)
+- **Custom AI models** let you train on your own document formats with as few as 5 sample documents
+- **Power Automate integration** means extracted data flows directly into SharePoint, Dataverse, Dynamics 365, or any of 1,000+ connectors
+
+## Prerequisites
+
+Before you start building:
+
+- **Power Automate Premium license** (AI Builder requires Premium or per-user plan)
+- **AI Builder credits** — included with certain Microsoft 365 and Dynamics 365 plans, or purchasable separately
+- **SharePoint Online** — for document storage and triggers
+- **A Microsoft 365 environment** — developer tenant works fine for testing
+
+## Step 1: Choose Your AI Model
+
+AI Builder offers several prebuilt models that require zero training:
+
+| Model | What It Extracts | Best For |
+|-------|-----------------|----------|
+| **Invoice Processing** | Vendor, amounts, line items, dates, PO numbers | Accounts payable automation |
+| **Receipt Processing** | Merchant, total, tax, date, payment method | Expense report automation |
+| **Identity Document Reader** | Name, DOB, address, document number | KYC/onboarding workflows |
+| **Business Card Reader** | Name, title, company, email, phone | CRM lead capture |
+| **Text Recognition (OCR)** | Raw text from any image or PDF | General-purpose extraction |
+| **Custom Document Processing** | Any fields you define | Custom forms, applications |
+
+For this guide, we'll build an **invoice processing pipeline** — the most common enterprise use case.
+
+## Step 2: Build the Power Automate Flow
+
+### Trigger: When a File Is Created in SharePoint
+
+Create a new **Automated cloud flow** in Power Automate:
+
+1. Go to [make.powerautomate.com](https://make.powerautomate.com)
+2. Click **Create** → **Automated cloud flow**
+3. Name it: \`Invoice Processing Pipeline\`
+4. Trigger: **When a file is created (properties only)** — SharePoint
+5. Configure:
+   - **Site Address:** Your SharePoint site
+   - **Library Name:** \`Invoices\` (create this document library if it doesn't exist)
+
+### Action: Extract Information from Invoices
+
+Add the AI Builder action:
+
+1. Click **New step** → search for **AI Builder**
+2. Select **Extract information from invoices**
+3. For the **Invoice file** parameter, use the dynamic content picker to select the file content from the SharePoint trigger
+
+This is the magic step. AI Builder will analyze the document and return structured data including:
+
+- **Invoice ID**
+- **Invoice date** and **due date**
+- **Vendor name** and **vendor address**
+- **Customer name**
+- **Subtotal**, **tax**, and **total amount**
+- **Line items** (description, quantity, unit price, amount)
+- **Purchase order number**
+- **Confidence scores** for each extracted field
+
+### Action: Create Item in SharePoint List
+
+Now store the extracted data in a structured SharePoint list:
+
+1. Add **Create item** — SharePoint
+2. Configure:
+   - **Site Address:** Your SharePoint site
+   - **List Name:** \`Invoice Records\`
+   - Map the AI Builder outputs to your list columns:
+
+\`\`\`
+Vendor Name    →  AI Builder: Vendor name
+Invoice Number →  AI Builder: Invoice ID
+Invoice Date   →  AI Builder: Invoice date
+Total Amount   →  AI Builder: Total
+Status         →  "Pending Review"
+Confidence     →  AI Builder: Confidence score
+\`\`\`
+
+### Action: Handle Low-Confidence Results
+
+Not every extraction will be perfect. Add a **Condition** to route uncertain results for human review:
+
+\`\`\`
+If AI Builder Confidence Score is less than 0.85
+  → Send an adaptive card to Teams for manual review
+Else
+  → Auto-approve and update status to "Approved"
+\`\`\`
+
+This **human-in-the-loop** pattern is critical for production deployments. It ensures accuracy while still automating 80-90% of documents automatically.
+
+### Action: Send Notification
+
+Add a final step to notify the finance team:
+
+1. Add **Post a message in a chat or channel** — Microsoft Teams
+2. Select the \`#invoices\` channel
+3. Include a summary of the extracted data
+
+## Step 3: Train a Custom AI Model (Optional)
+
+When your documents don't match any prebuilt model — for example, custom internal forms, insurance claims, or government applications — you can train a custom model.
+
+### Create the Model
+
+1. Go to [make.powerapps.com](https://make.powerapps.com) → **AI Builder** → **Explore**
+2. Click **Document processing** → **Create custom model**
+3. Define the **fields** you want to extract (e.g., "Claim Number", "Policy ID", "Incident Date")
+4. Upload **at least 5 sample documents** (more samples = better accuracy)
+5. Tag each field on the sample documents using the visual tagging tool
+6. Click **Train** — this takes 15-30 minutes depending on complexity
+
+### Use the Custom Model in Power Automate
+
+Once trained, your custom model appears alongside the prebuilt models:
+
+1. In Power Automate, add **Process and save information from forms** — AI Builder
+2. Select your custom model from the dropdown
+3. Map the file content from your trigger
+4. The output will include your custom fields with confidence scores
+
+## Step 4: Production-Ready Patterns
+
+### Error Handling
+
+Always wrap AI Builder actions in a **Try-Catch** pattern using **Scope** actions:
+
+\`\`\`
+Scope: "Try - Process Invoice"
+  ├── Extract information from invoices
+  ├── Create item in SharePoint
+  └── Send Teams notification
+
+Scope: "Catch - Handle Errors" (Configure to Run After: "Try" has failed)
+  ├── Log error to SharePoint "Error Log" list
+  ├── Move failed document to "Failed" folder
+  └── Send alert email to admin
+\`\`\`
+
+### Batch Processing
+
+For high-volume scenarios, use the **Apply to each** action to process multiple documents:
+
+\`\`\`
+Trigger: Recurrence (daily at 8 AM)
+  → Get files from "Unprocessed Invoices" folder
+  → Apply to each file:
+      → Extract information from invoices
+      → Create item in SharePoint
+      → Move file to "Processed" folder
+\`\`\`
+
+### Approval Workflow Integration
+
+Combine AI Builder extraction with **Power Automate Approvals** for a complete procure-to-pay workflow:
+
+\`\`\`
+Document received
+  → AI extracts data
+  → If amount > $5,000: Start approval with VP Finance
+  → If amount > $1,000: Start approval with Manager
+  → If amount < $1,000: Auto-approve
+  → Update ERP system via connector
+\`\`\`
+
+## Real-World Performance Metrics
+
+Based on enterprise deployments I've worked with:
+
+| Metric | Before IDP | After IDP |
+|--------|-----------|-----------|
+| Invoice processing time | 15-20 min/invoice | 30 seconds |
+| Error rate | 5-8% (human entry) | 1-2% (AI + human review) |
+| Monthly capacity | ~500 invoices/person | ~5,000 invoices/person |
+| Staff reallocation | 3 FTE on data entry | 0.5 FTE on exception handling |
+
+The ROI is typically realized within 2-3 months.
+
+## Licensing and Costs
+
+AI Builder uses a **credit-based** consumption model:
+
+- **Prebuilt models** (invoice, receipt): ~1 credit per page processed
+- **Custom models**: ~1 credit per page processed
+- **Credits included** with Power Automate Premium, Power Apps Premium, and certain Dynamics 365 licenses
+- **Additional credits** can be purchased in packs of 1 million (~$500/month)
+
+For most SMBs processing under 5,000 documents/month, the included credits are sufficient.
+
+## Tips and Best Practices
+
+- **Start with prebuilt models first.** They're remarkably accurate for standard document types and require zero setup time
+- **Use PDF format when possible.** AI Builder handles scanned images, but clean PDFs yield better extraction accuracy
+- **Set confidence thresholds per field.** Some fields (like total amount) may need a higher threshold than others (like vendor address)
+- **Build a feedback loop.** Log extraction accuracy over time and retrain custom models when accuracy drops below your target
+- **Test with edge cases.** Multi-page invoices, rotated pages, low-quality scans, and multi-language documents can trip up models
+- **Use SharePoint metadata columns** to make extracted data searchable and filterable without opening documents
+
+## What's Next for AI Builder in 2026
+
+Microsoft's roadmap includes exciting capabilities:
+
+- **Multi-modal document understanding** — Combining text, images, and table extraction in a single pass
+- **Cross-document intelligence** — Linking related documents (PO → Invoice → Receipt) automatically
+- **Continuous learning** — Models that improve from corrections without manual retraining
+- **Natural language queries** — Ask questions about your documents using Copilot directly in Power Automate
+
+AI Builder is no longer a "nice-to-have" — it's becoming the standard way to bridge the gap between physical documents and digital business processes in the Microsoft ecosystem.
+`,
+    date: '2026-03-03',
+    displayDate: 'March 3, 2026',
+    readTime: '12 min read',
+    category: 'Power Platform',
+    tags: ['power-automate', 'ai-builder', 'document-processing', 'automation', 'low-code', 'microsoft-365'],
+  },
+  {
     id: '9',
     slug: 'building-viva-connections-adaptive-card-extensions-spfx',
     title: 'Building Viva Connections Adaptive Card Extensions (ACEs) with SPFx',

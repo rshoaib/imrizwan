@@ -1157,7 +1157,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: var(--space-8) auto;
+  margin: var(--space-16) auto;
   padding: var(--space-4);
   max-width: 728px;
   min-height: 90px;
