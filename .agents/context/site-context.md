@@ -32,13 +32,13 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 |---------|--------|
 | spfx web part tutorial | ✅ Blog exists |
 | sharepoint framework development | ✅ Blog exists |
-| microsoft graph api examples | 🆕 Need content |
+| microsoft graph api examples | ✅ Blog exists |
 | copilot studio sharepoint | ✅ Blog exists |
 | viva connections adaptive card | 🆕 Need content |
 
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
-2. "Microsoft Graph API: 10 Practical Examples for SharePoint"
+2. "Microsoft Graph API: 10 Practical Examples for SharePoint (2026)" ✅ Published
 3. "Viva Connections ACE: Build Your First Adaptive Card Extension"
 4. "Power Automate + SharePoint: 7 Document Workflows That Save Hours (2026)" ✅ Published
 5. "Copilot Studio: Build AI Assistants for SharePoint Sites"
