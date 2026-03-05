@@ -14,6 +14,492 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '13',
+    slug: 'microsoft-graph-api-10-practical-examples-sharepoint-2026',
+    title: 'Microsoft Graph API: 10 Practical Examples for SharePoint Developers (2026)',
+    excerpt:
+      'Stop reading docs and start building. Here are 10 copy-paste Graph API examples for SharePoint — from fetching user profiles and querying sites to creating pages, uploading files, and setting up webhooks.',
+    image: '/images/blog/microsoft-graph-api-examples.png',
+    content: `
+## Why Microsoft Graph for SharePoint?
+
+Microsoft Graph is the single API endpoint for accessing data across the entire Microsoft 365 ecosystem — users, files, mail, calendar, Teams, SharePoint, and more. Instead of calling separate APIs for each service, you call one unified endpoint: https://graph.microsoft.com.
+
+For SharePoint developers, Graph unlocks capabilities that go beyond what the SharePoint REST API offers:
+
+- **Cross-service queries** — Get a user's profile, their recent files, AND their Teams channels in a single batch request
+- **Granular permissions** — Use Sites.Selected to grant access to specific sites instead of the entire tenant
+- **Consistent authentication** — One token works for SharePoint, Teams, OneDrive, Outlook, and more
+- **Modern tooling** — Graph Explorer for testing, SDKs for every language, and built-in batching
+
+This guide gives you 10 production-ready examples you can use in [SPFx web parts](/blog/spfx-web-part-crud-operations-complete-guide-2026), Power Automate flows, or standalone applications.
+
+## Setup: Authentication in SPFx
+
+Before diving into the examples, here's how to authenticate Graph API calls in an SPFx web part using the built-in MSGraphClientV3:
+
+**In your web part class:**
+
+    import { MSGraphClientV3 } from "@microsoft/sp-http";
+
+    // Get the Graph client
+    const graphClient: MSGraphClientV3 = await this.context
+      .msGraphClientFactory.getClient("3");
+
+**In package-solution.json**, declare the permissions you need:
+
+    "webApiPermissionRequests": [
+      { "resource": "Microsoft Graph", "scope": "User.Read.All" },
+      { "resource": "Microsoft Graph", "scope": "Sites.Read.All" }
+    ]
+
+After deploying the .sppkg, a tenant admin must approve these permissions in the SharePoint Admin Center under API access.
+
+> **Tip:** Always request the minimal permissions your app needs. Start with .Read scopes and only upgrade to .ReadWrite when you actually need write access.
+
+## Example 1: Get Current User Profile
+
+The simplest and most common Graph call — fetch the signed-in user's profile.
+
+**Permission required:** User.Read
+
+    const response = await graphClient
+      .api("/me")
+      .select("displayName,mail,jobTitle,department,officeLocation")
+      .get();
+
+    console.log(response.displayName); // "Rizwan Shoaib"
+    console.log(response.jobTitle);    // "Senior Developer"
+
+**Use case:** Display the current user's name and department in a personalized web part header. This replaces the older SharePoint _api/SP.UserProfiles call with a single, faster Graph request.
+
+**Get a user's profile photo:**
+
+    const photoBlob = await graphClient
+      .api("/me/photo/$value")
+      .responseType("blob")
+      .get();
+
+    const photoUrl = URL.createObjectURL(photoBlob);
+
+## Example 2: Search for Users in the Tenant
+
+Build a people picker or user directory by searching across your organization.
+
+**Permission required:** User.ReadBasic.All
+
+    const response = await graphClient
+      .api("/users")
+      .filter("startswith(displayName,'Riz')")
+      .select("id,displayName,mail,jobTitle,department")
+      .top(10)
+      .orderby("displayName")
+      .get();
+
+    const users = response.value;
+    // Returns: [{ displayName: "Rizwan Shoaib", mail: "riz@...", ... }]
+
+**Filter by department:**
+
+    const finance = await graphClient
+      .api("/users")
+      .filter("department eq 'Finance'")
+      .select("displayName,mail,jobTitle")
+      .top(50)
+      .get();
+
+**Use case:** Build a department directory web part that shows all team members with their photos and contact info. Much faster than querying the SharePoint User Information List.
+
+## Example 3: Query SharePoint Sites
+
+Find and access SharePoint sites programmatically.
+
+**Permission required:** Sites.Read.All
+
+**Search for sites by keyword:**
+
+    const response = await graphClient
+      .api("/sites?search=Marketing")
+      .select("id,displayName,webUrl,description")
+      .get();
+
+    const sites = response.value;
+    // Returns all sites matching "Marketing"
+
+**Get a specific site by URL:**
+
+    const site = await graphClient
+      .api("/sites/contoso.sharepoint.com:/sites/hr-portal")
+      .select("id,displayName,webUrl,createdDateTime")
+      .get();
+
+**List all subsites:**
+
+    const subsites = await graphClient
+      .api("/sites/contoso.sharepoint.com:/sites/hr-portal:/sites")
+      .get();
+
+**Use case:** Build a site directory or navigation web part that dynamically lists all project sites across your tenant.
+
+## Example 4: CRUD Operations on SharePoint List Items
+
+Full create, read, update, and delete on SharePoint list items through Graph.
+
+**Permission required:** Sites.ReadWrite.All
+
+**Read items from a list:**
+
+    const items = await graphClient
+      .api("/sites/{site-id}/lists/{list-id}/items")
+      .expand("fields")
+      .top(100)
+      .get();
+
+    items.value.forEach(item => {
+      console.log(item.fields.Title, item.fields.Status);
+    });
+
+**Create a new item:**
+
+    await graphClient
+      .api("/sites/{site-id}/lists/{list-id}/items")
+      .post({
+        fields: {
+          Title: "New Task",
+          Status: "Not Started",
+          Priority: "High",
+          DueDate: "2026-04-01"
+        }
+      });
+
+**Update an item:**
+
+    await graphClient
+      .api("/sites/{site-id}/lists/{list-id}/items/{item-id}/fields")
+      .patch({
+        Status: "Completed"
+      });
+
+**Delete an item:**
+
+    await graphClient
+      .api("/sites/{site-id}/lists/{list-id}/items/{item-id}")
+      .delete();
+
+**Use case:** When you need cross-site list operations (reading from multiple sites in a single web part), Graph is easier than making separate SharePoint REST calls to each site. For same-site operations, [PnPjs is faster and more ergonomic](/blog/spfx-web-part-crud-operations-complete-guide-2026).
+
+## Example 5: Read and Create SharePoint Pages
+
+The Pages API (GA since April 2024) lets you programmatically manage modern SharePoint pages.
+
+**Permission required:** Sites.ReadWrite.All
+
+**List all pages in a site:**
+
+    const pages = await graphClient
+      .api("/sites/{site-id}/pages")
+      .select("id,title,webUrl,createdDateTime,lastModifiedDateTime")
+      .top(50)
+      .get();
+
+**Get a specific page with its web parts:**
+
+    const page = await graphClient
+      .api("/sites/{site-id}/pages/{page-id}/microsoft.graph.sitePage")
+      .expand("canvasLayout")
+      .get();
+
+    // Access web parts in the page layout
+    const sections = page.canvasLayout.horizontalSections;
+
+**Create a new page:**
+
+    const newPage = await graphClient
+      .api("/sites/{site-id}/pages")
+      .post({
+        "@odata.type": "#microsoft.graph.sitePage",
+        name: "project-update.aspx",
+        title: "Project Update - March 2026",
+        pageLayout: "article",
+      });
+
+**Use case:** Automate page creation for recurring reports — a Power Automate flow that creates a new SharePoint page every Monday with the previous week's metrics, pre-populated from a list.
+
+## Example 6: Upload and Manage Files in SharePoint
+
+Work with files in SharePoint document libraries through OneDrive for Business endpoints.
+
+**Permission required:** Files.ReadWrite.All or Sites.ReadWrite.All
+
+**Upload a small file (< 4 MB):**
+
+    const fileContent = "Hello, SharePoint!";
+    await graphClient
+      .api("/sites/{site-id}/drive/root:/Documents/report.txt:/content")
+      .put(fileContent);
+
+**Upload a large file (> 4 MB) with resumable upload:**
+
+    // 1. Create upload session
+    const session = await graphClient
+      .api("/sites/{site-id}/drive/root:/Documents/large-file.pdf:/createUploadSession")
+      .post({ item: { name: "large-file.pdf" } });
+
+    // 2. Upload in 10 MB chunks using session.uploadUrl
+    // (Use the LargeFileUploadTask from @microsoft/microsoft-graph-client)
+
+**List files in a folder:**
+
+    const files = await graphClient
+      .api("/sites/{site-id}/drive/root:/Documents:/children")
+      .select("id,name,size,lastModifiedDateTime,webUrl")
+      .get();
+
+**Download a file:**
+
+    const fileStream = await graphClient
+      .api("/sites/{site-id}/drive/items/{item-id}/content")
+      .responseType("blob")
+      .get();
+
+**Use case:** Build a document upload web part that lets users drag-and-drop files into a specific library, with automatic metadata tagging. Combine this with [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026) for post-upload processing.
+
+## Example 7: Post Messages to Teams Channels
+
+Send notifications from SharePoint events to Microsoft Teams.
+
+**Permission required:** ChannelMessage.Send (delegated) or Teamwork.Migrate.All (application)
+
+**Send a message to a Teams channel:**
+
+    await graphClient
+      .api("/teams/{team-id}/channels/{channel-id}/messages")
+      .post({
+        body: {
+          contentType: "html",
+          content: "<b>New document uploaded:</b> Q1 Report.pdf<br>Uploaded by: Rizwan Shoaib"
+        }
+      });
+
+**Send an Adaptive Card:**
+
+    await graphClient
+      .api("/teams/{team-id}/channels/{channel-id}/messages")
+      .post({
+        body: {
+          contentType: "html",
+          content: '<attachment id="card1"></attachment>'
+        },
+        attachments: [{
+          id: "card1",
+          contentType: "application/vnd.microsoft.card.adaptive",
+          content: JSON.stringify({
+            type: "AdaptiveCard",
+            version: "1.4",
+            body: [
+              { type: "TextBlock", text: "Document Approval Required", weight: "Bolder", size: "Medium" },
+              { type: "TextBlock", text: "Q1 Financial Report needs your review.", wrap: true },
+              { type: "FactSet", facts: [
+                { title: "Uploaded by:", value: "Rizwan" },
+                { title: "Due date:", value: "March 15, 2026" }
+              ]}
+            ],
+            actions: [
+              { type: "Action.OpenUrl", title: "Review Document", url: "https://contoso.sharepoint.com/..." }
+            ]
+          })
+        }]
+      });
+
+**Use case:** When a document is uploaded to a SharePoint library, [trigger a Power Automate flow](/blog/power-automate-sharepoint-document-workflows-2026) that sends a rich Adaptive Card to the team's channel with an approval button.
+
+## Example 8: Search Across Microsoft 365
+
+Use the unified search endpoint to find content across SharePoint, OneDrive, Teams, and more.
+
+**Permission required:** Sites.Read.All
+
+    const searchResults = await graphClient
+      .api("/search/query")
+      .post({
+        requests: [{
+          entityTypes: ["driveItem", "listItem", "site"],
+          query: { queryString: "quarterly report 2026" },
+          from: 0,
+          size: 25,
+          fields: ["title", "webUrl", "lastModifiedDateTime", "createdBy"]
+        }]
+      });
+
+    const hits = searchResults.value[0].hitsContainers[0].hits;
+    hits.forEach(hit => {
+      console.log(hit.resource.name, hit.resource.webUrl);
+    });
+
+**Filter by file type:**
+
+    query: { queryString: "quarterly report filetype:pdf" }
+
+**Filter by site:**
+
+    query: { queryString: "quarterly report site:contoso.sharepoint.com/sites/finance" }
+
+**Use case:** Build a custom search web part that searches across all SharePoint sites AND OneDrive simultaneously, with faceted filtering by file type, date range, and author. The built-in SharePoint search only covers SharePoint content.
+
+## Example 9: Set Up Change Notifications (Webhooks)
+
+Get real-time notifications when SharePoint content changes — no polling required.
+
+**Permission required:** Sites.ReadWrite.All
+
+**Create a subscription (webhook):**
+
+    const subscription = await graphClient
+      .api("/subscriptions")
+      .post({
+        changeType: "created,updated,deleted",
+        notificationUrl: "https://your-azure-function.azurewebsites.net/api/webhook",
+        resource: "/sites/{site-id}/lists/{list-id}/items",
+        expirationDateTime: "2026-04-05T11:00:00.000Z",
+        clientState: "secretClientValue"
+      });
+
+**Renew a subscription before it expires:**
+
+    await graphClient
+      .api("/subscriptions/{subscription-id}")
+      .patch({
+        expirationDateTime: "2026-05-05T11:00:00.000Z"
+      });
+
+**What your webhook endpoint receives:**
+
+    // POST to your notificationUrl
+    {
+      "value": [{
+        "subscriptionId": "...",
+        "changeType": "created",
+        "resource": "sites/.../lists/.../items/42",
+        "clientState": "secretClientValue"
+      }]
+    }
+
+**Important notes:**
+
+- Subscriptions expire (max 30 days for most resources). Set up a timer to renew them
+- The notification only tells you WHAT changed, not the new values. You need a follow-up GET call to fetch the updated item
+- Your webhook endpoint must respond with 202 Accepted within 30 seconds
+
+**Use case:** Build a real-time dashboard that updates automatically when list items change, without users needing to refresh the page. Pair this with SignalR or Server-Sent Events for a live UI.
+
+## Example 10: Batch Multiple Requests
+
+Reduce HTTP overhead by sending up to 20 Graph API calls in a single request.
+
+**Permission required:** Depends on the individual requests
+
+    const batchRequest = {
+      requests: [
+        {
+          id: "1",
+          method: "GET",
+          url: "/me"
+        },
+        {
+          id: "2",
+          method: "GET",
+          url: "/me/joinedTeams"
+        },
+        {
+          id: "3",
+          method: "GET",
+          url: "/sites/contoso.sharepoint.com:/sites/hr-portal"
+        },
+        {
+          id: "4",
+          method: "GET",
+          url: "/me/drive/recent"
+        }
+      ]
+    };
+
+    const batchResponse = await graphClient
+      .api("/$batch")
+      .post(batchRequest);
+
+    // Each response has an id matching the request
+    batchResponse.responses.forEach(response => {
+      console.log("Request " + response.id + ":", response.status);
+      if (response.status === 200) {
+        console.log(response.body);
+      }
+    });
+
+**Why batching matters:**
+
+| Approach | HTTP Calls | Latency |
+|----------|-----------|---------|
+| Individual requests | 4 calls | ~400ms each = ~1.6s total |
+| Batch request | 1 call | ~500ms total |
+
+**Use case:** A dashboard web part that shows the current user's profile, their teams, recent files, and upcoming events. Without batching, that's 4 separate API calls. With batching, it's one.
+
+## Permissions Reference
+
+Here's a quick reference for the permissions needed across all examples:
+
+| Example | Permission | Type |
+|---------|-----------|------|
+| 1. User profile | User.Read | Delegated |
+| 2. Search users | User.ReadBasic.All | Delegated |
+| 3. Query sites | Sites.Read.All | Both |
+| 4. List CRUD | Sites.ReadWrite.All | Both |
+| 5. Pages | Sites.ReadWrite.All | Both |
+| 6. Files | Files.ReadWrite.All | Both |
+| 7. Teams messages | ChannelMessage.Send | Delegated |
+| 8. Search | Sites.Read.All | Both |
+| 9. Webhooks | Sites.ReadWrite.All | Application |
+| 10. Batching | Per-request | Varies |
+
+> **Security tip:** Use **Sites.Selected** instead of Sites.ReadWrite.All when your app only needs access to specific sites. This is a granular permission that lets a tenant admin grant access on a per-site basis — much safer for production apps.
+
+## Frequently Asked Questions
+
+**Q: Should I use Graph API or the SharePoint REST API?**
+
+Use Graph when you need cross-service data (users + files + Teams), granular permissions (Sites.Selected), or modern features (Pages API, search). Use the SharePoint REST API (or [PnPjs](/blog/spfx-web-part-crud-operations-complete-guide-2026)) when you need SharePoint-specific features like content types, term store, or managed metadata — these aren't fully available in Graph yet.
+
+**Q: Can I use Graph API in Power Automate?**
+
+Yes. Power Automate has a built-in "Send an HTTP request" action that calls Graph directly. Or use the premium "Microsoft Graph" connector for a no-code experience. See my guide on [Power Automate + SharePoint workflows](/blog/power-automate-sharepoint-document-workflows-2026).
+
+**Q: What's the rate limit for Graph API?**
+
+SharePoint-specific endpoints allow 10,000 API calls per 10 minutes per app per tenant. For user-specific endpoints, it's 1,200 requests per 20 seconds per app per user. Use batching (Example 10) to stay well within limits.
+
+**Q: How do I test Graph API calls without writing code?**
+
+Use **Graph Explorer** at https://developer.microsoft.com/graph/graph-explorer. You can sign in with your Microsoft 365 account, run queries, and see the exact JSON responses. It also shows you which permissions each endpoint needs.
+
+**Q: Is Graph API available for SharePoint on-premises?**
+
+No. Microsoft Graph only works with Microsoft 365 cloud services. For SharePoint Server, continue using the SharePoint REST API or CSOM.
+
+## What's Next
+
+Microsoft Graph is the future of Microsoft 365 development. Every new feature — Copilot extensions, SharePoint Embedded, Loop components — is built on Graph first. Learning it now puts you ahead of the curve.
+
+Start with Examples 1-3 (user profiles, user search, site queries) to get comfortable with the authentication flow and API patterns. Then tackle the write operations (Examples 4-7) for real-world solutions.
+
+For more Microsoft 365 development, check out my guides on [building SPFx web parts with CRUD operations](/blog/spfx-web-part-crud-operations-complete-guide-2026) and [Viva Connections Adaptive Card Extensions](/blog/building-viva-connections-adaptive-card-extensions-spfx).
+`,
+    date: '2026-03-05',
+    displayDate: 'March 5, 2026',
+    readTime: '18 min read',
+    category: 'Microsoft 365',
+    tags: ['microsoft-graph', 'sharepoint', 'api', 'spfx', 'microsoft-365', 'rest-api'],
+  },
+  {
     id: '12',
     slug: 'spfx-web-part-crud-operations-complete-guide-2026',
     title: 'Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)',

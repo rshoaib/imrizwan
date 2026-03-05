@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2026 20:36:18 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2026 20:45:46 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Microsoft Graph API: 10 Practical Examples for SharePoint Developers (2026)</title>
+      <link>https://imrizwan.com/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026</link>
+      <description>Stop reading docs and start building. Here are 10 copy-paste Graph API examples for SharePoint — from fetching user profiles and querying sites to creating pages, uploading files, and setting up webhooks.</description>
+      <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026</guid>
+      <category>Microsoft 365</category>
+    </item>
     <item>
       <title>Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)</title>
       <link>https://imrizwan.com/blog/spfx-web-part-crud-operations-complete-guide-2026</link>
