@@ -10,6 +10,7 @@ import Tools from './pages/Tools'
 import GuidGenerator from './pages/GuidGenerator'
 import JsonColumnFormatter from './pages/JsonColumnFormatter'
 import CamlQueryBuilder from './pages/CamlQueryBuilder'
+import PermissionMatrix from './pages/PermissionMatrix'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
@@ -30,6 +31,7 @@ function App() {
           <Route path="/tools/guid-generator" element={<GuidGenerator />} />
           <Route path="/tools/json-column-formatter" element={<JsonColumnFormatter />} />
           <Route path="/tools/caml-query-builder" element={<CamlQueryBuilder />} />
+          <Route path="/tools/permission-matrix" element={<PermissionMatrix />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
           <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />

@@ -26,6 +26,14 @@ export const tools = [
     emoji: '🔍',
     tags: ['SharePoint', 'CAML', 'XML'],
   },
+  {
+    name: 'Permission Matrix Generator',
+    slug: 'permission-matrix',
+    description:
+      'Visualize and generate SharePoint permission matrices across sites, libraries, and lists. Export as CSV or Markdown for audits and compliance.',
+    emoji: '🛡️',
+    tags: ['SharePoint', 'Permissions', 'Security'],
+  },
 ]
 
 export default function Tools() {

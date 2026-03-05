@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 02 Mar 2026 23:19:43 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2026 17:18:47 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Power Automate + SharePoint: 7 Document Workflows That Save Hours Every Week (2026)</title>
+      <link>https://imrizwan.com/blog/power-automate-sharepoint-document-workflows-2026</link>
+      <description>Stop doing manual document management. Here are 7 Power Automate workflows for SharePoint that handle approvals, metadata tagging, archiving, notifications, and more — including the new unified workflows experience shipping in March 2026.</description>
+      <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-sharepoint-document-workflows-2026</guid>
+      <category>Power Platform</category>
+    </item>
     <item>
       <title>Power Automate + AI Builder: Intelligent Document Processing Complete Guide</title>
       <link>https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</link>

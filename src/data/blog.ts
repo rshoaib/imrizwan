@@ -14,19 +14,328 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '11',
+    slug: 'power-automate-sharepoint-document-workflows-2026',
+    title: 'Power Automate + SharePoint: 7 Document Workflows That Save Hours Every Week (2026)',
+    excerpt:
+      'Stop doing manual document management. Here are 7 Power Automate workflows for SharePoint that handle approvals, metadata tagging, archiving, notifications, and more — including the new unified workflows experience shipping in March 2026.',
+    image: '/images/blog/power-automate-sharepoint-workflows.png',
+    content: `
+## Why Automate Document Workflows in SharePoint?
+
+If you manage a SharePoint document library with more than a few dozen files, you already know the pain. Someone uploads a document and forgets to tag it. An approval sits untouched for a week because nobody noticed. Old contracts pile up in the library long past their retention date.
+
+**Power Automate** fixes all of this by connecting SharePoint events to automated actions — no code required. And with the **new unified workflows experience** rolling out in SharePoint in March 2026, building these automations has never been easier.
+
+This guide covers 7 production-ready workflows that I use across enterprise tenants. Each one solves a specific document management headache.
+
+## What's New: The Unified Workflows Experience (March 2026)
+
+Before we dive into the workflows, here's the big news. Microsoft is shipping a **completely redesigned workflows experience** directly inside SharePoint lists and libraries. This brings Power Automate's connectors, triggers, and actions into the SharePoint UI itself.
+
+Here's what's changing:
+
+| Feature | Before (2025) | After (March 2026) |
+|---------|--------------|-------------------|
+| Creating flows | Navigate to Power Automate portal | Build directly in SharePoint |
+| Templates | Generic Power Automate templates | SharePoint-specific templates |
+| Approvals | Multi-step setup in Power Automate | One-click enablement in library settings |
+| Quick automation | Not available | **Quick Steps** — button-based automation |
+| Conditional triggers | Build in Power Automate | **Rules** — set conditions in SharePoint UI |
+
+The key additions:
+
+- **Quick Steps** — Lightweight, button-based automation. Click a button on a document to trigger an action (move to folder, send email, update metadata)
+- **Rules** — Auto-trigger actions when conditions are met (new file uploaded, column value changes, due date approaching)
+- **Enhanced Approvals** — Default approvers, ordered multi-stage approvals, and in-context tracking directly in the library
+
+> **When should you still use full Power Automate?** Use it for complex logic with conditions, loops, parallel branches, or cross-system integrations (Dynamics 365, third-party APIs). For simple automation, Quick Steps and Rules are faster to set up and maintain.
+
+## Workflow 1: Document Approval with Escalation
+
+The most common request I get. A document is uploaded → manager approves or rejects → status updates automatically.
+
+But production approval flows need more than the basics. Here's what a real-world flow looks like:
+
+**Trigger:** When a file is created in the \`Contracts\` library
+
+**Flow logic:**
+
+\`\`\`
+1. Get file properties (metadata: department, contract value)
+2. Determine approver:
+   - If contract value > $50,000 → VP Finance
+   - If contract value > $10,000 → Department Manager
+   - If contract value ≤ $10,000 → Auto-approve
+3. Start approval (with document link + summary)
+4. Wait for response:
+   - Approved → Update status column to "Approved", move to "Active Contracts" folder
+   - Rejected → Update status to "Rejected", send rejection email with comments
+5. If no response in 3 business days → Send reminder
+6. If no response in 5 business days → Escalate to next-level manager
+\`\`\`
+
+**Key configuration:**
+
+- Use **Start and wait for an approval** (not just "Create an approval") so the flow pauses until a decision is made
+- Set the **Assigned to** field dynamically using the department manager lookup from a SharePoint "Managers" list
+- Use **Do until** with a timeout for the escalation pattern
+
+If you want the basics first, check out my earlier guide: [Building a SharePoint Approval Flow with Power Automate](/blog/power-automate-sharepoint-approval-flow).
+
+## Workflow 2: Auto-Tag Documents with Metadata
+
+This workflow eliminates the "forgot to tag it" problem permanently.
+
+**Trigger:** When a file is created or modified in any document library
+
+**What it does:**
+
+\`\`\`
+1. Get the file name and content type
+2. Apply metadata rules:
+   - File name contains "INV" → Set Document Type = "Invoice"
+   - File name contains "PO" → Set Document Type = "Purchase Order"
+   - File extension is .pdf → Set Format = "PDF"
+   - Uploaded to "Legal" folder → Set Department = "Legal"
+3. If content type is "Contract":
+   - Extract dates from file name (YYYY-MM-DD pattern)
+   - Set Expiry Date column
+4. Update the file properties with the new metadata
+\`\`\`
+
+**Pro tips:**
+
+- Use **expressions** in Power Automate to parse file names: \`contains(triggerOutputs()?['body/{FilenameWithExtension}'], 'INV')\`
+- For AI-powered tagging, combine this with [AI Builder document processing](/blog/power-automate-ai-builder-intelligent-document-processing) to extract metadata from the document content itself — not just the file name
+- **New in 2026:** With the Rules feature, you can set simple metadata rules directly in the library settings without building a full flow
+
+## Workflow 3: Automated Document Archiving
+
+Keep your document libraries clean by automatically archiving old documents.
+
+**Trigger:** Recurrence — runs daily at 11 PM
+
+**Flow logic:**
+
+\`\`\`
+1. Get items from "Active Documents" library
+   Filter: Modified date < 18 months ago AND Status = "Completed"
+2. For each matching document:
+   a. Copy file to "Archive" library (preserving metadata)
+   b. Add archival record to "Archive Log" list:
+      - Original location
+      - Archive date
+      - Archived by (system account)
+      - Retention period (based on document type)
+   c. Delete original file from "Active Documents"
+3. Send weekly summary email to library owners:
+   - Documents archived this week: X
+   - Storage recovered: Y MB
+   - Next scheduled archive: Z
+\`\`\`
+
+**Configuration details:**
+
+- Use the **Send an HTTP request to SharePoint** action to copy files with metadata (the standard "Copy file" action doesn't preserve metadata)
+- Set the recurrence to run outside business hours to avoid contention
+- Use SharePoint's **file-level archiving** (new in 2026) for cold storage instead of copying to a separate library — it's cheaper and keeps content discoverable
+
+## Workflow 4: Smart Notifications and Reminders
+
+Replace "Did you see the email?" with intelligent, context-aware notifications.
+
+**Trigger:** Multiple triggers combined in a single flow
+
+**Notification scenarios:**
+
+| Event | Channel | Who Gets Notified |
+|-------|---------|------------------|
+| New document uploaded | Teams channel | Team members |
+| Document pending approval > 2 days | Teams direct message | Approver |
+| Contract expiring in 30 days | Email + Teams | Legal team + document owner |
+| Document checked out > 24 hours | Teams DM | Person who checked it out |
+| Failed document processing | Email | IT admin |
+
+**Example: Contract expiry reminder**
+
+\`\`\`
+Trigger: Recurrence (daily at 9 AM)
+1. Get items from "Contracts" list
+   Filter: ExpiryDate between today+25 and today+35
+   AND ReminderSent ≠ true
+2. For each expiring contract:
+   a. Post adaptive card to Teams:
+      - Contract name, vendor, expiry date
+      - Buttons: "Renew", "Let Expire", "View Contract"
+   b. Send email to contract owner with renewal link
+   c. Update ReminderSent = true
+3. Second filter: ExpiryDate between today and today+7
+   → Send URGENT notification to legal team channel
+\`\`\`
+
+**Pro tip:** Use **Adaptive Cards** in Teams notifications instead of plain text messages. They're interactive — users can take action directly from the notification without opening SharePoint.
+
+## Workflow 5: Document Generation from Templates
+
+Automatically generate standardized documents from SharePoint list data.
+
+**Trigger:** When an item is created in the "New Client Onboarding" list
+
+**Flow logic:**
+
+\`\`\`
+1. Get the new item properties:
+   - Client name, address, contract type, start date, terms
+2. Use "Populate a Microsoft Word template" action:
+   - Template: stored in "Templates" library
+   - Map list columns to template placeholders
+3. Create the generated document in "Client Documents" library:
+   - Folder: Client Name/Year
+   - File name: "{ClientName}_Contract_{Date}.docx"
+4. Convert to PDF using "Convert file" action
+5. Store both .docx and .pdf versions
+6. Update the list item with a link to the generated document
+7. Send Teams notification to the account manager
+\`\`\`
+
+**Configuration tips:**
+
+- Create your Word template with **Content Controls** (Developer tab → Rich Text Content Control). Each control's title must match the Power Automate field mapping
+- For complex documents (multi-page contracts with conditional sections), use the **Plumsail Documents** connector — it supports conditional content, tables with dynamic rows, and page breaks
+- Store templates in a dedicated "Templates" library with versioning enabled so you can roll back template changes
+
+## Workflow 6: Content Type Routing
+
+Automatically route documents to the correct library based on their content type.
+
+**Trigger:** When a file is created in the "Inbox" document library
+
+**Flow logic:**
+
+\`\`\`
+1. Get the file's content type and metadata
+2. Route based on content type:
+   - "Invoice" → Move to Finance/Invoices library
+   - "Contract" → Move to Legal/Contracts library
+   - "Policy" → Move to HR/Policies library
+   - "Technical Spec" → Move to Engineering/Specs library
+   - Unknown → Leave in Inbox, notify admin
+3. After moving:
+   a. Apply destination library's default metadata
+   b. Trigger the destination library's approval flow (if configured)
+   c. Log the routing in "Document Routing Log" list
+\`\`\`
+
+**Why this matters:**
+
+In large organizations, people don't know (or don't care) where documents should go. A single "drop-box" library with automatic routing solves this. Users upload to one place, and the system handles the rest.
+
+**Pro tip:** Combine this with **information barriers** and **sensitivity labels** for compliance. For example, if a document is labeled "Confidential", route it to a library with restricted access and add an extra approval step.
+
+## Workflow 7: AI-Assisted Document Classification
+
+Use AI Builder to automatically classify and process documents based on their content — not just their file name or metadata.
+
+**Trigger:** When a file is created in the "Unprocessed Documents" library
+
+**Flow logic:**
+
+\`\`\`
+1. Send the document to AI Builder's document processing model
+2. AI extracts:
+   - Document type (invoice, contract, memo, report)
+   - Key entities (vendor name, amounts, dates, parties)
+   - Confidence score for classification
+3. Route based on confidence:
+   - Confidence ≥ 90% → Auto-classify and route
+   - Confidence 70-89% → Classify but flag for review
+   - Confidence < 70% → Send to admin for manual classification
+4. Apply extracted metadata as column values
+5. Move to the appropriate library
+6. Log classification results for model improvement
+\`\`\`
+
+For a deep dive on building custom AI models for document processing, check out my full guide: [Power Automate + AI Builder: Intelligent Document Processing](/blog/power-automate-ai-builder-intelligent-document-processing).
+
+## When to Use What: Decision Matrix
+
+With Quick Steps, Rules, and full Power Automate flows all available, here's how to choose:
+
+| Scenario | Use This | Why |
+|----------|---------|-----|
+| Move document to folder on click | **Quick Step** | Simple, button-triggered, no conditions |
+| Send notification when document is uploaded | **Rule** | Single trigger, single action, no logic |
+| Approval with escalation logic | **Power Automate** | Complex conditions, timeouts, loops |
+| Auto-tag based on file name | **Rule** | Simple pattern matching |
+| AI classification + routing | **Power Automate** | AI Builder integration, multi-step |
+| Generate document from template | **Power Automate** | Multiple actions, file creation |
+| Archive old documents on schedule | **Power Automate** | Scheduled trigger, batch processing |
+| Update metadata when column changes | **Rule** | Reactive, single action |
+
+**Rule of thumb:** If it takes one trigger and one action, use a Rule. If it needs a button click, use a Quick Step. If it needs conditions, loops, or external connectors, use Power Automate.
+
+## Production Checklist
+
+Before deploying any of these workflows to your tenant:
+
+- [ ] **Error handling** — Wrap actions in Scope blocks with "Configure run after" settings for failure paths
+- [ ] **Throttling** — SharePoint has API limits (600 calls/min per user). Use batching and delays for high-volume libraries
+- [ ] **Permissions** — The flow runs under the creator's account. Use a service account for production flows
+- [ ] **Testing** — Test with edge cases: large files (>250 MB), special characters in file names, empty metadata fields
+- [ ] **Monitoring** — Set up the Power Automate analytics dashboard to track flow runs, failures, and durations
+- [ ] **Documentation** — Document each flow's purpose, trigger, and expected behavior in a shared Confluence or SharePoint page
+
+## Frequently Asked Questions
+
+**Q: Can I use these workflows with SharePoint on-premises?**
+
+Power Automate works with SharePoint Server through the **on-premises data gateway**. However, the new unified workflows experience (Quick Steps, Rules) is SharePoint Online only. For on-premises, you'll need to build full Power Automate flows with the gateway connector.
+
+**Q: What licenses do I need?**
+
+Most SharePoint triggers and actions work with a **Microsoft 365** license (E3/E5, Business Basic/Standard/Premium). AI Builder requires **Power Automate Premium** or a standalone AI Builder license. The new Quick Steps and Rules features are included in Microsoft 365 licenses.
+
+**Q: How many flows can I create?**
+
+With a Microsoft 365 license, you can create unlimited cloud flows. However, there are **run limits** — standard plans allow 6,000 flow runs per month per user. Power Automate Premium removes this cap.
+
+**Q: Will these flows work with Teams-connected SharePoint sites?**
+
+Yes. Every Microsoft Team has an associated SharePoint site. Flows triggered on the team's document library work exactly the same way. You can even post notifications back to the team's channel as part of the flow.
+
+**Q: What happens if a flow fails mid-execution?**
+
+Power Automate has built-in **retry policies** for transient errors (429 throttling, 503 service unavailable). For permanent failures, use the Scope + "Configure run after" pattern described in the production checklist. Failed runs are logged in the Power Automate admin center with full error details.
+
+## What's Next
+
+Document workflow automation with Power Automate is one of the highest-ROI investments you can make in the Microsoft 365 ecosystem. Start with the simplest workflow that solves your biggest pain point — usually document approvals or notifications — and expand from there.
+
+The new unified workflows experience makes the barrier to entry even lower. If you haven't already, explore the **Rules** and **Quick Steps** features rolling out in your SharePoint libraries this month.
+
+For more Power Platform content, check out my guides on [building canvas apps with SharePoint](/blog/power-apps-canvas-app-sharepoint-complete-guide) and [SharePoint agents for AI-powered search](/blog/sharepoint-agents-ai-powered-assistants).
+`,
+    date: '2026-03-05',
+    displayDate: 'March 5, 2026',
+    readTime: '14 min read',
+    category: 'Power Platform',
+    tags: ['power-automate', 'sharepoint', 'document-management', 'workflows', 'automation', 'microsoft-365'],
+  },
+  {
     id: '10',
     slug: 'power-automate-ai-builder-intelligent-document-processing',
     title: 'Power Automate + AI Builder: Intelligent Document Processing Complete Guide',
     excerpt:
       'Learn how to build automated document processing pipelines using Power Automate and AI Builder — extract data from invoices, receipts, and forms with prebuilt and custom AI models, no code required.',
     content: `
-## What Is Intelligent Document Processing?
+## What Is Intelligent Document Processing ?
 
-**Intelligent Document Processing (IDP)** uses AI to automatically extract, classify, and process data from unstructured documents like invoices, receipts, contracts, and forms. Instead of manually typing data from a PDF into a spreadsheet, IDP reads the document for you.
+** Intelligent Document Processing(IDP) ** uses AI to automatically extract, classify, and process data from unstructured documents like invoices, receipts, contracts, and forms.Instead of manually typing data from a PDF into a spreadsheet, IDP reads the document for you.
 
-In the Microsoft ecosystem, this is powered by **AI Builder** — a low-code AI capability built directly into the **Power Platform**. Combined with **Power Automate**, you can build end-to-end pipelines that:
+In the Microsoft ecosystem, this is powered by ** AI Builder ** — a low - code AI capability built directly into the ** Power Platform **.Combined with ** Power Automate **, you can build end - to - end pipelines that:
 
-1. Receive a document (via email, SharePoint upload, or Teams message)
+1. Receive a document(via email, SharePoint upload, or Teams message)
 2. Extract structured data using an AI model
 3. Validate and route the data to downstream systems
 4. Notify stakeholders and log an audit trail
@@ -35,45 +344,45 @@ All without writing a single line of traditional code.
 
 ## Why This Matters in 2026
 
-The push toward **hyperautomation** — automating entire business processes rather than individual tasks — has made document processing one of the highest-ROI automation targets. Here's why:
+The push toward ** hyperautomation ** — automating entire business processes rather than individual tasks — has made document processing one of the highest - ROI automation targets.Here's why:
 
-- **80% of enterprise data is unstructured** (PDFs, scanned images, emails). Traditional RPA tools can't handle them reliably
-- **AI Builder models are pre-trained on millions of documents**, so they work out of the box for common document types (invoices, receipts, business cards, passports)
-- **Custom AI models** let you train on your own document formats with as few as 5 sample documents
-- **Power Automate integration** means extracted data flows directly into SharePoint, Dataverse, Dynamics 365, or any of 1,000+ connectors
+  - ** 80 % of enterprise data is unstructured ** (PDFs, scanned images, emails). Traditional RPA tools can't handle them reliably
+    - ** AI Builder models are pre - trained on millions of documents **, so they work out of the box for common document types(invoices, receipts, business cards, passports)
+      - ** Custom AI models ** let you train on your own document formats with as few as 5 sample documents
+        - ** Power Automate integration ** means extracted data flows directly into SharePoint, Dataverse, Dynamics 365, or any of 1,000 + connectors
 
 ## Prerequisites
 
 Before you start building:
 
-- **Power Automate Premium license** (AI Builder requires Premium or per-user plan)
-- **AI Builder credits** — included with certain Microsoft 365 and Dynamics 365 plans, or purchasable separately
-- **SharePoint Online** — for document storage and triggers
-- **A Microsoft 365 environment** — developer tenant works fine for testing
+- ** Power Automate Premium license ** (AI Builder requires Premium or per - user plan)
+- ** AI Builder credits ** — included with certain Microsoft 365 and Dynamics 365 plans, or purchasable separately
+  - ** SharePoint Online ** — for document storage and triggers
+    - ** A Microsoft 365 environment ** — developer tenant works fine for testing
 
 ## Step 1: Choose Your AI Model
 
 AI Builder offers several prebuilt models that require zero training:
 
 | Model | What It Extracts | Best For |
-|-------|-----------------|----------|
-| **Invoice Processing** | Vendor, amounts, line items, dates, PO numbers | Accounts payable automation |
-| **Receipt Processing** | Merchant, total, tax, date, payment method | Expense report automation |
-| **Identity Document Reader** | Name, DOB, address, document number | KYC/onboarding workflows |
-| **Business Card Reader** | Name, title, company, email, phone | CRM lead capture |
-| **Text Recognition (OCR)** | Raw text from any image or PDF | General-purpose extraction |
-| **Custom Document Processing** | Any fields you define | Custom forms, applications |
+| -------| -----------------| ----------|
+| ** Invoice Processing ** | Vendor, amounts, line items, dates, PO numbers | Accounts payable automation |
+| ** Receipt Processing ** | Merchant, total, tax, date, payment method | Expense report automation |
+| ** Identity Document Reader ** | Name, DOB, address, document number | KYC / onboarding workflows |
+| ** Business Card Reader ** | Name, title, company, email, phone | CRM lead capture |
+| ** Text Recognition(OCR) ** | Raw text from any image or PDF | General - purpose extraction |
+| ** Custom Document Processing ** | Any fields you define | Custom forms, applications |
 
-For this guide, we'll build an **invoice processing pipeline** — the most common enterprise use case.
+  For this guide, we'll build an **invoice processing pipeline** — the most common enterprise use case.
 
 ## Step 2: Build the Power Automate Flow
 
 ### Trigger: When a File Is Created in SharePoint
 
-Create a new **Automated cloud flow** in Power Automate:
+Create a new ** Automated cloud flow ** in Power Automate:
 
-1. Go to [make.powerautomate.com](https://make.powerautomate.com)
-2. Click **Create** → **Automated cloud flow**
+1. Go to[make.powerautomate.com](https://make.powerautomate.com)
+  2. Click ** Create ** → ** Automated cloud flow **
 3. Name it: \`Invoice Processing Pipeline\`
 4. Trigger: **When a file is created (properties only)** — SharePoint
 5. Configure:
@@ -769,7 +1078,7 @@ Viva Connections ACEs are the most direct way for SPFx developers to impact the 
 
 If you're building SharePoint Framework web parts, you'll quickly hit the limits of what pure SharePoint APIs can do. Need to show the current user's photo? Display their Teams memberships? Pull calendar events? Send emails?  That's where **Microsoft Graph** comes in.
 
-Microsoft Graph is the **unified API for all of Microsoft 365**. From a single endpoint (\\\`https://graph.microsoft.com\\\`), you can access:
+Microsoft Graph is the **unified API for all of Microsoft 365**. From a single endpoint (\`https://graph.microsoft.com\`), you can access:
 
 - **User profiles** — photos, job titles, managers, direct reports
 - **Teams and channels** — list teams, post messages, get channel members
@@ -779,7 +1088,7 @@ Microsoft Graph is the **unified API for all of Microsoft 365**. From a single e
 - **Planner** — tasks, buckets, plans across your organization
 - **SharePoint** — sites, lists, and pages (beyond what the SP REST API offers)
 
-The best part? **SPFx has built-in Graph support** through the \\\`MSGraphClientV3\\\` — no need to manually handle OAuth tokens.
+The best part? **SPFx has built-in Graph support** through the \`MSGraphClientV3\` — no need to manually handle OAuth tokens.
 
 ## Prerequisites
 
@@ -787,14 +1096,14 @@ Before you start, make sure you have:
 
 - **SPFx 1.19+** development environment set up ([see my SPFx Hello World guide](/blog/building-spfx-hello-world-webpart))
 - **Microsoft 365 developer tenant** or access to a SharePoint Online site
-- **API permissions** configured in your \\\`package-solution.json\\\`
+- **API permissions** configured in your \`package-solution.json\`
 - **Admin consent** granted for the Graph scopes you need
 
 ## Step 1: Request API Permissions
 
-The first thing you need is to declare which Graph permissions your web part requires. Open \\\`config/package-solution.json\\\` and add the \\\`webApiPermissionRequests\\\` section:
+The first thing you need is to declare which Graph permissions your web part requires. Open \`config/package-solution.json\` and add the \`webApiPermissionRequests\` section:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "solution": {
     "name": "graph-webpart-client-side-solution",
@@ -822,7 +1131,7 @@ The first thing you need is to declare which Graph permissions your web part req
     ]
   }
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ### Understanding Permission Scopes
 
@@ -830,28 +1139,28 @@ Choose the **least privileged scope** that works for your scenario:
 
 | What You Need | Scope | Permission Type |
 |--------------|-------|----------------|
-| Current user's profile | \\\`User.Read\\\` | Delegated |
-| Any user's basic profile | \\\`User.ReadBasic.All\\\` | Delegated |
-| User photos | \\\`User.Read.All\\\` | Delegated |
-| List Teams memberships | \\\`Team.ReadBasic.All\\\` | Delegated |
-| Read SharePoint sites | \\\`Sites.Read.All\\\` | Delegated |
-| Send mail | \\\`Mail.Send\\\` | Delegated |
-| Read calendars | \\\`Calendars.Read\\\` | Delegated |
+| Current user's profile | \`User.Read\` | Delegated |
+| Any user's basic profile | \`User.ReadBasic.All\` | Delegated |
+| User photos | \`User.Read.All\` | Delegated |
+| List Teams memberships | \`Team.ReadBasic.All\` | Delegated |
+| Read SharePoint sites | \`Sites.Read.All\` | Delegated |
+| Send mail | \`Mail.Send\` | Delegated |
+| Read calendars | \`Calendars.Read\` | Delegated |
 
-**Important:** After deploying your \\\`.sppkg\\\` package, a **tenant admin** must approve these permissions in the SharePoint Admin Center → **API access** page. Without admin consent, your Graph calls will fail with a 403.
+**Important:** After deploying your \`.sppkg\` package, a **tenant admin** must approve these permissions in the SharePoint Admin Center → **API access** page. Without admin consent, your Graph calls will fail with a 403.
 
 ## Step 2: Initialize the Graph Client
 
-In your web part file (e.g., \\\`GraphDemoWebPart.ts\\\`), get the Graph client from the SPFx context:
+In your web part file (e.g., \`GraphDemoWebPart.ts\`), get the Graph client from the SPFx context:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { MSGraphClientV3 } from '@microsoft/sp-http';
 
 // Inside your web part class:
 private async getGraphClient(): Promise<MSGraphClientV3> {
   return await this.context.msGraphClientFactory.getClient('3');
 }
-\\\`\\\`\\\`
+\`\`\`
 
 That's it. No OAuth configuration, no client secrets, no token management. SPFx handles the entire authentication flow for you using the current user's Azure AD session.
 
@@ -859,7 +1168,7 @@ That's it. No OAuth configuration, no client secrets, no token management. SPFx 
 
 Let's start with the most common scenario — getting the signed-in user's profile data:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 interface UserProfile {
   displayName: string;
   mail: string;
@@ -879,13 +1188,13 @@ private async getCurrentUser(): Promise<UserProfile> {
   
   return response;
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get the User's Photo
 
 User photos are returned as binary blobs, so you need to convert them to a data URL:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 private async getUserPhoto(): Promise<string> {
   const client = await this.getGraphClient();
   
@@ -901,13 +1210,13 @@ private async getUserPhoto(): Promise<string> {
     return '';
   }
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ## Step 4: List the User's Teams
 
 Show which Microsoft Teams the current user belongs to:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 interface Team {
   id: string;
   displayName: string;
@@ -924,13 +1233,13 @@ private async getMyTeams(): Promise<Team[]> {
   
   return response.value;
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ## Step 5: Search SharePoint Sites
 
 Use Graph to search across all SharePoint sites in the tenant:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 interface SiteResult {
   id: string;
   displayName: string;
@@ -949,13 +1258,13 @@ private async searchSites(query: string): Promise<SiteResult[]> {
   
   return response.value;
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ## Step 6: Put It All Together in React
 
 Here's how to wire everything up in a React component:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
@@ -1007,13 +1316,13 @@ const GraphDemo: React.FC<{ graphClient: MSGraphClientV3 }> = ({ graphClient }) 
     </div>
   );
 };
-\\\`\\\`\\\`
+\`\`\`
 
 ## Error Handling Patterns
 
 Graph API calls can fail for many reasons. Here's a robust pattern:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 private async safeGraphCall<T>(
   apiCall: () => Promise<T>,
   fallback: T
@@ -1031,13 +1340,13 @@ private async safeGraphCall<T>(
     return fallback;
   }
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ## Batching Multiple Requests
 
 Instead of making 5 separate Graph calls, batch them into one:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 private async batchGraphCalls(): Promise<any> {
   const client = await this.getGraphClient();
   
@@ -1056,7 +1365,7 @@ private async batchGraphCalls(): Promise<any> {
   
   return response.responses;
 }
-\\\`\\\`\\\`
+\`\`\`
 
 This is **significantly faster** than sequential calls, especially on slower connections.
 
@@ -1064,7 +1373,7 @@ This is **significantly faster** than sequential calls, especially on slower con
 
 If you prefer a more developer-friendly wrapper, **PnP JS** provides a Graph client with chainable, typed methods:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { graphfi, SPFx } from "@pnp/graph";
 import "@pnp/graph/users";
 import "@pnp/graph/teams";
@@ -1076,7 +1385,7 @@ const graph = graphfi().using(SPFx(this.context));
 const me = await graph.me();
 const teams = await graph.me.joinedTeams();
 const photo = await graph.me.photo.getBlob();
-\\\`\\\`\\\`
+\`\`\`
 
 PnP JS handles batching, caching, and error handling for you. If you're building complex Graph integrations, it's worth the extra dependency.
 
@@ -1085,10 +1394,10 @@ PnP JS handles batching, caching, and error handling for you. If you're building
 After building dozens of Graph-powered SPFx web parts, these are the issues I see most:
 
 - **Forgetting admin consent.** Your web part silently gets 403 errors. Always check the API access page first
-- **Requesting too many scopes.** Only request what you need. \\\`User.Read\\\` is enough for the current user
-- **Not using \\\`$select\\\`.** Without it, Graph returns every field. Always specify exactly what you need
+- **Requesting too many scopes.** Only request what you need. \`User.Read\` is enough for the current user
+- **Not using \`$select\`.** Without it, Graph returns every field. Always specify exactly what you need
 - **Ignoring throttling.** On pages with many Graph web parts, you'll hit rate limits. Batch your calls and cache responses
-- **Hardcoding tenant URLs.** Use Graph's relative paths (\\\`/me\\\`, \\\`/sites\\\`) instead of hardcoded SharePoint URLs
+- **Hardcoding tenant URLs.** Use Graph's relative paths (\`/me\`, \`/sites\`) instead of hardcoded SharePoint URLs
 
 Microsoft Graph turns your SPFx web parts from "SharePoint only" to "Microsoft 365 powered." Once you start pulling in Teams, calendar, and user data, your web parts become genuinely useful productivity tools — not just SharePoint widgets.
 `,

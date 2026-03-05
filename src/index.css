@@ -3813,3 +3813,250 @@ pre:hover .copy-btn {
     padding: var(--space-1) var(--space-3);
   }
 }
+
+/* ============================================
+   Permission Matrix Generator
+   ============================================ */
+
+/* --- Preset Quick Start --- */
+.pm-presets {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.pm-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-body);
+  min-width: 140px;
+  flex: 1;
+}
+
+.pm-preset-btn:hover {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.pm-preset-btn__emoji {
+  font-size: 1.8rem;
+}
+
+.pm-preset-btn__name {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.pm-preset-btn__desc {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* --- Matrix Table Wrapper --- */
+.pm-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(13, 17, 23, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.pm-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.pm-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pm-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+/* --- Matrix Table --- */
+.pm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  min-width: 500px;
+}
+
+.pm-table th,
+.pm-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pm-table thead tr {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pm-table__corner {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  min-width: 160px;
+}
+
+.pm-table__header {
+  text-align: center;
+  min-width: 130px;
+}
+
+.pm-table__header-icon {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
+
+.pm-table__header-name {
+  display: block;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+}
+
+.pm-table__header-type {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-weight: var(--fw-normal);
+}
+
+/* --- Resource Column --- */
+.pm-table__resource {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 160px;
+}
+
+.pm-table__resource-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.pm-table__resource-name {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.pm-table__resource-type {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* --- Permission Cell --- */
+.pm-table__cell {
+  text-align: center;
+  padding: var(--space-2);
+}
+
+.pm-perm-select {
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 110px;
+}
+
+.pm-perm-select:hover {
+  filter: brightness(1.3);
+}
+
+.pm-perm-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* --- Legend --- */
+.pm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  justify-content: center;
+}
+
+.pm-legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.pm-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.pm-legend__label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+
+/* --- Light Theme Overrides --- */
+[data-theme="light"] .pm-table-wrapper {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .pm-table th,
+[data-theme="light"] .pm-table td {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .pm-table thead tr {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .pm-perm-select {
+  color: inherit;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .pm-presets {
+    flex-direction: column;
+  }
+
+  .pm-preset-btn {
+    min-width: unset;
+  }
+
+  .pm-table-wrapper {
+    margin: 0 calc(var(--space-4) * -1);
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
