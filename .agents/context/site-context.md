@@ -40,5 +40,5 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 1. "Building a Custom SPFx Web Part: Complete Guide (2026)"
 2. "Microsoft Graph API: 10 Practical Examples for SharePoint"
 3. "Viva Connections ACE: Build Your First Adaptive Card Extension"
-4. "Power Automate + SharePoint: Automate Document Workflows"
+4. "Power Automate + SharePoint: 7 Document Workflows That Save Hours (2026)" ✅ Published
 5. "Copilot Studio: Build AI Assistants for SharePoint Sites"

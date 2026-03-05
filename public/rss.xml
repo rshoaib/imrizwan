@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2026 17:18:47 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2026 20:36:18 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)</title>
+      <link>https://imrizwan.com/blog/spfx-web-part-crud-operations-complete-guide-2026</link>
+      <description>Go beyond Hello World — build a production-ready SPFx web part that creates, reads, updates, and deletes SharePoint list items using React and PnPjs v4. Covers environment setup, property pane configuration, and deployment.</description>
+      <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/spfx-web-part-crud-operations-complete-guide-2026</guid>
+      <category>SPFx</category>
+    </item>
     <item>
       <title>Power Automate + SharePoint: 7 Document Workflows That Save Hours Every Week (2026)</title>
       <link>https://imrizwan.com/blog/power-automate-sharepoint-document-workflows-2026</link>

@@ -14,6 +14,567 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '12',
+    slug: 'spfx-web-part-crud-operations-complete-guide-2026',
+    title: 'Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)',
+    excerpt:
+      'Go beyond Hello World — build a production-ready SPFx web part that creates, reads, updates, and deletes SharePoint list items using React and PnPjs v4. Covers environment setup, property pane configuration, and deployment.',
+    image: '/images/blog/spfx-custom-webpart-guide.png',
+    content: `
+## Why Build a Custom SPFx Web Part?
+
+SharePoint Framework (SPFx) is Microsoft's recommended model for extending SharePoint and Microsoft 365. If you've built a [Hello World web part](/blog/building-spfx-hello-world-webpart), you know the basics. But real-world web parts need to do more — they need to interact with SharePoint data.
+
+This guide walks you through building a **Task Manager web part** that performs full CRUD (Create, Read, Update, Delete) operations against a SharePoint list. By the end, you'll have a production-ready component that you can deploy to your tenant's App Catalog.
+
+**What you'll build:**
+
+- A React-based web part that displays SharePoint list items in a responsive table
+- Create, edit, and delete operations with inline forms
+- Property pane configuration for selecting the target list
+- PnPjs v4 for all SharePoint API calls
+- Proper error handling and loading states
+- Packaging and deployment to the App Catalog
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+- **Node.js v22** — The only version supported by SPFx 1.21+ (January 2026)
+- **npm v10+** — Comes with Node.js v22
+- **Yeoman and the SPFx generator** — Install globally with npm
+- **Visual Studio Code** — Recommended editor
+- **A SharePoint Online tenant** — A developer tenant works fine for testing
+- **SharePoint list** — Create a list called "Tasks" with these columns:
+
+| Column | Type | Required |
+|--------|------|----------|
+| Title | Single line of text | Yes |
+| Description | Multiple lines of text | No |
+| AssignedTo | Person | No |
+| DueDate | Date | No |
+| Status | Choice (Not Started, In Progress, Completed) | Yes |
+| Priority | Choice (Low, Medium, High) | Yes |
+
+## Step 1: Scaffold the SPFx Project
+
+Open your terminal and run the Yeoman generator:
+
+    npm install -g yo @microsoft/generator-sharepoint
+    mkdir task-manager-webpart
+    cd task-manager-webpart
+    yo @microsoft/sharepoint
+
+When prompted, choose these options:
+
+- **Solution name:** task-manager-webpart
+- **Target:** SharePoint Online only
+- **Place files in current folder:** Yes
+- **Tenant-scoped deployment:** No (for testing)
+- **Framework:** React
+- **Web part name:** TaskManager
+- **Description:** A web part for managing tasks in a SharePoint list
+
+The generator creates the project structure. Open it in VS Code:
+
+    code .
+
+## Step 2: Install PnPjs v4
+
+PnPjs is the de facto library for interacting with SharePoint from SPFx. Install the required packages:
+
+    npm install @pnp/sp @pnp/logging
+
+**Why PnPjs over raw REST calls?**
+
+- Type-safe API — IntelliSense and compile-time checks
+- Batching support — Send multiple requests in a single HTTP call
+- Caching — Built-in request caching for performance
+- Fluent API — Readable, chainable syntax
+
+## Step 3: Configure PnPjs with SPFx Context
+
+PnPjs needs the SPFx web part context to authenticate API calls. Create a configuration file.
+
+**File:** src/webparts/taskManager/pnpConfig.ts
+
+    import { spfi, SPFx } from "@pnp/sp";
+    import "@pnp/sp/webs";
+    import "@pnp/sp/lists";
+    import "@pnp/sp/items";
+    import "@pnp/sp/site-users/web";
+    import { WebPartContext } from "@microsoft/sp-webpart-base";
+
+    let _sp: ReturnType<typeof spfi>;
+
+    export const getSP = (context?: WebPartContext) => {
+      if (context) {
+        _sp = spfi().using(SPFx(context));
+      }
+      return _sp;
+    };
+
+**Key points:**
+
+- The selective imports (webs, lists, items) keep your bundle size small — PnPjs is tree-shakeable
+- The singleton pattern ensures the SP instance is created once and reused
+- Call getSP(this.context) in your web part's onInit() to initialize
+
+## Step 4: Build the React Component
+
+Now build the main TaskManager component. This handles rendering the task list and all CRUD operations.
+
+**File:** src/webparts/taskManager/components/TaskManager.tsx
+
+    import * as React from "react";
+    import { useState, useEffect, useCallback } from "react";
+    import { getSP } from "../pnpConfig";
+    import styles from "./TaskManager.module.scss";
+
+    interface ITask {
+      Id: number;
+      Title: string;
+      Description: string;
+      Status: string;
+      Priority: string;
+      DueDate: string;
+    }
+
+    interface ITaskManagerProps {
+      listName: string;
+    }
+
+    const TaskManager: React.FC<ITaskManagerProps> = ({ listName }) => {
+      const [tasks, setTasks] = useState<ITask[]>([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState<string | null>(null);
+      const [editingId, setEditingId] = useState<number | null>(null);
+      const [newTask, setNewTask] = useState({
+        Title: "",
+        Description: "",
+        Status: "Not Started",
+        Priority: "Medium",
+        DueDate: "",
+      });
+
+      // READ - Fetch all tasks
+      const fetchTasks = useCallback(async () => {
+        try {
+          setLoading(true);
+          const sp = getSP();
+          const items = await sp.web.lists
+            .getByTitle(listName)
+            .items.select(
+              "Id", "Title", "Description",
+              "Status", "Priority", "DueDate"
+            )
+            .orderBy("DueDate", true)();
+          setTasks(items);
+          setError(null);
+        } catch (err) {
+          setError("Failed to load tasks. Check list permissions.");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      }, [listName]);
+
+      useEffect(() => {
+        fetchTasks();
+      }, [fetchTasks]);
+
+      // CREATE - Add a new task
+      const addTask = async () => {
+        if (!newTask.Title.trim()) return;
+        try {
+          const sp = getSP();
+          await sp.web.lists.getByTitle(listName).items.add({
+            Title: newTask.Title,
+            Description: newTask.Description,
+            Status: newTask.Status,
+            Priority: newTask.Priority,
+            DueDate: newTask.DueDate || null,
+          });
+          setNewTask({
+            Title: "", Description: "",
+            Status: "Not Started",
+            Priority: "Medium", DueDate: "",
+          });
+          await fetchTasks();
+        } catch (err) {
+          setError("Failed to add task.");
+          console.error(err);
+        }
+      };
+
+      // UPDATE - Edit an existing task
+      const updateTask = async (id: number, updates: Partial<ITask>) => {
+        try {
+          const sp = getSP();
+          await sp.web.lists
+            .getByTitle(listName)
+            .items.getById(id)
+            .update(updates);
+          setEditingId(null);
+          await fetchTasks();
+        } catch (err) {
+          setError("Failed to update task.");
+          console.error(err);
+        }
+      };
+
+      // DELETE - Remove a task
+      const deleteTask = async (id: number) => {
+        if (!confirm("Delete this task?")) return;
+        try {
+          const sp = getSP();
+          await sp.web.lists
+            .getByTitle(listName)
+            .items.getById(id)
+            .delete();
+          await fetchTasks();
+        } catch (err) {
+          setError("Failed to delete task.");
+          console.error(err);
+        }
+      };
+
+      if (loading) return <div className={styles.loading}>Loading...</div>;
+      if (error) return <div className={styles.error}>{error}</div>;
+
+      return (
+        <div className={styles.taskManager}>
+          <h2>Task Manager</h2>
+          {/* Render task table and forms here */}
+        </div>
+      );
+    };
+
+    export default TaskManager;
+
+**What's happening in this code:**
+
+- **READ:** fetchTasks() uses PnPjs's fluent API to query the SharePoint list with .select() for specific columns and .orderBy() for sorting
+- **CREATE:** addTask() calls .items.add() with the form data
+- **UPDATE:** updateTask() uses .items.getById(id).update() for partial updates
+- **DELETE:** deleteTask() calls .items.getById(id).delete() after confirmation
+- **Error handling:** Each operation wraps the API call in try/catch and sets an error state
+- **Loading state:** Prevents rendering stale data during API calls
+
+## Step 5: Wire Up the Web Part
+
+Connect the React component to the SPFx web part class.
+
+**File:** src/webparts/taskManager/TaskManagerWebPart.ts
+
+    import * as React from "react";
+    import * as ReactDom from "react-dom";
+    import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
+    import {
+      PropertyPaneTextField,
+    } from "@microsoft/sp-property-pane";
+    import TaskManager from "./components/TaskManager";
+    import { getSP } from "./pnpConfig";
+
+    export interface ITaskManagerWebPartProps {
+      listName: string;
+    }
+
+    export default class TaskManagerWebPart
+      extends BaseClientSideWebPart<ITaskManagerWebPartProps> {
+
+      public onInit(): Promise<void> {
+        getSP(this.context);
+        return super.onInit();
+      }
+
+      public render(): void {
+        const element = React.createElement(TaskManager, {
+          listName: this.properties.listName || "Tasks",
+        });
+        ReactDom.render(element, this.domElement);
+      }
+
+      protected getPropertyPaneConfiguration() {
+        return {
+          pages: [
+            {
+              header: { description: "Task Manager Settings" },
+              groups: [
+                {
+                  groupName: "Configuration",
+                  groupFields: [
+                    PropertyPaneTextField("listName", {
+                      label: "SharePoint List Name",
+                      value: this.properties.listName,
+                      placeholder: "Enter the list name (e.g., Tasks)"
+                    }),
+                  ],
+                },
+              ],
+            },
+          ],
+        };
+      }
+
+      protected onDispose(): void {
+        ReactDom.unmountComponentAtNode(this.domElement);
+      }
+    }
+
+**Key patterns:**
+
+- **onInit()** initializes PnPjs with the web part context — this must happen before any API calls
+- **Property pane** lets end users configure the list name without editing code
+- **onDispose()** cleans up the React component when the web part is removed from the page
+
+## Step 6: Add Styling
+
+SPFx uses CSS Modules for scoped styles. Update the SCSS file.
+
+**File:** src/webparts/taskManager/components/TaskManager.module.scss
+
+    .taskManager {
+      padding: 20px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+
+      h2 {
+        color: #323130;
+        border-bottom: 2px solid #0078d4;
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+
+        th, td {
+          padding: 10px 12px;
+          text-align: left;
+          border-bottom: 1px solid #edebe9;
+        }
+
+        th {
+          background-color: #f3f2f1;
+          font-weight: 600;
+          color: #323130;
+        }
+
+        tr:hover {
+          background-color: #f3f2f1;
+        }
+      }
+
+      .statusBadge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+
+        &.completed { background: #dff6dd; color: #107c10; }
+        &.inProgress { background: #fff4ce; color: #797600; }
+        &.notStarted { background: #f3f2f1; color: #605e5c; }
+      }
+
+      .priorityHigh { color: #d13438; font-weight: 600; }
+      .priorityMedium { color: #ca5010; }
+      .priorityLow { color: #107c10; }
+
+      .addForm {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+
+        input, select {
+          padding: 8px;
+          border: 1px solid #c8c6c4;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        button {
+          padding: 8px 16px;
+          background-color: #0078d4;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+
+          &:hover { background-color: #106ebe; }
+        }
+      }
+
+      .actions button {
+        margin-right: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        border: 1px solid #c8c6c4;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+
+        &:hover { background: #f3f2f1; }
+        &.delete { color: #d13438; border-color: #d13438; }
+      }
+
+      .loading, .error {
+        padding: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .error { color: #d13438; }
+    }
+
+The styles use Microsoft's Fluent UI color palette to match the SharePoint look and feel. CSS Modules ensure your styles don't leak into other web parts on the page.
+
+## Step 7: Test Locally
+
+Start the local development server:
+
+    gulp trust-dev-certificate
+    gulp serve
+
+This opens the SharePoint Workbench at https://localhost:4321/temp/workbench.html. However, the Workbench **cannot connect to real SharePoint data**. To test with live data, use the hosted Workbench:
+
+    https://your-tenant.sharepoint.com/_layouts/15/workbench.aspx
+
+> **Note (SPFx 1.21+):** Microsoft is deprecating the Workbench in favor of a new **debugging toolbar** that lets you debug directly on live SharePoint pages. If you're on SPFx 1.21 or later, you can add your web part to a real page and use the toolbar for testing. Check the [SPFx 1.23 migration guide](/blog/spfx-1-23-heft-build-system-new-cli-migration-guide) for details on the new tooling.
+
+## Step 8: Deploy to the App Catalog
+
+When you're ready for production, package and deploy:
+
+**1. Bundle for production:**
+
+    gulp bundle --ship
+
+**2. Create the .sppkg package:**
+
+    gulp package-solution --ship
+
+This generates a .sppkg file in the sharepoint/solution/ folder.
+
+**3. Upload to the App Catalog:**
+
+- Go to your SharePoint Admin Center → More features → Apps → App Catalog
+- Upload the .sppkg file to the "Apps for SharePoint" library
+- Check "Make this solution available to all sites in the organization" for tenant-wide deployment
+- Click Deploy
+
+**4. Add to a page:**
+
+- Navigate to any modern SharePoint page
+- Click Edit → Add a web part → Search for "TaskManager"
+- Configure the list name in the property pane
+
+## Performance Best Practices
+
+Once your web part works, optimize it for production:
+
+**1. Use batching for multiple requests:**
+
+    const sp = getSP();
+    const [batch, execute] = sp.batched();
+    const list = batch.web.lists.getByTitle("Tasks");
+
+    // Queue multiple operations in a single HTTP request
+    list.items.getById(1).update({ Status: "Completed" });
+    list.items.getById(2).update({ Status: "Completed" });
+    list.items.getById(3).delete();
+
+    await execute(); // One HTTP call for all 3 operations
+
+**2. Use select() and top() to limit data:**
+
+    // BAD: Fetches all columns and all items
+    const items = await sp.web.lists.getByTitle("Tasks").items();
+
+    // GOOD: Fetches only needed columns, first 100 items
+    const items = await sp.web.lists
+      .getByTitle("Tasks")
+      .items.select("Id", "Title", "Status")
+      .top(100)();
+
+**3. Implement pagination** for large lists (5,000+ items):
+
+    const items = await sp.web.lists
+      .getByTitle("Tasks")
+      .items.select("Id", "Title")
+      .top(50)
+      .skip(50)(); // Page 2
+
+**4. Cache responses** where appropriate:
+
+    import { Caching } from "@pnp/queryable";
+
+    const sp = getSP();
+    const cachedSp = sp.using(Caching({ store: "session" }));
+    const items = await cachedSp.web.lists
+      .getByTitle("Tasks").items();
+
+## Common Pitfalls
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| "Unauthorized" error | Missing API permissions | Grant Sites.ReadWrite.All in SharePoint Admin Center |
+| Empty results | Wrong list name | Check listName property matches exactly (case-sensitive) |
+| "List does not exist" | Site URL mismatch | Verify the web part runs on the correct site |
+| Slow initial load | Fetching all items | Use .top(50) and implement pagination |
+| CORS errors in local dev | Using wrong Workbench | Use the hosted Workbench, not localhost |
+| Build fails on Node.js | Wrong Node version | SPFx 1.21+ requires Node.js v22 only |
+
+## Going Further
+
+This tutorial gives you a solid foundation. Here's how to extend it:
+
+- **Add Microsoft Graph integration** for user profiles and Teams notifications — see my [Microsoft Graph API guide](/blog/microsoft-graph-api-spfx-integration)
+- **Use Adaptive Cards** for richer Teams experiences — see [Building Viva Connections ACEs](/blog/building-viva-connections-adaptive-card-extensions-spfx)
+- **Integrate with Power Automate** to trigger workflows when tasks change — see [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026)
+- **Add AI capabilities** with Copilot integration for intelligent task suggestions
+- **Use the new Heft build system** in SPFx 1.23+ for faster builds — see my [migration guide](/blog/spfx-1-23-heft-build-system-new-cli-migration-guide)
+
+## Frequently Asked Questions
+
+**Q: Can I use this web part with SharePoint on-premises?**
+
+SPFx web parts work on SharePoint Server 2019 and later, but PnPjs v4 requires SharePoint Online. For on-premises, use PnPjs v3 or the native SharePoint REST API directly.
+
+**Q: Do I need a Power Automate license for CRUD operations?**
+
+No. SPFx web parts call the SharePoint REST API directly using the current user's permissions. No Power Automate or premium connectors are needed for basic CRUD operations.
+
+**Q: What happens with large lists (5,000+ items)?**
+
+SharePoint's list view threshold blocks queries returning more than 5,000 items. Use indexed columns and .top() with pagination to stay under the limit. PnPjs supports automatic paging with the .using(Paged()) behavior.
+
+**Q: Can I use Fluent UI (React) components?**
+
+Yes! SPFx includes Fluent UI React by default. Import components like DetailsList, CommandBar, and Panel for a native SharePoint look. Just install @fluentui/react.
+
+**Q: How do I debug in production?**
+
+SPFx bundles include source maps in debug mode. Use the browser developer tools (F12) to set breakpoints. In SPFx 1.21+, the new debugging toolbar on SharePoint Online pages makes this even easier.
+
+## Summary
+
+You've built a complete SPFx web part that reads, creates, updates, and deletes SharePoint list items. The project uses React for the UI, PnPjs v4 for type-safe SharePoint API calls, and follows SPFx best practices for configuration and deployment.
+
+The full pattern works for any list-driven web part — employee directories, project trackers, inventory managers, or request forms. Change the column mappings and you have a new web part.
+
+For your next step, check out [Power Automate integration with SharePoint](/blog/power-automate-sharepoint-document-workflows-2026) to add automated workflows to your list data, or explore [SharePoint column formatting with JSON](/blog/sharepoint-column-formatting-json-complete-guide) to make your list views visually rich without any code.
+`,
+    date: '2026-03-05',
+    displayDate: 'March 5, 2026',
+    readTime: '16 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'sharepoint', 'react', 'pnpjs', 'web-parts', 'crud', 'microsoft-365'],
+  },
+  {
     id: '11',
     slug: 'power-automate-sharepoint-document-workflows-2026',
     title: 'Power Automate + SharePoint: 7 Document Workflows That Save Hours Every Week (2026)',
