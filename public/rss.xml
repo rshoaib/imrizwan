@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2026 20:56:55 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2026 21:02:25 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)</title>
+      <link>https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</link>
+      <description>Create AI-powered assistants that answer questions from SharePoint documents, search across sites, and automate workflows \u2014 all with Microsoft Copilot Studio. No coding required.</description>
+      <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</guid>
+      <category>Microsoft 365</category>
+    </item>
     <item>
       <title>Building Viva Connections ACEs: 3 Adaptive Card Extensions from Scratch (2026)</title>
       <link>https://imrizwan.com/blog/viva-connections-adaptive-card-extensions-build-guide-2026</link>
