@@ -14,6 +14,494 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '14',
+    slug: 'viva-connections-adaptive-card-extensions-build-guide-2026',
+    title: 'Building Viva Connections ACEs: 3 Adaptive Card Extensions from Scratch (2026)',
+    excerpt:
+      'Go beyond the Hello World template \u2014 build 3 production-ready Adaptive Card Extensions for Viva Connections with data charts, Quick Views, and Graph API integration.',
+    image: '/images/blog/viva-connections-ace-guide.png',
+    content: `
+## What Are Adaptive Card Extensions (ACEs)?
+
+Adaptive Card Extensions are a component type in SharePoint Framework (SPFx) designed specifically for **Viva Connections dashboards**. Think of them as smart cards that surface information and actions from across Microsoft 365 \u2014 directly in the employee\u2019s dashboard.
+
+Each ACE has two parts:
+
+- **Card View** \u2014 The compact card displayed on the dashboard (small, medium, or large size)
+- **Quick View** \u2014 The expanded, interactive view that opens when users click the card
+
+ACEs work across desktop, web, and mobile. They are the primary way to extend Viva Connections with custom functionality.
+
+**Why build ACEs instead of web parts?**
+
+| Feature | Web Parts | ACEs |
+|---------|-----------|------|
+| Where they appear | SharePoint pages | Viva Connections dashboard |
+| Mobile support | Limited | Full native support |
+| Card-based UI | No | Yes \u2014 Adaptive Card framework |
+| Data visualization | Custom (build your own) | Built-in charts (line, bar, pie, donut) |
+| Quick actions | Full page interaction | Lightweight Quick Views |
+| Audience | SharePoint users | All employees via Viva |
+
+This guide walks you through building 3 ACEs, from simple to advanced:
+
+1. **Announcement Card** \u2014 Static content with a CTA button
+2. **KPI Chart Card** \u2014 Data visualization with line/bar/pie charts
+3. **Task List Card** \u2014 Interactive Quick Views with SharePoint list data
+
+## Prerequisites
+
+- **SPFx 1.21+** development environment ([set up guide](/blog/spfx-web-part-crud-operations-complete-guide-2026))
+- **Node.js v22** \u2014 Required by SPFx 1.21
+- **Viva Connections** enabled in your Microsoft 365 tenant
+- **SharePoint Admin access** \u2014 To deploy to the App Catalog and configure the dashboard
+
+## ACE 1: Announcement Card
+
+The simplest ACE \u2014 a card that displays a message with a call-to-action button.
+
+### Scaffold the Project
+
+    yo @microsoft/sharepoint
+
+Choose these options:
+
+- **Component type:** Adaptive Card Extension
+- **Template:** Generic Card Template
+- **Name:** AnnouncementCard
+
+### Implement the Card View
+
+The Card View defines what users see on the dashboard. Edit the card view file:
+
+**File:** src/adaptiveCardExtensions/announcementCard/cardView/CardView.ts
+
+    import {
+      BaseComponentsCardView,
+      ComponentsCardViewParameters,
+      BasicCardView,
+      IExternalLinkCardAction,
+    } from "@microsoft/sp-adaptive-card-extension-base";
+
+    export class CardView extends BaseComponentsCardView<
+      IAnnouncementCardAdaptiveCardExtensionProps,
+      IAnnouncementCardAdaptiveCardExtensionState
+    > {
+      public get cardViewParameters(): ComponentsCardViewParameters {
+        return BasicCardView({
+          cardBar: {
+            componentName: "cardBar",
+            title: this.properties.title || "Announcement",
+            icon: {
+              url: "https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/assets/item-types/16/news.svg",
+            },
+          },
+          header: {
+            componentName: "text",
+            text: this.properties.heading || "Important Update",
+          },
+          body: {
+            componentName: "text",
+            text: this.properties.description || "Check out the latest company news.",
+          },
+          footer: {
+            componentName: "cardButton",
+            title: "Learn More",
+            style: "positive",
+            action: {
+              type: "ExternalLink",
+              parameters: {
+                target: this.properties.linkUrl || "https://contoso.sharepoint.com/news",
+              },
+            } as IExternalLinkCardAction,
+          },
+        });
+      }
+    }
+
+### Add Property Pane Configuration
+
+Let admins customize the announcement text without editing code:
+
+**File:** src/adaptiveCardExtensions/announcementCard/AnnouncementCardAdaptiveCardExtension.ts
+
+    import { PropertyPaneTextField } from "@microsoft/sp-property-pane";
+
+    protected getPropertyPaneConfiguration() {
+      return {
+        pages: [{
+          header: { description: "Announcement Card Settings" },
+          groups: [{
+            groupName: "Content",
+            groupFields: [
+              PropertyPaneTextField("title", { label: "Card Title" }),
+              PropertyPaneTextField("heading", { label: "Heading" }),
+              PropertyPaneTextField("description", { label: "Description", multiline: true }),
+              PropertyPaneTextField("linkUrl", { label: "Button URL" }),
+            ],
+          }],
+        }],
+      };
+    }
+
+**Result:** A dashboard card that displays a custom announcement with a "Learn More" button. Admins configure the content through the property pane \u2014 no code changes needed for content updates.
+
+## ACE 2: KPI Chart Card
+
+This ACE displays data visualizations directly on the dashboard card \u2014 no Quick View needed for a quick overview.
+
+**New in SPFx 1.19+:** Built-in chart support (line charts). **SPFx 1.20+** adds bar, pie, and donut charts.
+
+### Card View with a Line Chart
+
+**File:** src/adaptiveCardExtensions/kpiChart/cardView/CardView.ts
+
+    import {
+      BaseComponentsCardView,
+      ComponentsCardViewParameters,
+      DataVisualizationCardView,
+    } from "@microsoft/sp-adaptive-card-extension-base";
+
+    export class CardView extends BaseComponentsCardView<
+      IKpiChartProps, IKpiChartState
+    > {
+      public get cardViewParameters(): ComponentsCardViewParameters {
+        return DataVisualizationCardView({
+          cardBar: {
+            componentName: "cardBar",
+            title: "Monthly Active Users",
+          },
+          body: {
+            componentName: "dataVisualization",
+            dataVisualizationKind: "line",
+            series: [{
+              data: [
+                { x: "Jan", y: 1200 },
+                { x: "Feb", y: 1450 },
+                { x: "Mar", y: 1380 },
+                { x: "Apr", y: 1620 },
+                { x: "May", y: 1890 },
+                { x: "Jun", y: 2100 },
+              ],
+              color: "#0078d4",
+              lastDataPointStyle: "callout",
+            }],
+          },
+        });
+      }
+    }
+
+### Fetching Real Data from a SharePoint List
+
+Instead of hardcoded data, pull KPI values from a SharePoint list:
+
+    import { getSP } from "../pnpConfig";
+
+    public async onInit(): Promise<void> {
+      const sp = getSP(this.context);
+      const items = await sp.web.lists
+        .getByTitle("KPI Metrics")
+        .items.select("Month", "ActiveUsers")
+        .orderBy("Month", true)
+        .top(12)();
+
+      this.setState({
+        chartData: items.map(item => ({
+          x: item.Month,
+          y: item.ActiveUsers,
+        })),
+      });
+    }
+
+### Chart Type Options
+
+| Chart Type | SPFx Version | Best For |
+|-----------|-------------|----------|
+| Line | 1.19+ | Trends over time |
+| Bar | 1.20+ | Comparing categories |
+| Pie | 1.20+ | Part-to-whole relationships |
+| Donut | 1.20+ | Percentages with center label |
+
+**Pro tip:** Use the "callout" style on the last data point to highlight the most recent value. Set the card size to "large" for charts \u2014 they need the extra space to be readable.
+
+## ACE 3: Interactive Task List Card
+
+This is the most complex ACE \u2014 it reads data from a SharePoint list, displays a summary on the Card View, and opens an interactive Quick View where users can update tasks.
+
+### Card View: Task Summary
+
+Show a count of pending tasks on the card:
+
+    export class CardView extends BaseComponentsCardView<
+      ITaskListProps, ITaskListState
+    > {
+      public get cardViewParameters(): ComponentsCardViewParameters {
+        const pendingCount = this.state.tasks.filter(
+          t => t.Status !== "Completed"
+        ).length;
+
+        return BasicCardView({
+          cardBar: {
+            componentName: "cardBar",
+            title: "My Tasks",
+          },
+          header: {
+            componentName: "text",
+            text: pendingCount + " tasks pending",
+          },
+          body: {
+            componentName: "text",
+            text: "Click to view and manage your tasks",
+          },
+          footer: {
+            componentName: "cardButton",
+            title: "View Tasks",
+            style: "positive",
+            action: {
+              type: "QuickView",
+              parameters: { view: "TASK_LIST_VIEW" },
+            },
+          },
+        });
+      }
+    }
+
+### Quick View: Task List with Adaptive Card JSON
+
+Quick Views use Adaptive Card JSON templates to render interactive content.
+
+**File:** src/adaptiveCardExtensions/taskList/quickView/template/TaskListTemplate.json
+
+    {
+      "type": "AdaptiveCard",
+      "version": "1.5",
+      "body": [
+        {
+          "type": "TextBlock",
+          "text": "My Tasks",
+          "weight": "Bolder",
+          "size": "Large"
+        },
+        {
+          "type": "Container",
+          "items": [
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    { "type": "TextBlock", "weight": "Bolder", "wrap": true }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                    { "type": "TextBlock", "weight": "Bolder" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+### Quick View Class
+
+Wire the template to your data:
+
+**File:** src/adaptiveCardExtensions/taskList/quickView/TaskListQuickView.ts
+
+    import { BaseAdaptiveCardQuickView } from
+      "@microsoft/sp-adaptive-card-extension-base";
+    import template from "./template/TaskListTemplate.json";
+
+    export class TaskListQuickView extends BaseAdaptiveCardQuickView<
+      ITaskListProps, ITaskListState
+    > {
+      public get data() {
+        return {
+          tasks: this.state.tasks.map(task => ({
+            title: task.Title,
+            status: task.Status,
+            dueDate: new Date(task.DueDate).toLocaleDateString(),
+            id: task.Id,
+          })),
+        };
+      }
+
+      public get template() {
+        return template;
+      }
+    }
+
+### Register the Quick View
+
+In your main ACE class, register the Quick View so the Card View can reference it:
+
+    import { TaskListQuickView } from "./quickView/TaskListQuickView";
+
+    protected onInit(): Promise<void> {
+      this.quickViewNavigator.register(
+        "TASK_LIST_VIEW",
+        () => new TaskListQuickView()
+      );
+      return this.fetchTasks();
+    }
+
+### HTML Quick Views (SPFx 1.20+)
+
+Starting with SPFx 1.20, you can use **HTML instead of Adaptive Card JSON** for Quick Views. This unlocks full layout control and React integration:
+
+    import { BaseHTMLQuickView } from
+      "@microsoft/sp-adaptive-card-extension-base";
+
+    export class TaskHTMLQuickView extends BaseHTMLQuickView<
+      ITaskListProps, ITaskListState
+    > {
+      public render(): void {
+        this.domElement.innerHTML = this.state.tasks
+          .map(task => "<div>" + task.Title + "</div>")
+          .join("");
+      }
+    }
+
+**When to use HTML vs Adaptive Card Quick Views:**
+
+| Feature | Adaptive Card JSON | HTML Quick View |
+|---------|-------------------|-----------------|
+| Complexity | Simple forms and lists | Complex layouts |
+| Framework support | None \u2014 JSON only | React, vanilla JS |
+| Styling | Limited | Full CSS control |
+| SPFx version | 1.14+ | 1.20+ |
+| Mobile rendering | Native on all platforms | Web rendering |
+| Best for | Standard data display | Custom visualizations |
+
+> **Recommendation:** Use Adaptive Card JSON for standard scenarios (lists, forms, details). Use HTML Quick Views when you need custom styling, charts, or React components that Adaptive Cards cannot support.
+
+## Fetching Data with Microsoft Graph
+
+ACEs are powerful when connected to [Microsoft Graph](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026). Here is a pattern for fetching the current user's tasks from Planner:
+
+    import { MSGraphClientV3 } from "@microsoft/sp-http";
+
+    private async fetchPlannerTasks(): Promise<void> {
+      const graphClient: MSGraphClientV3 = await this.context
+        .msGraphClientFactory.getClient("3");
+
+      const response = await graphClient
+        .api("/me/planner/tasks")
+        .select("title,percentComplete,dueDateTime")
+        .top(10)
+        .get();
+
+      this.setState({
+        tasks: response.value.map(task => ({
+          Title: task.title,
+          Status: task.percentComplete === 100 ? "Completed" : "In Progress",
+          DueDate: task.dueDateTime,
+        })),
+      });
+    }
+
+**Required permission** (in package-solution.json):
+
+    { "resource": "Microsoft Graph", "scope": "Tasks.Read" }
+
+This pattern works for any Graph endpoint \u2014 email counts, Teams activity, calendar events, or user analytics. See my [Graph API examples guide](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026) for 10 more patterns.
+
+## Deployment to Viva Connections
+
+### Build and Package
+
+    gulp bundle --ship
+    gulp package-solution --ship
+
+### Deploy to App Catalog
+
+1. Upload the .sppkg to your tenant App Catalog
+2. Check "Make this solution available to all sites"
+3. Click Deploy
+4. If the ACE uses Graph API, approve the API permissions in the SharePoint Admin Center
+
+### Add to the Dashboard
+
+1. Go to your Viva Connections home site
+2. Click the gear icon, then select **Manage dashboard**
+3. Click **+ Add a card**
+4. Find your ACE in the list and click it
+5. Configure properties in the property pane
+6. Set the card size (small, medium, or large)
+7. Click **Publish**
+
+### Audience Targeting
+
+Target ACEs to specific groups so different departments see different cards:
+
+1. In the dashboard editor, select your ACE
+2. Click the audience targeting icon
+3. Select Microsoft 365 groups or security groups
+4. Only members of those groups will see the card
+
+## Performance Tips
+
+| Tip | Why |
+|-----|-----|
+| Use onInit() for data fetching, not the Card View | Card View renders on every dashboard visit \u2014 keep it fast |
+| Cache API responses | Use session storage for data that does not change frequently |
+| Limit list queries with .top() and .select() | Reduce payload size and avoid throttling |
+| Use medium card size for text, large for charts | Charts need space to be readable |
+| Batch Graph API calls | Reduce HTTP overhead \u2014 see [batching example](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026) |
+
+## Common Issues
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| ACE does not appear in dashboard | Not deployed tenant-wide | Check "Make available to all sites" in App Catalog |
+| Quick View does not open | View ID mismatch | Ensure the QuickView parameters.view matches the registered ID |
+| Access denied on Graph calls | Permissions not approved | Approve API permissions in SharePoint Admin Center |
+| Card shows error message | Unhandled error in onInit() | Wrap data fetching in try/catch |
+| Chart data does not render | Wrong card size | Set cardSize to "Large" for data visualization cards |
+| ACE not visible on mobile | Cache issue | Clear the Viva Connections mobile app cache |
+
+## Frequently Asked Questions
+
+**Q: Can I use React in ACE Quick Views?**
+
+Yes, starting with SPFx 1.20. Use the BaseHTMLQuickView class and render your React components into this.domElement \u2014 the same pattern as SPFx web parts. For simple data display, Adaptive Card JSON templates are easier to maintain.
+
+**Q: Do ACEs work outside Viva Connections?**
+
+ACEs are designed for Viva Connections dashboards. However, since SPFx 1.18, you can also add ACEs to modern SharePoint pages using the Dashboard for Viva Connections web part. They are not standalone web parts, though.
+
+**Q: What is the maximum number of ACEs on a dashboard?**
+
+There is no hard limit, but Microsoft recommends 20-30 cards for optimal performance. Each card makes its own API calls during initialization, so too many cards can slow down the dashboard load time.
+
+**Q: Can end users personalize their dashboard?**
+
+Yes! SPFx 1.21 introduced card personalization. When enabled by admins, users can add, remove, and reorder ACEs on their personal view of the dashboard without affecting other users.
+
+**Q: How do I debug ACEs locally?**
+
+Run gulp serve (or heft start in newer tooling) and navigate to the hosted Workbench. Add the Dashboard for Viva Connections web part and configure it in Preview mode. For SPFx 1.21+, the new debugging toolbar on SharePoint pages also supports ACEs.
+
+## What is Next
+
+You have built 3 ACEs covering the most common patterns \u2014 static content, data visualization, and interactive list data. The same architecture works for any dashboard scenario: IT ticket counts, HR announcements, sales KPIs, or company event feeds.
+
+For more SPFx development, check out my guides on [building web parts with CRUD operations](/blog/spfx-web-part-crud-operations-complete-guide-2026) and [SharePoint column formatting with JSON](/blog/sharepoint-column-formatting-json-complete-guide). To connect your ACEs to external data, see my [Microsoft Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+`,
+    date: '2026-03-05',
+    displayDate: 'March 5, 2026',
+    readTime: '17 min read',
+    category: 'Microsoft 365',
+    tags: ['viva-connections', 'adaptive-cards', 'spfx', 'ace', 'dashboard', 'microsoft-365'],
+  },
+  {
     id: '13',
     slug: 'microsoft-graph-api-10-practical-examples-sharepoint-2026',
     title: 'Microsoft Graph API: 10 Practical Examples for SharePoint Developers (2026)',
