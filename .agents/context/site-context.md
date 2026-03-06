@@ -38,6 +38,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 
 | sharepoint csp enforcement developer guide | ✅ Blog exists |
 | pnp powershell sharepoint admin scripts | ✅ Blog exists |
+| sharepoint site scripts site designs provisioning | ✅ Blog exists |
 
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
@@ -49,4 +50,6 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 7. "SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)" ✅ Published
 8. "SharePoint Online CSP Enforcement: The SPFx Developer Survival Guide (2026)" ✅ Published
 9. "PnP PowerShell for SharePoint Online: 25 Scripts Every Admin Needs (2026)" ✅ Published
+10. "SharePoint Site Scripts & Site Designs: Automate Site Provisioning (2026)" ✅ Published
+
 
