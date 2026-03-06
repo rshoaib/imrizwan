@@ -14,6 +14,311 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '17',
+    slug: 'sharepoint-embedded-build-document-management-app-2026',
+    title: 'SharePoint Embedded: Build Document Management into Any App (2026)',
+    excerpt:
+      'Use SharePoint Embedded to add enterprise document management, collaboration, and AI to your custom applications \u2014 without exposing the SharePoint UI. Complete guide with React + Node.js code.',
+    image: '/images/blog/sharepoint-embedded-guide.png',
+    content: `
+## What Is SharePoint Embedded?
+
+SharePoint Embedded is a **headless, API-only** version of SharePoint document management. It lets you store, manage, and collaborate on files inside your own custom application \u2014 while Microsoft 365 handles storage, compliance, security, and AI behind the scenes.
+
+Unlike traditional SharePoint Online, users never see the SharePoint interface. Your application owns the entire user experience. Files are stored in **File Storage Containers** within the customer\u2019s Microsoft 365 tenant, so data governance stays intact.
+
+Think of it this way:
+
+| Feature | SharePoint Online | SharePoint Embedded |
+|---------|------------------|-------------------|
+| User interface | SharePoint UI (sites, pages, lists) | Your custom UI |
+| Storage location | Customer\u2019s M365 tenant | Customer\u2019s M365 tenant |
+| API access | Microsoft Graph + SharePoint REST | Microsoft Graph only |
+| Collaboration | Co-authoring in Office apps | Co-authoring in Office apps |
+| Compliance | Microsoft Purview | Microsoft Purview |
+| AI / Copilot | Copilot for M365 | Embedded AI Agent SDK |
+| Billing model | Included in M365 license | Consumption-based (metered) |
+
+**Who is this for?** Independent software vendors (ISVs) building SaaS products, and enterprise developers building line-of-business apps that need document management without the SharePoint chrome.
+
+## When Should You Use SharePoint Embedded?
+
+Not every project needs SharePoint Embedded. Use this decision matrix:
+
+| Scenario | Best Option | Why |
+|----------|------------|-----|
+| Internal team site with pages and lists | SharePoint Online | Full UI, no development needed |
+| Custom app that stores user documents | **SharePoint Embedded** | Headless API, your UI |
+| SPFx web part on a SharePoint page | SharePoint Online + SPFx | SPFx is designed for SharePoint pages |
+| SaaS product with per-tenant file storage | **SharePoint Embedded** | Isolated containers per customer tenant |
+| Simple file upload/download from M365 | OneDrive API (Graph) | Lighter integration, no Container Type setup |
+| Document-heavy app needing compliance and AI | **SharePoint Embedded** | Purview compliance + Embedded AI Agent |
+
+If your app needs **enterprise-grade document management** with compliance, versioning, co-authoring, and AI \u2014 but you do not want the SharePoint UI \u2014 SharePoint Embedded is the right choice.
+
+## Architecture Overview
+
+SharePoint Embedded uses a **provider/consumer model**:
+
+1. **Provider tenant** \u2014 Your organization (the developer). You register your app and create a Container Type here.
+2. **Consumer tenant** \u2014 Your customer\u2019s Microsoft 365 tenant. File Storage Containers live here, so customer data stays in their tenant.
+3. **Microsoft Graph API** \u2014 All operations (CRUD, permissions, sharing) go through Graph.
+
+The key components:
+
+| Component | Purpose |
+|-----------|---------|
+| **Entra ID App** | Authentication and authorization via OAuth 2.0 |
+| **Container Type** | A template that defines what your app can store (registered once) |
+| **File Storage Container** | The actual storage instance in the consumer tenant |
+| **Microsoft Graph** | The API layer for all file operations |
+
+### Authentication Flow
+
+Your app authenticates with Microsoft Entra ID and obtains tokens to call Microsoft Graph:
+
+    1. User signs in via MSAL (Microsoft Authentication Library)
+    2. App requests Graph API token with FileStorageContainer.Selected scope
+    3. App calls Graph endpoints to manage containers and files
+    4. Graph returns data from the consumer tenant
+
+## Step-by-Step: Create Your First Container
+
+### Prerequisites
+
+- Microsoft 365 developer tenant (or any M365 tenant with admin access)
+- Node.js v18 or later
+- Visual Studio Code with the SharePoint Embedded extension
+
+### Step 1: Register an Entra ID Application
+
+1. Go to [entra.microsoft.com](https://entra.microsoft.com) and navigate to **App registrations**
+2. Click **New registration**
+3. Name: "My Document App"
+4. Supported account types: "Accounts in any organizational directory" (multi-tenant)
+5. Redirect URI: Single-page application (SPA), \\\`http://localhost:3000\\\`
+6. Click **Register**
+
+Save your **Application (Client) ID** and **Directory (Tenant) ID**.
+
+### Step 2: Configure API Permissions
+
+In your app registration, go to **API permissions** and add:
+
+| API | Permission | Type |
+|-----|-----------|------|
+| Microsoft Graph | FileStorageContainer.Selected | Delegated |
+| Microsoft Graph | FileStorageContainer.Selected | Application |
+| Microsoft Graph | Files.ReadWrite.All | Delegated |
+
+Click **Grant admin consent** for your tenant.
+
+### Step 3: Create a Container Type
+
+Use the SharePoint Embedded VS Code extension or call the API directly:
+
+    POST https://graph.microsoft.com/v1.0/storage/fileStorageContainers
+    Content-Type: application/json
+
+    {
+      "displayName": "My Document App Container",
+      "description": "Stores documents for My Document App",
+      "containerTypeId": "{your-container-type-id}"
+    }
+
+> **Tip:** The VS Code extension simplifies this process significantly. Install it from the Extensions marketplace and follow the guided setup.
+
+### Step 4: Register the Container Type in the Consumer Tenant
+
+For multi-tenant apps, the consumer tenant admin must consent to your Container Type. This is a one-time setup per customer:
+
+    POST https://{consumer-tenant}.sharepoint.com/_api/v2.1/storageContainerTypes/{containerTypeId}/applicationPermissions
+
+The admin consent flow ensures the customer explicitly approves your app\u2019s access to their tenant.
+
+## Building the Application: React + Node.js
+
+### Backend: Node.js REST API
+
+Create a simple Express server that handles authentication and Graph API calls:
+
+    const express = require('express');
+    const { ConfidentialClientApplication } = require('@azure/msal-node');
+
+    const msalConfig = {
+      auth: {
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        authority: \\\`https://login.microsoftonline.com/\\\${process.env.TENANT_ID}\\\`
+      }
+    };
+
+    const cca = new ConfidentialClientApplication(msalConfig);
+
+    app.get('/api/containers', async (req, res) => {
+      const tokenResponse = await cca.acquireTokenByClientCredential({
+        scopes: ['https://graph.microsoft.com/.default']
+      });
+
+      const response = await fetch(
+        'https://graph.microsoft.com/v1.0/storage/fileStorageContainers',
+        {
+          headers: {
+            'Authorization': \\\`Bearer \\\${tokenResponse.accessToken}\\\`
+          }
+        }
+      );
+
+      const data = await response.json();
+      res.json(data.value);
+    });
+
+### Frontend: React SPA with MSAL
+
+Use \\\`@azure/msal-react\\\` for user authentication:
+
+    import { useMsal } from '@azure/msal-react';
+    import { InteractionRequiredAuthError } from '@azure/msal-browser';
+
+    function DocumentList() {
+      const { instance, accounts } = useMsal();
+      const [files, setFiles] = useState([]);
+
+      const getFiles = async (containerId) => {
+        const tokenRequest = {
+          scopes: ['FileStorageContainer.Selected', 'Files.ReadWrite.All'],
+          account: accounts[0]
+        };
+
+        const response = await instance.acquireTokenSilent(tokenRequest);
+
+        const graphResponse = await fetch(
+          \\\`https://graph.microsoft.com/v1.0/storage/fileStorageContainers/\\\${containerId}/drive/root/children\\\`,
+          {
+            headers: {
+              'Authorization': \\\`Bearer \\\${response.accessToken}\\\`
+            }
+          }
+        );
+
+        const data = await graphResponse.json();
+        setFiles(data.value);
+      };
+
+      return (
+        <ul>
+          {files.map(file => (
+            <li key={file.id}>{file.name} - {file.size} bytes</li>
+          ))}
+        </ul>
+      );
+    }
+
+This gives you a fully custom document browser \u2014 no SharePoint UI visible to the user.
+
+## The Embedded AI Agent SDK
+
+**New in 2026:** SharePoint Embedded now includes an **AI Agent SDK** that adds Retrieval-Augmented Generation (RAG) to your app. The agent can answer questions from documents stored in your containers \u2014 without you building a vector database or custom AI pipeline.
+
+### How It Works
+
+1. Install the SDK: \\\`npm install @microsoft/sharepoint-embedded-agent\\\`
+2. Initialize the agent with your container ID
+3. Send natural language queries
+4. The agent returns answers grounded in your stored documents
+
+### Example Integration
+
+    import { SharePointEmbeddedAgent } from '@microsoft/sharepoint-embedded-agent';
+
+    const agent = new SharePointEmbeddedAgent({
+      containerId: 'your-container-id',
+      accessToken: graphAccessToken
+    });
+
+    const answer = await agent.ask(
+      'What is our return policy?'
+    );
+
+    console.log(answer.text);
+    // "Based on the Returns Policy document,
+    //  customers can return items within 30 days..."
+
+    console.log(answer.citations);
+    // [{ documentName: 'Returns Policy.docx',
+    //    url: '...' }]
+
+This is a game-changer for document-heavy apps. Instead of building custom search and AI pipelines, you get enterprise-grade RAG out of the box.
+
+For more on building AI assistants for Microsoft 365, see my [Copilot Studio + SharePoint guide](/blog/copilot-studio-sharepoint-ai-assistants-guide-2026).
+
+## Pricing and Billing
+
+SharePoint Embedded uses **consumption-based billing** tied to an Azure subscription:
+
+| Metric | Description |
+|--------|-------------|
+| Storage | Per GB stored per month |
+| API calls | Per transaction (CRUD operations) |
+| AI Agent usage | Per query (when using the Embedded Agent SDK) |
+
+This is **separate from Microsoft 365 licensing**. Your customers need an M365 tenant for the storage infrastructure, but SharePoint Embedded costs are billed to your Azure subscription as the provider.
+
+> **Key benefit for ISVs:** You control the billing relationship. Your customers do not need additional M365 licenses for SharePoint Embedded functionality \u2014 they just need a base M365 tenant.
+
+## Best Practices
+
+| Practice | Why |
+|----------|-----|
+| Use the VS Code extension for setup | Simplifies Container Type registration and local development |
+| Request minimum Graph permissions | Follow least-privilege for security |
+| Implement proper token caching | Avoid hitting Entra ID rate limits |
+| Use delta queries for sync scenarios | Reduces API calls for change detection |
+| Enable Purview labels on containers | Ensures compliance from day one |
+| Test with multiple consumer tenants | Catches permission and consent issues early |
+
+## Frequently Asked Questions
+
+**Q: Do my customers need SharePoint Online licenses?**
+
+Your customers need a Microsoft 365 tenant, but SharePoint Embedded costs are billed separately through your Azure subscription. They do not need individual SharePoint Online licenses for content stored in Embedded containers.
+
+**Q: Can I migrate existing SharePoint document libraries to Embedded containers?**
+
+There is no direct migration tool. You would need to copy files programmatically using the Graph API. For existing SharePoint-heavy workflows, consider whether SPFx extensions on SharePoint Online might be a better fit \u2014 see my [SPFx web part guide](/blog/spfx-web-part-crud-operations-complete-guide-2026).
+
+**Q: How does SharePoint Embedded handle permissions?**
+
+Permissions are managed through the Graph API. You set permissions at the container level and at individual file/folder levels. The Entra ID app registration controls which apps can access which containers.
+
+**Q: Can I use SharePoint Embedded with Power Automate?**
+
+Yes. Files stored in Embedded containers can trigger Power Automate flows through Graph API subscriptions (webhooks). For Power Automate integration patterns, see my [document workflows guide](/blog/power-automate-sharepoint-document-workflows-2026).
+
+**Q: Is SharePoint Embedded available in government clouds?**
+
+SharePoint Embedded is currently available in commercial Microsoft 365 tenants. Government cloud (GCC, GCC High, DoD) support is on the roadmap but not yet generally available as of March 2026.
+
+## What to Build Next
+
+SharePoint Embedded opens up document management for any application \u2014 from SaaS products to internal LOB apps. The combination of headless storage, Purview compliance, and the new AI Agent SDK makes it the most complete document platform available to developers.
+
+Start with these next steps:
+
+1. **Set up a dev tenant** \u2014 Use the [Microsoft 365 Developer Program](https://developer.microsoft.com/microsoft-365/dev-program) for a free sandbox
+2. **Install the VS Code extension** \u2014 The guided setup gets you running in minutes
+3. **Build a proof of concept** \u2014 A React SPA with document upload/download is a great starting point
+4. **Explore the AI Agent SDK** \u2014 Add document Q&A to your app with minimal code
+
+For more Microsoft 365 development, explore my guides on [Microsoft Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026), [Viva Connections Adaptive Card Extensions](/blog/viva-connections-adaptive-card-extensions-build-guide-2026), and [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026).
+`,
+    date: '2026-03-06',
+    displayDate: 'March 6, 2026',
+    readTime: '15 min read',
+    category: 'SharePoint',
+    tags: ['sharepoint-embedded', 'microsoft-graph', 'react', 'node-js', 'document-management', 'ai-agent'],
+  },
+  {
     id: '16',
     slug: 'spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026',
     title: 'SPFx 1.23: New CLI Replacing Yeoman + Heft Build System Migration Guide (2026)',
