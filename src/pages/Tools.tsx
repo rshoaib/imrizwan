@@ -42,6 +42,22 @@ export const tools = [
     emoji: '⚡',
     tags: ['SharePoint', 'REST API', 'OData'],
   },
+  {
+    name: 'Site Script Generator',
+    slug: 'site-script-generator',
+    description:
+      'Build SharePoint site scripts visually — add provisioning actions and export JSON with PowerShell deployment commands.',
+    emoji: '🏗️',
+    tags: ['SharePoint', 'Provisioning', 'JSON'],
+  },
+  {
+    name: 'PnP PowerShell Generator',
+    slug: 'pnp-script-generator',
+    description:
+      'Generate ready-to-run PnP PowerShell scripts for SharePoint Online — lists, permissions, bulk operations, and more.',
+    emoji: '🔧',
+    tags: ['PowerShell', 'PnP', 'Automation'],
+  },
 ]
 
 export default function Tools() {

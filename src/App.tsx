@@ -12,6 +12,8 @@ import JsonColumnFormatter from './pages/JsonColumnFormatter'
 import CamlQueryBuilder from './pages/CamlQueryBuilder'
 import PermissionMatrix from './pages/PermissionMatrix'
 import RestApiBuilder from './pages/RestApiBuilder'
+import SiteScriptGenerator from './pages/SiteScriptGenerator'
+import PnPScriptGenerator from './pages/PnPScriptGenerator'
 import Tasks from './pages/Tasks'
 import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
@@ -34,6 +36,8 @@ function App() {
           <Route path="/tools/caml-query-builder" element={<CamlQueryBuilder />} />
           <Route path="/tools/permission-matrix" element={<PermissionMatrix />} />
           <Route path="/tools/rest-api-builder" element={<RestApiBuilder />} />
+          <Route path="/tools/site-script-generator" element={<SiteScriptGenerator />} />
+          <Route path="/tools/pnp-script-generator" element={<PnPScriptGenerator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
           <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />
