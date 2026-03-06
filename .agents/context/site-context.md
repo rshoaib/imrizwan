@@ -43,4 +43,5 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 4. "Power Automate + SharePoint: 7 Document Workflows That Save Hours (2026)" ✅ Published
 5. "Copilot Studio: Build AI Assistants for SharePoint Sites" ✅ Published
 6. "SharePoint Embedded: Build Document Management into Any App (2026)" ✅ Published
+7. "SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)" ✅ Published
 

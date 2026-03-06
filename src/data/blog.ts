@@ -14,6 +14,291 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '19',
+    slug: 'sharepoint-online-csp-enforcement-spfx-developer-guide-2026',
+    title: 'SharePoint Online CSP Enforcement: The SPFx Developer Survival Guide (2026)',
+    excerpt:
+      'SharePoint Online now enforces Content Security Policy \u2014 and it will break your SPFx solutions if you are not prepared. Here is everything you need to audit, fix, and future-proof your code.',
+    image: '/images/blog/sharepoint-csp-enforcement-guide.png',
+    content: `
+## SharePoint Online Is Enforcing CSP \u2014 And It Will Break Things
+
+Starting **March 1, 2026**, SharePoint Online enforces a strict Content Security Policy (CSP) on all modern pages. Any script that is not explicitly trusted will be **blocked** \u2014 not just logged, but silently killed.
+
+If you maintain SPFx web parts, extensions, or custom solutions that load external scripts, inject inline JavaScript, or depend on third-party CDNs, this change affects you directly.
+
+This guide gives you everything you need: what changed, how to audit your solutions, and the exact steps to fix every common violation.
+
+> **Quick test:** Append \`?csp=enforce\` to any modern SharePoint page URL right now. If your solution breaks, you have work to do. Keep reading.
+
+---
+
+## What Is Content Security Policy (CSP)?
+
+CSP is a browser-level security mechanism. The server sends an HTTP header that tells the browser which script sources are allowed. Everything else is blocked.
+
+| Directive | What It Controls | Example |
+|-----------|-----------------|---------|
+| \`script-src\` | JavaScript execution | Which domains can serve scripts |
+| \`style-src\` | CSS loading | Which domains can serve stylesheets |
+| \`connect-src\` | Network requests | Which APIs your code can call |
+| \`img-src\` | Image loading | Which domains can serve images |
+
+SharePoint Online\u2019s CSP header restricts \`script-src\` to trusted sources. If your script is not on the approved list, the browser refuses to execute it.
+
+---
+
+## Timeline: What Happened and What Is Coming
+
+| Date | Event | Impact |
+|------|-------|--------|
+| **September 2025** | CSP enabled in report-only mode | Violations logged, nothing blocked |
+| **March 1, 2026** | CSP enforcement begins | Non-compliant scripts blocked |
+| **June 1, 2026** | Grace period ends | Delay option expires |
+
+### Can You Delay Enforcement?
+
+Yes, but only until June 1, 2026. Run this PowerShell command:
+
+\`\`\`powershell
+Set-SPOTenant -DelayContentSecurityPolicyEnforcement $true
+\`\`\`
+
+This buys you 90 days. After June 1, enforcement is mandatory for all tenants. **Use this time to fix, not to wait.**
+
+---
+
+## Who Is Affected?
+
+Not every SPFx solution will break. Here is a quick decision matrix:
+
+| Your Scenario | At Risk? | Action Required |
+|---------------|:--------:|-----------------|
+| SPFx web part with all code bundled in .sppkg | \u2705 Safe | None \u2014 ClientSideAssets are trusted by default |
+| SPFx loading scripts from a custom CDN | \u26A0\uFE0F At Risk | Register CDN domain as trusted source |
+| SPFx using \`SPComponentLoader.loadScript()\` from external URLs | \u26A0\uFE0F At Risk | Register the external domain |
+| Inline JavaScript in modern page HTML | \u274C Will Break | Refactor to external bundled scripts |
+| Script Editor web parts (classic pages) | \u274C Will Break | Migrate to SPFx or register domain |
+| Third-party SPFx solutions from vendors | \u26A0\uFE0F Check | Verify vendor has updated their CDN config |
+
+---
+
+## How to Audit Your Tenant Right Now
+
+### Step 1: Test CSP Enforcement on a Page
+
+Append \`?csp=enforce\` to any modern SharePoint page URL:
+
+\`\`\`
+https://contoso.sharepoint.com/sites/ProjectHub/SitePages/Home.aspx?csp=enforce
+\`\`\`
+
+Open the browser\u2019s DevTools console (F12). Look for errors like:
+
+\`\`\`
+Refused to load the script 'https://cdn.example.com/widget.js'
+because it violates the Content Security Policy directive: "script-src ..."
+\`\`\`
+
+Every error is a script that will stop working when enforcement goes live.
+
+### Step 2: Check CSP Violations in Microsoft Purview
+
+CSP violations are logged in the **Microsoft Purview audit logs**:
+
+1. Go to [compliance.microsoft.com](https://compliance.microsoft.com)
+2. Navigate to **Audit** > **Search**
+3. Filter by activity type: \`ContentSecurityPolicyViolation\`
+4. Review the source URLs that triggered violations
+
+This gives you a tenant-wide view of every page and solution that will be affected.
+
+### Step 3: Inventory Your SPFx Solutions
+
+Use PnP PowerShell to list all SPFx packages and their CDN configuration:
+
+\`\`\`powershell
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/appcatalog" -Interactive
+
+# List all SPFx solutions in the tenant app catalog
+Get-PnPApp -Scope Tenant | Select-Object Title, Deployed, AppCatalogVersion |
+  Format-Table -AutoSize
+
+# Check each solution's manifest for external script references
+Get-PnPApp -Scope Tenant | ForEach-Object {
+  Write-Host "--- \$($_.Title) ---"
+  # Review the .sppkg contents for cdnBasePath or external URLs
+}
+\`\`\`
+
+---
+
+## The 4 Most Common Violations (and How to Fix Each)
+
+### Violation 1: External CDN for SPFx Bundles
+
+**The problem:** Your SPFx solution hosts its JavaScript bundles on a custom CDN (Azure Blob Storage, CloudFront, etc.) instead of packaging them in the .sppkg file.
+
+**The fix:** Register the CDN domain as a trusted script source.
+
+**Option A: SharePoint Admin Center**
+
+1. Go to the SharePoint Admin Center
+2. Navigate to **Settings** > **Advanced** > **Script Sources**
+3. Add your CDN domain: \`https://cdn.yourcompany.com\`
+
+**Option B: PowerShell**
+
+\`\`\`powershell
+# View current trusted sources
+Get-SPOTenantContentSecurityPolicy
+
+# Add your CDN domain
+Add-SPOTenantContentSecurityPolicySource -Source "https://cdn.yourcompany.com"
+
+# Verify it was added
+Get-SPOTenantContentSecurityPolicy
+\`\`\`
+
+### Violation 2: Dynamic Script Loading via DOM Injection
+
+**The problem:** Your code creates \`<script>\` elements and appends them to the DOM at runtime:
+
+\`\`\`typescript
+// BAD: This will be blocked by CSP
+const script = document.createElement('script');
+script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY';
+document.head.appendChild(script);
+\`\`\`
+
+**The fix:** Use \`SPComponentLoader\` instead \u2014 it is the SPFx-approved way to load external scripts:
+
+\`\`\`typescript
+// GOOD: SPFx-approved dynamic loading
+import { SPComponentLoader } from '@microsoft/sp-loader';
+
+await SPComponentLoader.loadScript(
+  'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY'
+);
+\`\`\`
+
+**Important:** You still need to register \`https://maps.googleapis.com\` as a trusted source. \`SPComponentLoader\` does not bypass CSP \u2014 it just uses the approved loading mechanism.
+
+### Violation 3: Inline JavaScript in HTML
+
+**The problem:** Event handlers or inline scripts embedded directly in HTML:
+
+\`\`\`html
+<!-- BAD: Inline event handlers blocked by CSP -->
+<button onclick="handleClick()">Click me</button>
+
+<!-- BAD: Inline script tags blocked by CSP -->
+<script>
+  var config = { apiKey: 'abc123' };
+</script>
+\`\`\`
+
+**The fix:** Move all JavaScript into your bundled TypeScript/JavaScript files:
+
+\`\`\`typescript
+// GOOD: Event binding in your SPFx component
+public render(): void {
+  this.domElement.innerHTML = '<button id="myBtn">Click me</button>';
+  this.domElement.querySelector('#myBtn')
+    ?.addEventListener('click', this.handleClick.bind(this));
+}
+\`\`\`
+
+If you are using React (which most modern SPFx solutions do), this is already how you work. React event handlers are not inline scripts \u2014 they are JavaScript function references.
+
+### Violation 4: Third-Party Widget Scripts
+
+**The problem:** Your solution loads analytics, chat widgets, or mapping libraries from external domains.
+
+**The fix:** Register each domain as a trusted source, then load via \`SPComponentLoader\`:
+
+\`\`\`powershell
+# Common third-party domains to register
+Add-SPOTenantContentSecurityPolicySource -Source "https://www.googletagmanager.com"
+Add-SPOTenantContentSecurityPolicySource -Source "https://maps.googleapis.com"
+Add-SPOTenantContentSecurityPolicySource -Source "https://cdn.jsdelivr.net"
+\`\`\`
+
+> **Warning:** Do not add wildcard entries like \`https://*.com\`. SharePoint blocks overly permissive wildcards. Be specific about each domain you trust.
+
+---
+
+## Best Practices for CSP-Compliant SPFx Development
+
+| Practice | Why |
+|----------|-----|
+| Bundle everything in .sppkg | ClientSideAssets are auto-trusted \u2014 zero CSP config needed |
+| Use \`SPComponentLoader\` for external scripts | Only approved loading mechanism in SPFx |
+| Never inject \`<script>\` tags via DOM | Blocked by CSP, even if the source domain is trusted |
+| Audit with \`?csp=enforce\` during development | Catch violations before they reach production |
+| Keep your trusted sources list minimal | Fewer domains = smaller attack surface |
+| Check vendor CDN configurations | Third-party SPFx solutions may need their CDN registered |
+
+---
+
+## The Bigger Picture: SharePoint Security in 2026
+
+CSP enforcement is part of a broader security push in SharePoint Online:
+
+- **Script-src restrictions** block untrusted JavaScript (this article)
+- **SharePoint Embedded** isolates ISV document storage from the main tenant
+- **Microsoft Purview** integration enforces compliance labels on all content
+- **Copilot governance** ensures AI agents operate within security boundaries
+
+If you are building for the Microsoft 365 ecosystem, security-first development is no longer optional \u2014 it is the default.
+
+For more on the 2026 SharePoint developer landscape, see my guides on [SPFx 1.23 and the new Heft build system](/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026) and [SharePoint Embedded for document management](/blog/sharepoint-embedded-build-document-management-app-2026).
+
+---
+
+## Frequently Asked Questions
+
+**Will my existing SPFx solutions break on March 1, 2026?**
+Only if they load scripts from external domains that are not registered as trusted sources. Solutions that bundle all code in the .sppkg file are safe. Test with \`?csp=enforce\` to be sure.
+
+**How do I find which external scripts my SPFx solution loads?**
+Open the page with your solution in the browser, go to DevTools > Network tab, filter by "JS", and look for any scripts loaded from domains other than \`*.sharepoint.com\`. Those are the ones you need to register.
+
+**Can I use eval() or new Function() in SPFx with CSP enabled?**
+No. CSP blocks \`eval()\`, \`new Function()\`, and similar dynamic code execution by default. If your code (or a library you depend on) uses these, you will need to find an alternative or replace the library.
+
+**Does CSP affect classic SharePoint pages?**
+CSP enforcement currently applies to **modern pages** only. Classic pages are not affected in the March 2026 rollout. However, Microsoft continues to encourage migration to modern experiences.
+
+**How many trusted script sources can I add?**
+SharePoint supports up to **300 trusted source entries**. You can use subdomain wildcards (e.g., \`https://*.yourcompany.com\`) to consolidate entries, but root-level wildcards are blocked.
+
+---
+
+## Your Action Plan
+
+1. **This week:** Test every modern page with \`?csp=enforce\` appended to the URL
+2. **Review violations:** Check the Purview audit logs for \`ContentSecurityPolicyViolation\` events
+3. **Register trusted sources:** Add required CDN domains via the SharePoint Admin Center or PowerShell
+4. **Refactor inline scripts:** Move all JavaScript into bundled files and use \`SPComponentLoader\` for dynamic loading
+5. **Test again:** Verify with \`?csp=enforce\` that all violations are resolved
+
+Need help building or debugging SPFx solutions? Check out these tools:
+- [GUID Generator](/tools/guid-generator) \u2014 generate GUIDs for SPFx component manifests
+- [SharePoint REST API Builder](/tools/rest-api-builder) \u2014 build and test API calls visually
+- [PnP PowerShell Generator](/tools/pnp-script-generator) \u2014 generate ready-to-run admin scripts
+- [CAML Query Builder](/tools/caml-query-builder) \u2014 build complex queries without memorizing syntax
+
+For the full SPFx migration story, read my guide on [SPFx 1.23: New CLI + Heft Build System Migration](/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026).
+`,
+    date: '2026-03-06',
+    displayDate: 'March 6, 2026',
+    readTime: '12 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'CSP', 'SPFx', 'Security', 'PowerShell'],
+  },
+
+  {
     id: '18',
     slug: 'sharepoint-rest-api-cheat-sheet-every-endpoint-2026',
     title: 'SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)',
