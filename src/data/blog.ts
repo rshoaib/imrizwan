@@ -14,6 +14,401 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '20',
+    slug: 'pnp-powershell-sharepoint-online-scripts-admin-guide-2026',
+    title: 'PnP PowerShell for SharePoint Online: 25 Scripts Every Admin Needs (2026)',
+    excerpt:
+      'The only PnP PowerShell reference you need \u2014 25 ready-to-run scripts for site provisioning, list management, user permissions, file operations, and SPFx deployment.',
+    image: '/images/blog/pnp-powershell-admin-scripts-guide.png',
+    content: `
+## Why PnP PowerShell Is the SharePoint Admin\u2019s Best Friend
+
+If you manage SharePoint Online, you already know the admin center has limits. Bulk operations, automated provisioning, permission audits \u2014 these tasks demand scripting. And in 2026, **PnP PowerShell** is the undisputed standard.
+
+PnP PowerShell is an open-source, community-maintained module that wraps the Microsoft Graph API and SharePoint REST API into clean, intuitive cmdlets. It covers sites, lists, users, files, permissions, and even SPFx deployment \u2014 all from a single terminal.
+
+This guide gives you **25 ready-to-run scripts** organized by category. Copy, paste, adapt. No fluff.
+
+> **Shortcut:** Use our free [PnP PowerShell Generator](/tools/pnp-script-generator) to build scripts visually \u2014 pick an operation, configure parameters, and copy the output. No memorization needed.
+
+---
+
+## Prerequisites: Install and Connect
+
+### Step 1: Install PowerShell 7
+
+PnP PowerShell requires **PowerShell 7.4 or later** (not Windows PowerShell 5.1):
+
+\`\`\`powershell
+winget install --id Microsoft.PowerShell --source winget
+\`\`\`
+
+### Step 2: Install the PnP PowerShell Module
+
+\`\`\`powershell
+Install-Module -Name PnP.PowerShell -Scope CurrentUser
+\`\`\`
+
+### Step 3: Connect to Your Tenant
+
+\`\`\`powershell
+# Interactive login (MFA supported)
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/ProjectHub" -Interactive
+
+# App-only authentication (for automation)
+Connect-PnPOnline -Url "https://contoso.sharepoint.com" \\
+  -ClientId "your-app-id" \\
+  -Tenant "contoso.onmicrosoft.com" \\
+  -CertificatePath "./cert.pfx"
+\`\`\`
+
+> **Tip:** For scheduled scripts in Azure Automation, use **Managed Identity** authentication. See the [Microsoft docs on PnP + Azure Automation](https://learn.microsoft.com/en-us/sharepoint/dev/declarative-customization/site-design-pnp-provisioning).
+
+---
+
+## Category 1: Site Management (Scripts 1\u20135)
+
+### 1. List All Site Collections
+
+\`\`\`powershell
+Get-PnPTenantSite | Select-Object Url, Template, StorageUsageCurrent, Owner |
+  Format-Table -AutoSize
+\`\`\`
+
+### 2. Create a Modern Communication Site
+
+\`\`\`powershell
+New-PnPSite -Type CommunicationSite \\
+  -Title "Marketing Hub" \\
+  -Url "https://contoso.sharepoint.com/sites/MarketingHub" \\
+  -SiteDesign Showcase
+\`\`\`
+
+### 3. Apply a Site Design
+
+\`\`\`powershell
+# Get available site designs
+Get-PnPSiteDesign | Select-Object Title, Id
+
+# Apply one to a site
+Invoke-PnPSiteDesign -Identity "your-design-id" \\
+  -WebUrl "https://contoso.sharepoint.com/sites/ProjectHub"
+\`\`\`
+
+### 4. Export Site Provisioning Template
+
+\`\`\`powershell
+Get-PnPSiteTemplate -Out "template.pnp" \\
+  -Handlers Lists, Fields, ContentTypes, Navigation
+\`\`\`
+
+### 5. Apply a Provisioning Template to Another Site
+
+\`\`\`powershell
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/NewSite" -Interactive
+Invoke-PnPSiteTemplate -Path "template.pnp"
+\`\`\`
+
+---
+
+## Category 2: List and Library Management (Scripts 6\u201310)
+
+### 6. Create a Custom List with Columns
+
+\`\`\`powershell
+New-PnPList -Title "Project Tasks" -Template GenericList
+
+Add-PnPField -List "Project Tasks" -DisplayName "Due Date" \\
+  -InternalName "DueDate" -Type DateTime
+Add-PnPField -List "Project Tasks" -DisplayName "Priority" \\
+  -InternalName "Priority" -Type Choice \\
+  -Choices "High", "Medium", "Low"
+Add-PnPField -List "Project Tasks" -DisplayName "Assigned To" \\
+  -InternalName "AssignedTo" -Type User
+\`\`\`
+
+### 7. Bulk Add Items to a List
+
+\`\`\`powershell
+\$items = Import-Csv -Path "tasks.csv"
+
+foreach (\$item in \$items) {
+  Add-PnPListItem -List "Project Tasks" -Values @{
+    "Title"    = \$item.Title
+    "DueDate"  = \$item.DueDate
+    "Priority" = \$item.Priority
+  }
+}
+Write-Host "Imported \$(\$items.Count) items."
+\`\`\`
+
+### 8. Export List Items to CSV
+
+\`\`\`powershell
+Get-PnPListItem -List "Project Tasks" -PageSize 500 |
+  Select-Object @{N='Title';E={\$_.FieldValues.Title}},
+    @{N='DueDate';E={\$_.FieldValues.DueDate}},
+    @{N='Priority';E={\$_.FieldValues.Priority}} |
+  Export-Csv -Path "tasks-export.csv" -NoTypeInformation
+\`\`\`
+
+### 9. Delete All Items in a List (Batch)
+
+\`\`\`powershell
+\$items = Get-PnPListItem -List "Archive" -PageSize 500
+foreach (\$item in \$items) {
+  Remove-PnPListItem -List "Archive" -Identity \$item.Id -Force
+}
+Write-Host "Deleted \$(\$items.Count) items."
+\`\`\`
+
+### 10. Copy a List to Another Site
+
+\`\`\`powershell
+# Export from source
+\$items = Get-PnPListItem -List "Tasks" -PageSize 500
+
+# Connect to target
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/Target" -Interactive
+
+# Import
+foreach (\$item in \$items) {
+  Add-PnPListItem -List "Tasks" -Values @{
+    "Title" = \$item.FieldValues.Title
+    "Status" = \$item.FieldValues.Status
+  }
+}
+\`\`\`
+
+---
+
+## Category 3: User and Permission Management (Scripts 11\u201315)
+
+### 11. List All Site Collection Admins
+
+\`\`\`powershell
+Get-PnPSiteCollectionAdmin | Select-Object Title, Email |
+  Format-Table -AutoSize
+\`\`\`
+
+### 12. Add a Site Collection Admin
+
+\`\`\`powershell
+Add-PnPSiteCollectionAdmin -Owners "admin@contoso.com"
+\`\`\`
+
+### 13. Get All Users with Their Permission Levels
+
+\`\`\`powershell
+Get-PnPGroup | ForEach-Object {
+  \$group = \$_
+  Get-PnPGroupMember -Group \$group | ForEach-Object {
+    [PSCustomObject]@{
+      Group = \$group.Title
+      User  = \$_.Title
+      Email = \$_.Email
+    }
+  }
+} | Format-Table -AutoSize
+\`\`\`
+
+### 14. Grant a User Permissions to a Specific Folder
+
+\`\`\`powershell
+Set-PnPFolderPermission \\
+  -List "Documents" \\
+  -Identity "Shared Documents/Confidential" \\
+  -User "user@contoso.com" \\
+  -AddRole "Contribute"
+\`\`\`
+
+### 15. Remove a User from All SharePoint Groups
+
+\`\`\`powershell
+\$userEmail = "departing-employee@contoso.com"
+Get-PnPGroup | ForEach-Object {
+  try {
+    Remove-PnPGroupMember -Group \$_ -LoginName \$userEmail -ErrorAction Stop
+    Write-Host "Removed from: \$(\$_.Title)"
+  } catch {
+    # User not in this group, skip
+  }
+}
+\`\`\`
+
+---
+
+## Category 4: File and Document Operations (Scripts 16\u201319)
+
+### 16. Upload Files from a Local Folder
+
+\`\`\`powershell
+\$files = Get-ChildItem -Path "C:\\Reports\\*.pdf"
+foreach (\$file in \$files) {
+  Add-PnPFile -Path \$file.FullName \\
+    -Folder "Shared Documents/Reports"
+  Write-Host "Uploaded: \$(\$file.Name)"
+}
+\`\`\`
+
+### 17. Download All Files from a Library
+
+\`\`\`powershell
+\$files = Get-PnPListItem -List "Documents" -PageSize 500 |
+  Where-Object { \$_.FileSystemObjectType -eq "File" }
+
+foreach (\$file in \$files) {
+  Get-PnPFile -Url \$file.FieldValues.FileRef \\
+    -Path "C:\\Backup" -Filename \$file.FieldValues.FileLeafRef -AsFile
+}
+\`\`\`
+
+### 18. Find Large Files Across a Site
+
+\`\`\`powershell
+Get-PnPListItem -List "Documents" -PageSize 5000 |
+  Where-Object { \$_.FieldValues.File_x0020_Size -gt 50MB } |
+  Select-Object @{N='File';E={\$_.FieldValues.FileLeafRef}},
+    @{N='Size (MB)';E={[math]::Round(\$_.FieldValues.File_x0020_Size / 1MB, 2)}},
+    @{N='Path';E={\$_.FieldValues.FileRef}} |
+  Sort-Object 'Size (MB)' -Descending |
+  Format-Table -AutoSize
+\`\`\`
+
+### 19. Move Files Between Libraries
+
+\`\`\`powershell
+Move-PnPFile \\
+  -SourceUrl "/sites/Source/Shared Documents/Report.pdf" \\
+  -TargetUrl "/sites/Target/Shared Documents/Report.pdf" \\
+  -Force
+\`\`\`
+
+---
+
+## Category 5: Tenant Administration (Scripts 20\u201323)
+
+### 20. Get Tenant Storage Usage Report
+
+\`\`\`powershell
+Get-PnPTenantSite | Select-Object Url, StorageUsageCurrent |
+  Sort-Object StorageUsageCurrent -Descending |
+  Select-Object -First 20 |
+  Format-Table -AutoSize
+\`\`\`
+
+### 21. Block External Sharing on a Site
+
+\`\`\`powershell
+Set-PnPTenantSite -Url "https://contoso.sharepoint.com/sites/Confidential" \\
+  -SharingCapability Disabled
+\`\`\`
+
+### 22. Enable Version History on All Libraries
+
+\`\`\`powershell
+Get-PnPList | Where-Object { \$_.BaseTemplate -eq 101 } | ForEach-Object {
+  Set-PnPList -Identity \$_ -EnableVersioning \$true -MajorVersions 50
+  Write-Host "Versioning enabled: \$(\$_.Title)"
+}
+\`\`\`
+
+### 23. Audit External Users Across All Sites
+
+\`\`\`powershell
+Get-PnPTenantSite | ForEach-Object {
+  Connect-PnPOnline -Url \$_.Url -Interactive
+  \$externals = Get-PnPUser | Where-Object { \$_.LoginName -like "*#ext#*" }
+  if (\$externals.Count -gt 0) {
+    [PSCustomObject]@{
+      Site          = \$_.Url
+      ExternalUsers = \$externals.Count
+    }
+  }
+} | Format-Table -AutoSize
+\`\`\`
+
+---
+
+## Category 6: SPFx Deployment (Scripts 24\u201325)
+
+### 24. Deploy an SPFx Package to the Tenant App Catalog
+
+\`\`\`powershell
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/appcatalog" -Interactive
+
+# Upload the .sppkg file
+Add-PnPApp -Path "./solution.sppkg" -Scope Tenant -Overwrite
+
+# Deploy (make available tenant-wide)
+Publish-PnPApp -Identity "your-app-id" -Scope Tenant
+\`\`\`
+
+### 25. List All SPFx Solutions and Their Versions
+
+\`\`\`powershell
+Get-PnPApp -Scope Tenant |
+  Select-Object Title, AppCatalogVersion, Deployed, InstalledVersion |
+  Format-Table -AutoSize
+\`\`\`
+
+For more on building SPFx solutions to deploy, see my guides on [building SPFx web parts with React + PnPjs](/blog/spfx-web-part-crud-operations-complete-guide-2026) and [the SPFx 1.23 toolchain migration](/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026).
+
+---
+
+## Quick Reference: PnP PowerShell vs. Other Tools
+
+| Task | PnP PowerShell | SharePoint Admin Shell | Microsoft Graph PowerShell |
+|------|:-:|:-:|:-:|
+| Site provisioning | \u2705 Full | \u2705 Basic | \u26A0\uFE0F Limited |
+| List/item CRUD | \u2705 Full | \u274C None | \u26A0\uFE0F Via Graph |
+| File operations | \u2705 Full | \u274C None | \u2705 Full |
+| User/permission mgmt | \u2705 Full | \u2705 Basic | \u2705 Full |
+| SPFx deployment | \u2705 Yes | \u274C No | \u274C No |
+| Provisioning templates | \u2705 Yes | \u274C No | \u274C No |
+| Teams integration | \u2705 Yes | \u274C No | \u2705 Yes |
+| Community maintained | \u2705 Active | \u274C Legacy | \u2705 Microsoft |
+
+**Bottom line:** PnP PowerShell covers the widest range of SharePoint operations and is the only module that handles provisioning templates and SPFx deployment.
+
+---
+
+## Frequently Asked Questions
+
+**Do I need Azure AD app registration to use PnP PowerShell?**
+For interactive use (manual scripts), no \u2014 you can authenticate with your browser. For automation (Azure Automation, scheduled tasks), yes \u2014 register an app in Microsoft Entra ID with the required API permissions and use certificate or managed identity authentication.
+
+**Can I use PnP PowerShell with Windows PowerShell 5.1?**
+No. PnP PowerShell requires **PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported. Install PowerShell 7 separately \u2014 both can coexist on the same machine.
+
+**How do I update PnP PowerShell to the latest version?**
+Run \`Update-Module -Name PnP.PowerShell\`. The module is updated frequently with new cmdlets and bug fixes. Check the [PnP PowerShell changelog](https://pnp.github.io/powershell/articles/changelog.html) for release notes.
+
+**Is PnP PowerShell supported by Microsoft?**
+PnP PowerShell is a **community-driven** project maintained under the Microsoft 365 Platform Community (PnP) initiative. While not officially supported by Microsoft, it is widely used in production environments and receives contributions from Microsoft employees.
+
+**How do I handle throttling in bulk operations?**
+PnP PowerShell has built-in retry logic for throttled requests. For very large operations (10,000+ items), use \`-PageSize\` to batch requests and add \`Start-Sleep -Seconds 1\` between batches to avoid hitting the SharePoint Online rate limit.
+
+---
+
+## Your Next Steps
+
+1. **Install PnP PowerShell** on PowerShell 7.4+ and connect to your tenant
+2. **Start with read-only scripts** (listing sites, exporting items) before running modifications
+3. **Automate recurring tasks** by scheduling scripts in Azure Automation
+4. **Build scripts faster** with our free [PnP PowerShell Generator](/tools/pnp-script-generator) \u2014 select an operation, configure parameters, and copy ready-to-run code
+
+For working with data via APIs instead of PowerShell, see my [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-every-endpoint-2026) and [Microsoft Graph API: 10 Practical Examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '14 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'PnP PowerShell', 'PowerShell', 'Admin', 'Automation'],
+  },
+
+  {
     id: '19',
     slug: 'sharepoint-online-csp-enforcement-spfx-developer-guide-2026',
     title: 'SharePoint Online CSP Enforcement: The SPFx Developer Survival Guide (2026)',

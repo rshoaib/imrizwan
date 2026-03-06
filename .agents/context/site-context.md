@@ -36,6 +36,8 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 | copilot studio sharepoint | ✅ Blog exists |
 | viva connections adaptive card | ✅ Blog exists |
 
+| sharepoint csp enforcement developer guide | ✅ Blog exists |
+
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
 2. "Microsoft Graph API: 10 Practical Examples for SharePoint (2026)" ✅ Published
@@ -44,4 +46,5 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 5. "Copilot Studio: Build AI Assistants for SharePoint Sites" ✅ Published
 6. "SharePoint Embedded: Build Document Management into Any App (2026)" ✅ Published
 7. "SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)" ✅ Published
+8. "SharePoint Online CSP Enforcement: The SPFx Developer Survival Guide (2026)" ✅ Published
 
