@@ -4,205 +4,101 @@ description: Run a Google Search Console audit — indexing, performance, sitema
 
 # Google Search Console Audit
 
-<!--
-PROGRESS INSTRUCTIONS: When executing this workflow, update the Task View status
-at each phase using the format shown in the progress comments below.
-Example: "📊 Phase 2/9: Collecting performance data..."
--->
-
 Run this workflow to analyze a site's GSC data, find growth opportunities, and produce actionable recommendations.
 
-## Prerequisites
-- The site must already be verified in Google Search Console
-- The user must be logged into their Google account in the browser
-
 ## How to Use
-Say: `/gsc-audit https://your-site.com`
+
+// turbo-all
+
+Say: `/gsc-audit` for current project, or `/gsc-audit all` for all sites.
 
 ---
 
-## Phase 1: Access GSC
-<!-- progress: "🔑 Phase 1/9: Accessing Google Search Console..." -->
+## Option A: Automated CLI (Preferred — Fast & Easy)
 
-1. Open Google Search Console: `https://search.google.com/search-console?resource_id=https://<domain>/`
-2. If prompted, select the correct property matching the domain
+The GSC Audit CLI tool at `C:\Projects\gsc-audit-tool` automates Phases 2-5, 8-9 via the Search Console API.
 
----
+### For the CURRENT project site:
+1. Determine the site URL from the current project (e.g., onlineimageshrinker.com)
+// turbo
+2. Run the audit:
+```bash
+node C:\Projects\gsc-audit-tool\audit.js --site https://<domain>/
+```
+// turbo
+3. Open the generated report from `C:\Projects\gsc-audit-tool\reports\<domain>_<date>.md`
+4. Read the report and apply the fixes (see "How to Act on Results" below)
 
-## Phase 2: Performance Data Collection
-<!-- progress: "📊 Phase 2/9: Collecting performance data (clicks, impressions, queries)..." -->
+### For ALL sites at once:
+// turbo
+1. Run: `node C:\Projects\gsc-audit-tool\audit.js`
+2. Reports for every site appear in `C:\Projects\gsc-audit-tool\reports\`
+3. Review each report and prioritize fixes across sites
 
-1. Go to **Performance** (left sidebar)
-2. Set date range to **Last 3 months**
-3. Record these metrics:
-   - Total clicks
-   - Total impressions
-   - Average CTR
-   - Average position
-4. Switch to **Queries** tab — list top 20 queries with clicks + impressions + CTR + position
-5. Switch to **Pages** tab — list top 20 pages with clicks + impressions
-6. Take screenshots of both tabs
-
----
-
-## Phase 3: Indexing Status
-<!-- progress: "📄 Phase 3/9: Checking indexing status & finding unindexed pages..." -->
-
-1. Go to **Indexing** > **Pages** (left sidebar)
-2. Record:
-   - Number of indexed pages
-   - Number of not-indexed pages
-   - Any error reasons listed
-3. Take a screenshot
-4. If there are "Not indexed" pages, check the reasons:
-   - "Discovered - currently not indexed" = Google knows about it but hasn't crawled
-   - "Crawled - currently not indexed" = Google crawled but decided not to index
-   - "Excluded by noindex tag" = intentional exclusion
-   - "Duplicate without user-selected canonical" = possible issue
+### CLI Options:
+```
+--site <url>       Audit a specific site
+--no-inspect       Skip URL inspection (faster)
+--months <n>       Months of data to analyze (default: 3)
+--top <n>          Number of top pages to inspect (default: 5)
+```
 
 ---
 
-## Phase 4: Sitemap Check
-<!-- progress: "🗺️ Phase 4/9: Verifying sitemap submission & page discovery..." -->
+## Option B: Manual Browser Audit (Fallback)
 
-1. Go to **Indexing** > **Sitemaps** (left sidebar)
-2. Check if sitemap is submitted and its status
-3. Compare "Discovered pages" count vs actual URLs in sitemap
-4. If sitemap is stale or not submitted:
-   - Enter `sitemap.xml` in the "Add a new sitemap" field
-   - Click **SUBMIT**
-5. Take a screenshot
+Use this only for checks the API cannot do (Core Web Vitals, Security, Manual Actions).
 
----
+### Phase 6: Core Web Vitals
+1. Open GSC > Experience > Core Web Vitals
+2. Check mobile and desktop status
 
-## Phase 5: Manual URL Inspection (for top pages)
-<!-- progress: "🔎 Phase 5/9: Inspecting top pages & requesting indexing..." -->
-
-1. Go to **URL Inspection** (top bar)
-2. Enter the homepage URL and check:
-   - Is it indexed?
-   - Mobile usability
-   - Rich results detected?
-3. If NOT indexed, click **Request Indexing**
-4. Repeat for the top 5-10 most important pages/tools
+### Phase 7: Security & Manual Actions
+1. Open GSC > Security & Manual Actions > Security Issues — should say "No issues detected"
+2. Open GSC > Security & Manual Actions > Manual Actions — should say "No issues detected"
 
 ---
 
-## Phase 6: Core Web Vitals (Real User Data)
-<!-- progress: "⚡ Phase 6/9: Checking Core Web Vitals (mobile + desktop)..." -->
+## How to Act on Results
 
-1. Go to **Experience** > **Core Web Vitals** (left sidebar)
-2. Check if there's enough real-user data (needs traffic)
-3. If data is available, record:
-   - Mobile: Good / Needs Improvement / Poor URLs
-   - Desktop: Good / Needs Improvement / Poor URLs
-4. Take a screenshot
+After the report is generated, follow this priority order:
 
----
+### 🔴 P1: Fix CTR Gaps (Easiest wins)
+Pages appearing in search results but getting no clicks.
+- **If position < 10**: Rewrite the page's `<title>` and meta description to be more compelling (add numbers, power words)
+- **If position > 20**: Improve content depth first — add sections, examples, images
 
-## Phase 7: Security & Manual Actions
-<!-- progress: "🔒 Phase 7/9: Checking security issues & manual actions..." -->
+### 🔴 P1: Push Quick Wins to Page 1
+Queries at positions 5-20 with decent impressions.
+- Add more relevant content to the ranking page
+- Add internal links from other pages pointing to it
+- Update the title to better match the query
 
-1. Go to **Security & Manual Actions** > **Security Issues**
-   - Should say "No issues detected"
-2. Go to **Security & Manual Actions** > **Manual Actions**
-   - Should say "No issues detected"
-3. Report any issues found
+### 🟡 P2: Fill Content Gaps
+Queries getting impressions but no dedicated page.
+- **High impressions (10+)**: Create a new dedicated page/tool
+- **Low impressions (2-9)**: Add a section to an existing page
 
----
+### 🟡 P2: Fix Cannibalization
+Multiple pages ranking for the same query.
+- Merge content into the stronger page
+- Redirect the weaker page
 
-## Phase 8: Deep Analysis (Actionable Insights)
-<!-- progress: "🧠 Phase 8/9: Deep analysis — finding quick wins, CTR gaps, cannibalization..." -->
-
-Using the data collected in Phases 2-7, perform the following analyses:
-
-### 8a. Quick Wins — "Almost Ranking" Queries
-Find queries where:
-- **Position is 5–20** (bottom of page 1 or page 2)
-- **Impressions > 100** (people are searching for this)
-
-These are your **biggest opportunities** — a small content boost could push them to top 3.
-
-**Action for each:** Identify the ranking page → improve its title, add more depth, add internal links, or create a dedicated page if one doesn't exist.
-
-| Query | Position | Impressions | Clicks | CTR | Ranking Page | Recommended Action |
-|-------|----------|-------------|--------|-----|-------------|-------------------|
-| ... | ... | ... | ... | ... | ... | ... |
-
-### 8b. CTR Optimization — High Impressions, Low CTR
-Find pages where:
-- **Impressions > 500**
-- **CTR < 2%**
-
-These pages **appear in search results but nobody clicks**. The title/description isn't compelling enough.
-
-**Action for each:** Rewrite the meta title to be more engaging. Add numbers, power words, or brackets. Rewrite the meta description with a clear value prop.
-
-| Page | Impressions | CTR | Current Title | Suggested New Title |
-|------|-------------|-----|--------------|-------------------|
-| ... | ... | ... | ... | ... |
-
-### 8c. Content Gap Detection
-Find queries where:
-- You're getting impressions but **have no dedicated page**
-- The query doesn't match any existing page title closely
-
-**Action:** Create new content targeting these queries, or add a section to an existing page.
-
-| Query | Impressions | Closest Existing Page | Action |
-|-------|-------------|----------------------|--------|
-| ... | ... | ... | Create new page / Add section |
-
-### 8d. Cannibalization Check
-Find cases where:
-- **Multiple pages rank for the same query**
-- This splits your authority and hurts both pages
-
-**Action:** Consolidate content into one strong page, redirect the weaker one, or differentiate them with unique angles.
-
-| Query | Page 1 | Page 2 | Action |
-|-------|--------|--------|--------|
-| ... | ... | ... | Merge / Differentiate / Redirect |
-
-### 8e. Declining Queries
-Compare last 28 days vs previous 28 days:
-- Find queries where **clicks dropped > 30%**
-- These need immediate attention — competitor may have overtaken you
-
-**Action:** Update the content, refresh the date in the title, add new sections, or improve internal linking.
+### 🟢 P3: Refresh Declining Queries
+Queries where clicks dropped >30% vs previous period.
+- Update content, refresh dates in titles
+- Add new sections, improve internal linking
 
 ---
 
-## Phase 9: Actionable Report
-<!-- progress: "📝 Phase 9/9: Generating prioritized action report..." -->
+## Weekly Routine
 
-Produce a **prioritized recommendation list** sorted by estimated impact:
-
-### Summary Table
-| Metric | Value | Assessment |
-|--------|-------|------------|
-| Total Clicks (3 months) | ? | 📈/📉 vs benchmark |
-| Total Impressions | ? | |
-| Average CTR | ? | Good (>3%) / Needs work (<2%) |
-| Average Position | ? | |
-| Indexed Pages | ? / ? total | |
-| Sitemap Status | ? | |
-| CWV Status | ? | |
-| Security Issues | ? | |
-| Manual Actions | ? | |
-
-### Prioritized Actions (sorted by impact)
-
-| Priority | Action | Expected Impact | Effort |
-|----------|--------|----------------|--------|
-| 🔴 P1 | [Highest impact action] | +X clicks/month | Low/Med/High |
-| 🔴 P1 | ... | ... | ... |
-| 🟡 P2 | ... | ... | ... |
-| 🟢 P3 | ... | ... | ... |
-
-### Quick Wins Summary
-- **X queries** in positions 5-20 that could be pushed to top 3
-- **X pages** with high impressions but low CTR (title/description rewrite needed)
-- **X content gaps** found (new pages or sections to create)
-- **X cannibalization issues** found (pages to merge or differentiate)
-- **X declining queries** need content refresh
+```
+Every Monday:
+1. Run:  node C:\Projects\gsc-audit-tool\audit.js --no-inspect
+2. Open reports in VS Code
+3. Pick top 1-2 items from CTR Gaps or Quick Wins
+4. Fix them in the actual project
+5. Deploy
+6. Next Monday, run again → check if numbers improved
+```
