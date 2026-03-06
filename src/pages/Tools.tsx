@@ -34,6 +34,14 @@ export const tools = [
     emoji: '🛡️',
     tags: ['SharePoint', 'Permissions', 'Security'],
   },
+  {
+    name: 'REST API Builder',
+    slug: 'rest-api-builder',
+    description:
+      'Build SharePoint REST API URLs visually — pick operations, add OData filters, and get code snippets in JavaScript, PnPjs, and PowerShell.',
+    emoji: '⚡',
+    tags: ['SharePoint', 'REST API', 'OData'],
+  },
 ]
 
 export default function Tools() {
