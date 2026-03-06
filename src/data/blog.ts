@@ -14,6 +14,320 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '18',
+    slug: 'sharepoint-rest-api-cheat-sheet-every-endpoint-2026',
+    title: 'SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)',
+    excerpt:
+      'The only SharePoint REST API reference you need — every endpoint for lists, items, files, users, and sites with OData examples, code snippets, and a free visual URL builder.',
+    image: '/images/blog/sharepoint-rest-api-cheatsheet.png',
+    content: `
+## Why You Need a SharePoint REST API Cheat Sheet
+
+Every SharePoint developer has been there — you know the endpoint exists, but you can never remember the exact URL format. Was it \\\`getbytitle\\\` or \\\`GetByTitle\\\`? Does \\\`$filter\\\` use \\\`eq\\\` or \\\`==\\\`?
+
+This cheat sheet is the **definitive reference** for the SharePoint REST API in 2026. Bookmark it, share it, and never Google "sharepoint rest api get all list items" again.
+
+> **Shortcut:** Use our free [SharePoint REST API Builder](/tools/rest-api-builder) to generate URLs and code snippets visually — no memorization needed.
+
+---
+
+## Base URL Structure
+
+Every SharePoint REST API call follows this pattern:
+
+\\\`\\\`\\\`
+https://{tenant}.sharepoint.com/sites/{site}/_api/web/{resource}
+\\\`\\\`\\\`
+
+| Part | Example | Description |
+|------|---------|-------------|
+| **Tenant** | \\\`contoso.sharepoint.com\\\` | Your Microsoft 365 tenant |
+| **Site** | \\\`/sites/ProjectHub\\\` | Site collection path |
+| **API Root** | \\\`/_api/web\\\` | REST API entry point |
+| **Resource** | \\\`/lists\\\`, \\\`/siteusers\\\` | What you want to access |
+
+---
+
+## List & Library Endpoints
+
+### Get All Lists
+\\\`\\\`\\\`
+GET /_api/web/lists
+\\\`\\\`\\\`
+Returns every list and library in the site, including hidden system lists.
+
+### Get a List by Title
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Documents')
+\\\`\\\`\\\`
+
+### Get a List by GUID
+\\\`\\\`\\\`
+GET /_api/web/lists(guid'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
+\\\`\\\`\\\`
+
+### Get List Fields (Columns)
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/fields
+\\\`\\\`\\\`
+
+### Get List Content Types
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Documents')/contenttypes
+\\\`\\\`\\\`
+
+---
+
+## List Item Endpoints (CRUD)
+
+### Read: Get All Items
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items
+\\\`\\\`\\\`
+
+### Read: Get a Single Item
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items(42)
+\\\`\\\`\\\`
+
+### Create: Add a New Item
+\\\`\\\`\\\`
+POST /_api/web/lists/getbytitle('Tasks')/items
+
+Headers:
+  Accept: application/json;odata=verbose
+  Content-Type: application/json;odata=verbose
+  X-RequestDigest: {formDigestValue}
+
+Body:
+{
+  "__metadata": { "type": "SP.Data.TasksListItem" },
+  "Title": "New Task"
+}
+\\\`\\\`\\\`
+
+**Tip:** The \\\`type\\\` value follows the pattern \\\`SP.Data.{ListName}ListItem\\\`. For a list named "Project Tasks", it becomes \\\`SP.Data.Project_x0020_TasksListItem\\\` (spaces become \\\`_x0020_\\\`).
+
+### Update: Modify an Existing Item
+\\\`\\\`\\\`
+POST /_api/web/lists/getbytitle('Tasks')/items(42)
+
+Headers:
+  Accept: application/json;odata=verbose
+  Content-Type: application/json;odata=verbose
+  X-RequestDigest: {formDigestValue}
+  IF-MATCH: *
+  X-HTTP-Method: MERGE
+
+Body:
+{
+  "__metadata": { "type": "SP.Data.TasksListItem" },
+  "Title": "Updated Task Title"
+}
+\\\`\\\`\\\`
+
+> **Why POST instead of PATCH?** SharePoint REST uses \\\`X-HTTP-Method: MERGE\\\` on a POST verb for compatibility. Using \\\`IF-MATCH: *\\\` skips the ETag check.
+
+### Delete: Remove an Item
+\\\`\\\`\\\`
+POST /_api/web/lists/getbytitle('Tasks')/items(42)
+
+Headers:
+  X-RequestDigest: {formDigestValue}
+  IF-MATCH: *
+  X-HTTP-Method: DELETE
+\\\`\\\`\\\`
+
+---
+
+## OData Query Parameters
+
+This is where the real power is. OData parameters let you filter, sort, and shape your data **server-side** before it hits the wire.
+
+### $select — Choose Which Fields to Return
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items?$select=Title,Status,DueDate
+\\\`\\\`\\\`
+**Always use \\\`$select\\\`.** Without it, SharePoint returns every field — including hidden ones — which wastes bandwidth and processing.
+
+### $filter — Server-Side Filtering
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items?$filter=Status eq 'Active'
+\\\`\\\`\\\`
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| \\\`eq\\\` | Equals | \\\`Status eq 'Done'\\\` |
+| \\\`ne\\\` | Not equals | \\\`Priority ne 'Low'\\\` |
+| \\\`gt\\\` | Greater than | \\\`DueDate gt '2026-01-01'\\\` |
+| \\\`lt\\\` | Less than | \\\`Created lt '2026-06-01'\\\` |
+| \\\`ge\\\` | Greater or equal | \\\`Priority ge 2\\\` |
+| \\\`le\\\` | Less or equal | \\\`Priority le 3\\\` |
+| \\\`and\\\` | Logical AND | \\\`Status eq 'Active' and Priority eq 'High'\\\` |
+| \\\`or\\\` | Logical OR | \\\`Status eq 'Active' or Status eq 'Pending'\\\` |
+| \\\`startswith\\\` | String starts with | \\\`startswith(Title, 'Project')\\\` |
+| \\\`substringof\\\` | String contains | \\\`substringof('report', Title)\\\` |
+
+### $expand — Include Lookup & Person Fields
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items
+  ?$select=Title,AssignedTo/Title,AssignedTo/EMail
+  &$expand=AssignedTo
+\\\`\\\`\\\`
+Without \\\`$expand\\\`, lookup and person fields only return the ID. Use \\\`$expand\\\` to get the display name, email, or other lookup properties.
+
+### $orderby — Sort Results
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items?$orderby=Created desc
+\\\`\\\`\\\`
+Add \\\`desc\\\` for descending order. Default is ascending (\\\`asc\\\`).
+
+### $top — Limit Results
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items?$top=10
+\\\`\\\`\\\`
+The default page size is 100 items. Maximum is **5,000** per request, but stay under 100 for performance.
+
+### Combining All Parameters
+\\\`\\\`\\\`
+GET /_api/web/lists/getbytitle('Tasks')/items
+  ?$select=Title,Status,DueDate,AssignedTo/Title
+  &$filter=Status eq 'Active' and DueDate lt '2026-12-31'
+  &$expand=AssignedTo
+  &$orderby=DueDate asc
+  &$top=25
+\\\`\\\`\\\`
+
+---
+
+## Site & User Endpoints
+
+### Get Site Information
+\\\`\\\`\\\`
+GET /_api/web
+\\\`\\\`\\\`
+
+### Get Current User
+\\\`\\\`\\\`
+GET /_api/web/currentuser
+\\\`\\\`\\\`
+
+### Get All Site Users
+\\\`\\\`\\\`
+GET /_api/web/siteusers
+\\\`\\\`\\\`
+
+### Get SharePoint Groups
+\\\`\\\`\\\`
+GET /_api/web/sitegroups
+\\\`\\\`\\\`
+
+### Get Site Content Types
+\\\`\\\`\\\`
+GET /_api/web/contenttypes
+\\\`\\\`\\\`
+
+---
+
+## File & Folder Endpoints
+
+### Get Files in a Folder
+\\\`\\\`\\\`
+GET /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')/Files
+\\\`\\\`\\\`
+
+### Get Folder Properties
+\\\`\\\`\\\`
+GET /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')
+\\\`\\\`\\\`
+
+### Upload a File (< 2 MB)
+\\\`\\\`\\\`
+POST /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')
+  /Files/add(url='filename.docx', overwrite=true)
+
+Headers:
+  X-RequestDigest: {formDigestValue}
+Body: [binary file content]
+\\\`\\\`\\\`
+
+For files **> 2 MB**, use the chunked upload approach with \\\`StartUpload\\\`, \\\`ContinueUpload\\\`, and \\\`FinishUpload\\\`.
+
+---
+
+## Authentication in 2026
+
+### In SPFx Web Parts (Automatic)
+SPFx handles authentication for you. Use \\\`this.context.spHttpClient\\\` or PnPjs — no tokens needed:
+
+\\\`\\\`\\\`typescript
+import { spfi, SPFx } from "@pnp/sp";
+const sp = spfi().using(SPFx(this.context));
+const items = await sp.web.lists.getByTitle("Tasks").items();
+\\\`\\\`\\\`
+
+### External Apps (Microsoft Entra ID)
+Register an app in **Microsoft Entra ID** (Azure AD) and use OAuth 2.0:
+
+1. Register app in the [Azure Portal](https://portal.azure.com)
+2. Add \\\`Sites.Read.All\\\` or \\\`Sites.ReadWrite.All\\\` API permissions
+3. Use **Client Credentials Flow** (app-only) or **Authorization Code Flow** (delegated)
+4. Pass the access token in the \\\`Authorization: Bearer {token}\\\` header
+
+---
+
+## SharePoint REST API vs. Microsoft Graph
+
+| Feature | SharePoint REST API | Microsoft Graph |
+|---------|:---:|:---:|
+| SharePoint-specific endpoints | ✅ Full coverage | ⚠️ Partial |
+| Unified Microsoft 365 access | ❌ SharePoint only | ✅ All services |
+| OData \\\`$filter\\\` support | ✅ Complete | ✅ Complete |
+| File operations | ✅ Full | ✅ Full |
+| Managed metadata / taxonomy | ✅ Yes | ⚠️ Limited |
+| Site provisioning | ✅ Yes | ❌ No |
+
+**Rule of thumb:** Use **Microsoft Graph** when working across multiple Microsoft 365 services. Use the **SharePoint REST API** for SharePoint-specific operations that Graph doesn't cover (taxonomy, site scripts, managed metadata).
+
+For more on Graph API, see our guide: [Microsoft Graph API: 10 Practical Examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+
+---
+
+## Free Tool: Build URLs Visually
+
+Tired of hand-typing these URLs? Try our free [SharePoint REST API Builder](/tools/rest-api-builder) — pick an operation, configure OData parameters, and copy code snippets in JavaScript, PnPjs, or PowerShell. No login required.
+
+You might also find these useful:
+- [CAML Query Builder](/tools/caml-query-builder) — for complex query scenarios
+- [PnP PowerShell Generator](/tools/pnp-script-generator) — ready-to-run admin scripts
+- [Site Script Generator](/tools/site-script-generator) — build provisioning templates
+
+---
+
+## FAQ
+
+**What is the SharePoint REST API item limit per request?**
+The default is 100 items. You can request up to 5,000 using \\\`$top=5000\\\`. For larger datasets, use pagination with \\\`$skiptoken\\\` or the \\\`__next\\\` URL from the response.
+
+**Do I need a request digest for GET requests?**
+No. The \\\`X-RequestDigest\\\` header is only required for write operations (POST, MERGE, DELETE). In SPFx, use \\\`this.context.pageContext.formDigestValue\\\`.
+
+**How do I filter by a date field?**
+Use ISO 8601 format: \\\`$filter=DueDate gt '2026-01-01T00:00:00Z'\\\`. SharePoint stores dates in UTC.
+
+**Can I use the REST API with Power Automate?**
+Yes. Use the **"Send an HTTP request to SharePoint"** action in Power Automate. It handles authentication automatically. See our guide: [Power Automate + SharePoint Workflows](/blog/power-automate-sharepoint-document-workflows-2026).
+
+**What replaced the \\\_api/contextinfo endpoint?**
+Use \\\`POST /_api/contextinfo\\\` to get the form digest value. In SPFx, this is available via \\\`this.context.pageContext.formDigestValue\\\` without any extra API calls.
+`,
+    date: '2026-03-06',
+    displayDate: 'March 6, 2026',
+    readTime: '10 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'REST API', 'OData', 'JavaScript'],
+  },
+  {
     id: '17',
     slug: 'sharepoint-embedded-build-document-management-app-2026',
     title: 'SharePoint Embedded: Build Document Management into Any App (2026)',
