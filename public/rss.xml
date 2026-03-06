@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2026 21:02:25 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 06 Mar 2026 02:28:18 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>SPFx 1.23: New CLI Replacing Yeoman + Heft Build System Migration Guide (2026)</title>
+      <link>https://imrizwan.com/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026</link>
+      <description>The biggest SPFx toolchain overhaul in years \u2014 Yeoman is out, the new SPFx CLI is in, and Heft replaces Gulp. Here is your complete migration guide with step-by-step commands.</description>
+      <pubDate>Fri, 06 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026</guid>
+      <category>SPFx</category>
+    </item>
     <item>
       <title>Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)</title>
       <link>https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</link>
