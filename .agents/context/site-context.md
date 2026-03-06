@@ -37,6 +37,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 | viva connections adaptive card | ✅ Blog exists |
 
 | sharepoint csp enforcement developer guide | ✅ Blog exists |
+| pnp powershell sharepoint admin scripts | ✅ Blog exists |
 
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
@@ -47,4 +48,5 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 6. "SharePoint Embedded: Build Document Management into Any App (2026)" ✅ Published
 7. "SharePoint REST API Cheat Sheet: Every Endpoint You Need (2026)" ✅ Published
 8. "SharePoint Online CSP Enforcement: The SPFx Developer Survival Guide (2026)" ✅ Published
+9. "PnP PowerShell for SharePoint Online: 25 Scripts Every Admin Needs (2026)" ✅ Published
 
