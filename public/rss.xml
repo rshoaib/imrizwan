@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 06 Mar 2026 22:48:42 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 06 Mar 2026 23:27:13 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>SharePoint Permissions Explained: Every Level, Role &amp; Inheritance Pattern (2026)</title>
+      <link>https://imrizwan.com/blog/sharepoint-permissions-explained-every-level-role-inheritance-2026</link>
+      <description>The complete guide to SharePoint Online permissions \u2014 permission levels, SharePoint groups, inheritance, broken inheritance, and the PowerShell scripts to audit it all.</description>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-permissions-explained-every-level-role-inheritance-2026</guid>
+      <category>SharePoint</category>
+    </item>
     <item>
       <title>SharePoint Site Scripts &amp; Site Designs: Automate Site Provisioning (2026)</title>
       <link>https://imrizwan.com/blog/sharepoint-site-scripts-site-designs-provisioning-guide-2026</link>

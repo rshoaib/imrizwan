@@ -14,6 +14,282 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '22',
+    slug: 'sharepoint-permissions-explained-every-level-role-inheritance-2026',
+    title: 'SharePoint Permissions Explained: Every Level, Role & Inheritance Pattern (2026)',
+    excerpt:
+      'The complete guide to SharePoint Online permissions \u2014 permission levels, SharePoint groups, inheritance, broken inheritance, and the PowerShell scripts to audit it all.',
+    image: '/images/blog/sharepoint-permissions-guide.png',
+    content: `
+## Why SharePoint Permissions Confuse Everyone
+
+SharePoint permissions are one of the most misunderstood topics in the Microsoft 365 ecosystem. Admins inherit a site collection from someone who left, find 14 custom permission levels, broken inheritance on random folders, and no documentation.
+
+The result? Either everything is locked down too tight (users cannot work), or everything is wide open (data leaks waiting to happen).
+
+This guide breaks down the entire permissions model from the ground up \u2014 what each level does, how inheritance works, when to break it, and the PowerShell scripts to audit your current state.
+
+> **Shortcut:** Use our free [Permission Matrix](/tools/permission-matrix) to visualize which permission levels include which capabilities \u2014 side-by-side comparison without memorizing anything.
+
+---
+
+## The Three Layers of SharePoint Permissions
+
+SharePoint permissions work in three layers:
+
+| Layer | What It Is | Example |
+|-------|-----------|---------|
+| **Permission Levels** | A named set of individual permissions | "Contribute" = Add, Edit, Delete items |
+| **SharePoint Groups** | Collections of users assigned a permission level | "Site Members" group gets "Contribute" |
+| **Scope** | Where the permission applies | Site, library, folder, or individual item |
+
+Think of it as: **Users** go into **Groups**, groups get **Permission Levels**, and permission levels apply to a **Scope**.
+
+---
+
+## Built-In Permission Levels
+
+SharePoint Online comes with these default permission levels:
+
+| Permission Level | What Users Can Do | Typical Use |
+|------------------|------------------|-------------|
+| **Full Control** | Everything \u2014 manage permissions, delete site, change structure | Site owners only |
+| **Design** | Create lists/libraries, edit pages, apply themes | Intranet designers |
+| **Edit** | Add, edit, delete items and documents | Team members |
+| **Contribute** | Add, edit, delete own items | External contributors |
+| **Read** | View pages and documents only | Visitors, stakeholders |
+| **View Only** | View documents in browser only (no download) | Sensitive document viewers |
+| **Limited Access** | Auto-assigned when accessing a specific item below a secured parent | System-managed \u2014 do not assign manually |
+
+### The Difference Between Contribute and Edit
+
+This is the most common source of confusion:
+
+| Capability | Contribute | Edit |
+|------------|:---------:|:----:|
+| Add items | \u2705 | \u2705 |
+| Edit own items | \u2705 | \u2705 |
+| Edit others' items | \u274C | \u2705 |
+| Delete own items | \u2705 | \u2705 |
+| Delete others' items | \u274C | \u2705 |
+| Create lists/libraries | \u274C | \u2705 |
+
+**Rule of thumb:** Use **Edit** for internal team members. Use **Contribute** for guests or external users who should only manage their own content.
+
+---
+
+## SharePoint Groups
+
+Every modern site comes with three default groups:
+
+| Group | Default Permission Level | Purpose |
+|-------|------------------------|---------|
+| **Site Owners** | Full Control | Manage site settings, permissions, structure |
+| **Site Members** | Edit | Create and manage content |
+| **Site Visitors** | Read | View content only |
+
+### When to Create Custom Groups
+
+Create a custom group when:
+
+- You need a permission level between Edit and Read (e.g., "Contribute" for specific users)
+- Different teams need different access to different libraries
+- External users need a separate group for easy auditing
+
+\`\`\`powershell
+# Create a custom SharePoint group
+New-PnPGroup -Title "Project Reviewers" -Owner "admin@contoso.com"
+
+# Assign a permission level to the group
+Set-PnPGroupPermissions -Identity "Project Reviewers" -AddRole "Contribute"
+
+# Add users to the group
+Add-PnPGroupMember -Group "Project Reviewers" -EmailAddress "reviewer@contoso.com"
+\`\`\`
+
+---
+
+## Permission Inheritance: The Most Important Concept
+
+By default, every object in SharePoint inherits permissions from its parent:
+
+\`\`\`
+Site Collection (Full Control, Edit, Read)
+  \u251C\u2500\u2500 Subsite (inherits from site collection)
+  \u2502   \u251C\u2500\u2500 Document Library (inherits from subsite)
+  \u2502   \u2502   \u251C\u2500\u2500 Folder (inherits from library)
+  \u2502   \u2502   \u2502   \u2514\u2500\u2500 Document (inherits from folder)
+\`\`\`
+
+**This means:** If you change permissions at the site level, everything below it automatically gets the same change. This is the intended behavior and keeps things manageable.
+
+### Breaking Inheritance
+
+Sometimes you need different permissions on a specific library, folder, or item. You do this by **breaking inheritance**:
+
+\`\`\`powershell
+# Break inheritance on a specific list (stop inheriting from site)
+Set-PnPList -Identity "Confidential Documents" -BreakRoleInheritance
+
+# Now set custom permissions on this list
+Set-PnPListPermission -Identity "Confidential Documents" \\
+  -Group "Site Members" -RemoveRole "Edit"
+Set-PnPListPermission -Identity "Confidential Documents" \\
+  -Group "HR Team" -AddRole "Contribute"
+\`\`\`
+
+### When to Break Inheritance
+
+| Scenario | Break Inheritance? | Better Alternative |
+|----------|:-:|----|
+| One confidential folder in a shared library | \u2705 Yes | None \u2014 this is the correct use |
+| Different permissions per project subfolder | \u26A0\uFE0F Maybe | Consider separate libraries instead |
+| Every folder has different permissions | \u274C No | Redesign your information architecture |
+| One file needs restricted access | \u2705 Yes | But consider a separate library if recurring |
+
+> **Warning:** Excessive broken inheritance is the #1 cause of permissions chaos. If you are breaking inheritance on more than 5-10 items in a library, you probably need a different structure \u2014 separate libraries or separate sites.
+
+---
+
+## Common Permission Patterns
+
+### Pattern 1: Team Site with External Reviewers
+
+\`\`\`
+Site Members (Edit) \u2192 Internal team
+Site Visitors (Read) \u2192 Stakeholders
+Project Reviewers (Contribute) \u2192 External reviewers (custom group)
+\`\`\`
+
+### Pattern 2: Department Site with Confidential Folder
+
+\`\`\`
+Document Library \u2192 inherits site permissions (Edit for members)
+  \u2514\u2500\u2500 "HR Confidential" folder \u2192 broken inheritance
+       \u2192 Only HR Team group has Contribute
+       \u2192 Site Members have NO access
+\`\`\`
+
+### Pattern 3: Read-Only Archive
+
+\`\`\`powershell
+# Convert a library to read-only for everyone except owners
+Set-PnPList -Identity "2024 Archive" -BreakRoleInheritance
+Set-PnPListPermission -Identity "2024 Archive" \\
+  -Group "Site Members" -RemoveRole "Edit"
+Set-PnPListPermission -Identity "2024 Archive" \\
+  -Group "Site Members" -AddRole "Read"
+\`\`\`
+
+---
+
+## Auditing Permissions with PowerShell
+
+### List All Users and Their Permission Levels
+
+\`\`\`powershell
+Get-PnPGroup | ForEach-Object {
+  \$group = \$_
+  \$roles = Get-PnPGroupPermissions -Identity \$group |
+    Select-Object -ExpandProperty Name
+  Get-PnPGroupMember -Group \$group | ForEach-Object {
+    [PSCustomObject]@{
+      User    = \$_.Title
+      Email   = \$_.Email
+      Group   = \$group.Title
+      Roles   = (\$roles -join ", ")
+    }
+  }
+} | Format-Table -AutoSize
+\`\`\`
+
+### Find All Items with Broken Inheritance
+
+\`\`\`powershell
+\$lists = Get-PnPList | Where-Object { \$_.Hidden -eq \$false }
+foreach (\$list in \$lists) {
+  if (-not \$list.HasUniqueRoleAssignments) { continue }
+  Write-Host "BROKEN: \$(\$list.Title)" -ForegroundColor Yellow
+
+  Get-PnPListItem -List \$list -PageSize 500 | ForEach-Object {
+    if (\$_.HasUniqueRoleAssignments) {
+      Write-Host "  - Item \$(\$_.Id): \$(\$_.FieldValues.FileLeafRef)"
+    }
+  }
+}
+\`\`\`
+
+### Export a Full Permissions Report
+
+\`\`\`powershell
+\$report = @()
+Get-PnPList | Where-Object { -not \$_.Hidden } | ForEach-Object {
+  \$list = \$_
+  \$report += [PSCustomObject]@{
+    List              = \$list.Title
+    InheritsPerms     = -not \$list.HasUniqueRoleAssignments
+    ItemCount         = \$list.ItemCount
+  }
+}
+\$report | Export-Csv -Path "permissions-report.csv" -NoTypeInformation
+Write-Host "Exported \$(\$report.Count) lists."
+\`\`\`
+
+For the full PowerShell admin toolkit, see my comprehensive [PnP PowerShell: 25 Scripts Every Admin Needs](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026).
+
+---
+
+## Frequently Asked Questions
+
+**What is Limited Access and why does it appear?**
+Limited Access is auto-assigned by SharePoint when a user has permission to a specific item (like a file) but not to the parent library or site. You cannot assign or remove it manually \u2014 it is system-managed.
+
+**Can I create custom permission levels?**
+Yes. Go to Site Settings > Site Permissions > Permission Levels > Add a Permission Level. Select only the individual permissions you need. However, keep custom levels to a minimum \u2014 they make auditing harder.
+
+**How do I check what permissions a specific user has?**
+Go to Site Settings > Site Permissions > Check Permissions. Enter the user\u2019s email to see their effective permissions and which groups they belong to. In PowerShell: \`Get-PnPUser -Identity "user@contoso.com" | Get-PnPUserEffectivePermissions\`.
+
+**Should I assign permissions to individual users or groups?**
+**Always use groups.** Assigning permissions to individuals creates an unmanageable mess. When someone leaves, you have to find and remove them from every library, folder, and item. With groups, you remove them once.
+
+**What happens when I share a file via the Share button?**
+SharePoint creates a unique sharing link and breaks inheritance on that specific file. The recipient gets Limited Access at the site level and direct permissions on the file. This is fine for occasional sharing but creates broken inheritance at scale.
+
+---
+
+## Best Practices
+
+| Do | Don\u2019t |
+|----|---------|
+| Use SharePoint groups for all permissions | Assign permissions to individual users |
+| Keep inheritance intact wherever possible | Break inheritance on every folder |
+| Use separate libraries for different access levels | Create 10 permission levels for one library |
+| Audit permissions quarterly with PowerShell | Assume permissions are correct because they were set once |
+| Document your permission model | Rely on tribal knowledge |
+
+---
+
+## Your Next Steps
+
+1. **Audit your current state** \u2014 run the PowerShell scripts above to see where inheritance is broken
+2. **Visualize permissions** with our free [Permission Matrix](/tools/permission-matrix) \u2014 compare what each level includes at a glance
+3. **Consolidate broken inheritance** \u2014 if more than 5 items in a library have unique permissions, restructure
+4. **Document your model** \u2014 write down which groups exist, what they access, and keep it in a shared location
+
+For related guides:
+- [PnP PowerShell: 25 Admin Scripts](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) \u2014 the full admin toolkit
+- [Site Scripts & Site Designs](/blog/sharepoint-site-scripts-site-designs-provisioning-guide-2026) \u2014 automate site provisioning with correct permissions from day one
+- [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-every-endpoint-2026) \u2014 every endpoint you need
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '11 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'Permissions', 'Security', 'PowerShell', 'Admin'],
+  },
+
+  {
     id: '21',
     slug: 'sharepoint-site-scripts-site-designs-provisioning-guide-2026',
     title: 'SharePoint Site Scripts & Site Designs: Automate Site Provisioning (2026)',
