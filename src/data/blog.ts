@@ -14,6 +14,376 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '21',
+    slug: 'sharepoint-site-scripts-site-designs-provisioning-guide-2026',
+    title: 'SharePoint Site Scripts & Site Designs: Automate Site Provisioning (2026)',
+    excerpt:
+      'Stop building SharePoint sites by hand. Use site scripts and site designs to provision consistent, branded sites with lists, columns, themes, and permissions \u2014 all from a single JSON template.',
+    image: '/images/blog/sharepoint-site-scripts-designs-guide.png',
+    content: `
+## Why You Need Automated Site Provisioning
+
+Every time someone in your organization creates a new SharePoint site, the same questions come up: Where is the task list? Why does this site look different from the others? Who forgot to set the permissions?
+
+**Site scripts** and **site designs** solve this by defining a repeatable blueprint for site creation. You write a JSON file that describes what the site should contain \u2014 lists, columns, themes, navigation, permissions \u2014 and SharePoint executes it automatically every time a new site is created.
+
+No manual setup. No inconsistency. No missed steps.
+
+> **Shortcut:** Use our free [Site Script Generator](/tools/site-script-generator) to build JSON templates visually \u2014 pick actions, configure parameters, and copy the output. No memorization needed.
+
+---
+
+## How Site Scripts and Site Designs Work
+
+Think of it as two layers:
+
+| Component | What It Does | Format |
+|-----------|-------------|--------|
+| **Site Script** | A JSON file with a list of actions (create list, apply theme, add columns) | JSON |
+| **Site Design** | A wrapper that bundles one or more site scripts into a selectable template | PowerShell / REST API |
+
+When a user creates a new site and selects your custom site design, SharePoint runs every action in the linked site scripts \u2014 in order, automatically.
+
+### Key Properties
+
+- **Idempotent**: Running the same script twice does not create duplicates. It updates existing elements.
+- **Non-destructive**: Scripts add or modify \u2014 they never delete existing content.
+- **Scoped**: Each script targets a single site. No cross-site side effects.
+
+---
+
+## Step-by-Step: Create Your First Site Script
+
+### Step 1: Write the JSON
+
+Here is a complete site script that creates a project management setup:
+
+\`\`\`json
+{
+  "\$schema": "https://developer.microsoft.com/json-schemas/sp/site-design-script-actions.schema.json",
+  "actions": [
+    {
+      "verb": "createSPList",
+      "listName": "Project Tasks",
+      "templateType": 100,
+      "subactions": [
+        {
+          "verb": "setDescription",
+          "description": "Track all project deliverables and deadlines"
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "DateTime",
+          "displayName": "Due Date",
+          "internalName": "DueDate",
+          "isRequired": true
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "Choice",
+          "displayName": "Priority",
+          "internalName": "Priority",
+          "choices": ["High", "Medium", "Low"]
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "Choice",
+          "displayName": "Status",
+          "internalName": "Status",
+          "choices": ["Not Started", "In Progress", "Completed", "Blocked"]
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "User",
+          "displayName": "Assigned To",
+          "internalName": "AssignedTo"
+        }
+      ]
+    },
+    {
+      "verb": "createSPList",
+      "listName": "Project Documents",
+      "templateType": 101,
+      "subactions": [
+        {
+          "verb": "setDescription",
+          "description": "Central repository for all project files"
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "Choice",
+          "displayName": "Document Type",
+          "internalName": "DocumentType",
+          "choices": ["Proposal", "Contract", "Report", "Presentation", "Other"]
+        }
+      ]
+    },
+    {
+      "verb": "applyTheme",
+      "themeName": "Blue"
+    },
+    {
+      "verb": "setSiteLogo",
+      "url": "/sites/assets/project-logo.png"
+    }
+  ]
+}
+\`\`\`
+
+**Template types:** \`100\` = Generic List, \`101\` = Document Library, \`104\` = Announcements, \`106\` = Calendar.
+
+### Step 2: Register the Site Script
+
+\`\`\`powershell
+Connect-PnPOnline -Url "https://contoso.sharepoint.com" -Interactive
+
+\$script = Add-PnPSiteScript \\
+  -Title "Project Site Setup" \\
+  -Description "Creates task list, document library, and applies branding" \\
+  -Content (Get-Content -Path "./project-site-script.json" -Raw)
+
+Write-Host "Site Script ID: \$(\$script.Id)"
+\`\`\`
+
+### Step 3: Create the Site Design
+
+\`\`\`powershell
+Add-PnPSiteDesign \\
+  -Title "Project Site Template" \\
+  -Description "Standard project site with task tracking and document management" \\
+  -SiteScriptIds \$script.Id \\
+  -WebTemplate "64"    # 64 = Team Site, 68 = Communication Site
+\`\`\`
+
+### Step 4: Apply to an Existing Site (Optional)
+
+\`\`\`powershell
+Invoke-PnPSiteDesign \\
+  -Identity "your-site-design-id" \\
+  -WebUrl "https://contoso.sharepoint.com/sites/ProjectAlpha"
+\`\`\`
+
+---
+
+## Complete Action Reference
+
+Here is every action available in site scripts as of 2026:
+
+### List and Library Actions
+
+| Action (verb) | What It Does |
+|---------------|-------------|
+| \`createSPList\` | Creates a list or library |
+| \`addSPField\` | Adds a column to a list |
+| \`addSPFieldXml\` | Adds a column using CAML XML (for complex field types) |
+| \`deleteSPField\` | Removes a default column |
+| \`addSPView\` | Creates a custom view |
+| \`removeSPView\` | Removes a view |
+| \`addContentType\` | Adds a content type to a list |
+| \`removeContentType\` | Removes a content type |
+| \`setSPFieldCustomFormatter\` | Applies JSON column formatting |
+
+### Site Branding Actions
+
+| Action (verb) | What It Does |
+|---------------|-------------|
+| \`applyTheme\` | Applies a site theme |
+| \`setSiteLogo\` | Sets the site logo |
+| \`setSiteExternalSharingCapability\` | Controls external sharing |
+| \`setRegionalSettings\` | Sets locale, time zone, calendar type |
+
+### Navigation Actions
+
+| Action (verb) | What It Does |
+|---------------|-------------|
+| \`addNavLink\` | Adds a link to site navigation |
+| \`removeNavLink\` | Removes a navigation link |
+| \`setNavLayoutType\` | Sets navigation style (cascading, megamenu) |
+
+### Advanced Actions
+
+| Action (verb) | What It Does |
+|---------------|-------------|
+| \`installSolution\` | Installs an SPFx solution from the app catalog |
+| \`associateHubSite\` | Associates the site with a hub site |
+| \`addPrincipalToSPGroup\` | Adds a user or group to a SharePoint group |
+| \`triggerFlow\` | Triggers a Power Automate flow for advanced provisioning |
+
+> For advanced provisioning beyond what site scripts support natively (page layouts, web parts, complex permissions), use \`triggerFlow\` to call a Power Automate flow that runs a PnP provisioning template. See our guide on [Power Automate + SharePoint workflows](/blog/power-automate-sharepoint-document-workflows-2026).
+
+---
+
+## Real-World Examples
+
+### Example 1: HR Onboarding Site
+
+\`\`\`json
+{
+  "\$schema": "https://developer.microsoft.com/json-schemas/sp/site-design-script-actions.schema.json",
+  "actions": [
+    {
+      "verb": "createSPList",
+      "listName": "Onboarding Checklist",
+      "templateType": 100,
+      "subactions": [
+        {
+          "verb": "addSPField",
+          "fieldType": "Boolean",
+          "displayName": "Completed",
+          "internalName": "Completed"
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "Choice",
+          "displayName": "Category",
+          "internalName": "Category",
+          "choices": ["IT Setup", "HR Paperwork", "Team Introduction", "Training"]
+        }
+      ]
+    },
+    {
+      "verb": "createSPList",
+      "listName": "Employee Handbook",
+      "templateType": 101
+    },
+    {
+      "verb": "addNavLink",
+      "url": "/sites/HR/SitePages/Welcome.aspx",
+      "displayName": "Welcome Guide",
+      "isWebRelative": true
+    }
+  ]
+}
+\`\`\`
+
+### Example 2: Client Portal Site
+
+\`\`\`json
+{
+  "\$schema": "https://developer.microsoft.com/json-schemas/sp/site-design-script-actions.schema.json",
+  "actions": [
+    {
+      "verb": "createSPList",
+      "listName": "Deliverables",
+      "templateType": 101,
+      "subactions": [
+        {
+          "verb": "addSPField",
+          "fieldType": "Choice",
+          "displayName": "Status",
+          "internalName": "DeliverableStatus",
+          "choices": ["Draft", "In Review", "Approved", "Delivered"]
+        },
+        {
+          "verb": "addSPField",
+          "fieldType": "DateTime",
+          "displayName": "Deadline",
+          "internalName": "Deadline"
+        }
+      ]
+    },
+    {
+      "verb": "setSiteExternalSharingCapability",
+      "capability": "ExistingExternalUserSharingOnly"
+    },
+    {
+      "verb": "applyTheme",
+      "themeName": "Teal"
+    }
+  ]
+}
+\`\`\`
+
+---
+
+## Managing Site Scripts with PnP PowerShell
+
+### List All Site Scripts
+
+\`\`\`powershell
+Get-PnPSiteScript | Select-Object Title, Id, Version | Format-Table -AutoSize
+\`\`\`
+
+### Update an Existing Site Script
+
+\`\`\`powershell
+Set-PnPSiteScript -Identity "script-id" \\
+  -Content (Get-Content -Path "./updated-script.json" -Raw)
+\`\`\`
+
+### Delete a Site Script
+
+\`\`\`powershell
+Remove-PnPSiteScript -Identity "script-id" -Force
+\`\`\`
+
+### List All Site Designs
+
+\`\`\`powershell
+Get-PnPSiteDesign | Select-Object Title, Id, WebTemplate | Format-Table -AutoSize
+\`\`\`
+
+For more PowerShell admin scripts, see my comprehensive [PnP PowerShell: 25 Scripts Every Admin Needs](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026).
+
+---
+
+## Site Scripts vs. PnP Provisioning Templates
+
+| Feature | Site Scripts | PnP Provisioning Templates |
+|---------|:-:|:-:|
+| JSON-based | \u2705 Yes | \u274C XML/PnP format |
+| Built into SharePoint | \u2705 Native | \u274C Requires PnP module |
+| Create lists and columns | \u2705 Yes | \u2705 Yes |
+| Apply themes | \u2705 Yes | \u2705 Yes |
+| Create pages with web parts | \u274C No | \u2705 Yes |
+| Configure complex permissions | \u26A0\uFE0F Limited | \u2705 Full |
+| Deploy SPFx solutions | \u2705 Yes | \u2705 Yes |
+| Trigger Power Automate | \u2705 Yes | \u2705 Yes |
+| Selectable during site creation | \u2705 Yes | \u274C Manual apply |
+
+**Best practice:** Use site scripts for standard provisioning (lists, branding, navigation). Use PnP templates (triggered via \`triggerFlow\`) for advanced scenarios (page layouts, web parts, complex permissions).
+
+---
+
+## Frequently Asked Questions
+
+**How many actions can a single site script contain?**
+A site script supports up to **300 actions** in a single JSON block. For complex setups, split your actions across multiple site scripts and link them to one site design.
+
+**Can I use site scripts with classic SharePoint sites?**
+No. Site scripts and site designs only work with **modern** Team sites (group-connected) and Communication sites. Classic sites are not supported.
+
+**What happens if I run a site design on a site that already has the lists?**
+Nothing breaks. Site scripts are **idempotent** \u2014 if a list already exists, the script skips the creation and applies any missing columns or settings. It will not create duplicates.
+
+**Can I restrict who sees a custom site design?**
+Yes. Use \`Grant-PnPSiteDesignRights\` to limit visibility to specific users or security groups. By default, site designs are visible to everyone.
+
+**How do I debug a failing site script?**
+Use \`Get-PnPSiteDesignRun\` to check the execution log for a specific site. It shows which actions succeeded, which failed, and error messages for each step.
+
+---
+
+## Your Next Steps
+
+1. **Start simple** \u2014 create a site script with one list and one theme
+2. **Test on a dev site** using \`Invoke-PnPSiteDesign\` before making it available tenant-wide
+3. **Build scripts visually** with our free [Site Script Generator](/tools/site-script-generator) \u2014 select actions, configure parameters, and export production-ready JSON
+4. **Graduate to PnP templates** when you need page layouts, web parts, or complex permissions
+
+For related guides, explore:
+- [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-every-endpoint-2026) \u2014 every endpoint you need
+- [PnP PowerShell: 25 Admin Scripts](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) \u2014 manage your tenant
+- [SharePoint Column Formatting](/blog/sharepoint-column-formatting-json-guide) \u2014 make your lists look professional
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '13 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'Site Scripts', 'Site Designs', 'Provisioning', 'PowerShell', 'JSON'],
+  },
+
+  {
     id: '20',
     slug: 'pnp-powershell-sharepoint-online-scripts-admin-guide-2026',
     title: 'PnP PowerShell for SharePoint Online: 25 Scripts Every Admin Needs (2026)',
