@@ -14,6 +14,321 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '26',
+    slug: 'spfx-performance-optimization-bundle-lazy-loading-2026',
+    title: 'SPFx Performance Optimization: Bundle Size, Lazy Loading & Best Practices (2026)',
+    excerpt:
+      'Ship faster SPFx web parts — analyze your bundle with Webpack Bundle Analyzer, lazy-load heavy components, offload libraries to CDN externals, and apply React memoization to cut re-renders.',
+    image: '/images/blog/spfx-performance-optimization.png',
+    content: `
+## Why Performance Matters in SPFx
+
+A single SPFx web part can silently add **500 KB+** to every SharePoint page load. In an enterprise environment where a homepage might host 6–8 web parts, that's megabytes of JavaScript competing for the main thread.
+
+The result? Slow first-paint, janky scrolling, and frustrated users who blame "SharePoint" when the real culprit is unoptimized custom code.
+
+This guide covers the **7 highest-impact optimizations** you can apply today — with real code, real numbers, and a checklist you can run before every deployment.
+
+> **Prerequisites:** You should be comfortable with [building a custom SPFx web part](/blog/building-spfx-web-part-crud-react-pnpjs-2026) and have a basic understanding of Webpack.
+
+---
+
+## 1. Analyze Your Bundle Size
+
+Before optimizing anything, **measure**. Install Webpack Bundle Analyzer:
+
+\\\`\\\`\\\`bash
+npm install --save-dev webpack-bundle-analyzer
+\\\`\\\`\\\`
+
+Add it to your \\\`gulpfile.js\\\`:
+
+\\\`\\\`\\\`javascript
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+build.configureWebpack.mergeConfig({
+  additionalConfiguration: (generatedConfiguration) => {
+    generatedConfiguration.plugins.push(
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: 'bundle-report.html',
+        openAnalyzer: false,
+      })
+    );
+    return generatedConfiguration;
+  },
+});
+\\\`\\\`\\\`
+
+Run \\\`gulp bundle --ship\\\` and open \\\`bundle-report.html\\\`. You'll see a visual treemap of every dependency and its size.
+
+### What to Look For
+
+| Problem | Signal | Fix |
+|---------|--------|-----|
+| Giant library | Single block > 100 KB | CDN external or replace |
+| Duplicate deps | Same lib appears twice | Dedupe in \\\`package.json\\\` |
+| Unused exports | Large library, few imports | Tree shaking / path imports |
+| Dev-only code | \\\`console.log\\\`, test utils | Strip in production build |
+
+---
+
+## 2. Tree Shaking & Path Imports
+
+**Tree shaking** eliminates unused code at build time — but only works with ES module imports. The biggest offender in SPFx projects is Fluent UI.
+
+**Bad** — imports the entire library (~300 KB):
+\\\`\\\`\\\`typescript
+import { Dropdown, TextField, PrimaryButton } from '@fluentui/react';
+\\\`\\\`\\\`
+
+**Good** — imports only what you use (~15 KB per component):
+\\\`\\\`\\\`typescript
+import { Dropdown } from '@fluentui/react/lib/Dropdown';
+import { TextField } from '@fluentui/react/lib/TextField';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
+\\\`\\\`\\\`
+
+> **SPFx 1.22+ tip:** If you're using Fluent UI v9 with the new Heft build system, tree shaking works out of the box. Path imports are still recommended for v8.
+
+**Impact:** Switching to path imports typically saves **100–200 KB** from your bundle.
+
+---
+
+## 3. CDN Externals for Large Libraries
+
+Large third-party libraries like React, ReactDOM, and Fluent UI don't need to be bundled — SharePoint already loads them. Configure externals in \\\`config/config.json\\\`:
+
+\\\`\\\`\\\`json
+{
+  "externals": {
+    "react": {
+      "path": "https://cdn.jsdelivr.net/npm/react@17/umd/react.production.min.js",
+      "globalName": "React"
+    },
+    "react-dom": {
+      "path": "https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.production.min.js",
+      "globalName": "ReactDOM"
+    }
+  }
+}
+\\\`\\\`\\\`
+
+### When to Use Externals
+
+| Library | Bundle Size | Use External? |
+|---------|------------|---------------|
+| React + ReactDOM | ~130 KB | ✅ Always |
+| Fluent UI v8 | ~300 KB | ✅ Yes |
+| \\\`@pnp/sp\\\` | ~80 KB | ⚠️ Only if multiple web parts share it |
+| Lodash | ~70 KB | ✅ Yes, or use \\\`lodash-es\\\` for tree shaking |
+| Day.js | ~2 KB | ❌ Too small, bundle it |
+
+> **Rule of thumb:** Externalize libraries > 50 KB that don't tree-shake well. For everything else, bundle it — the HTTP request overhead isn't worth it.
+
+---
+
+## 4. Lazy Loading with Dynamic Imports
+
+Load heavy components only when they're needed. This is the single biggest win for web parts that have multiple views or tabs.
+
+\\\`\\\`\\\`typescript
+import * as React from 'react';
+
+// Lazy-load the chart component (only loaded when tab is clicked)
+const HeavyChart = React.lazy(() =>
+  import(/* webpackChunkName: "heavy-chart" */ './components/HeavyChart')
+);
+
+export default function DashboardWebPart(): React.ReactElement {
+  const [showChart, setShowChart] = React.useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setShowChart(true)}>Show Analytics</button>
+
+      {showChart && (
+        <React.Suspense fallback={<div>Loading chart...</div>}>
+          <HeavyChart />
+        </React.Suspense>
+      )}
+    </div>
+  );
+}
+\\\`\\\`\\\`
+
+### What to Lazy-Load
+
+- **Charts and data visualizations** (Chart.js, Recharts)
+- **Rich text editors** (Quill, TinyMCE)
+- **Admin/settings panels** (rarely opened)
+- **The Property Pane** (use \\\`loadPropertyPaneResources()\\\`)
+- **PDF viewers or file previewers**
+
+**Impact:** Lazy-loading a chart library can reduce initial bundle by **150–400 KB**.
+
+---
+
+## 5. React Memoization — Stop Wasted Re-Renders
+
+Every re-render in a SharePoint page costs CPU time. Use React's memoization APIs to skip unnecessary renders:
+
+\\\`\\\`\\\`typescript
+import * as React from 'react';
+
+// Memoize expensive list rendering
+const ItemList = React.memo(function ItemList({ items }: { items: any[] }) {
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.Id}>{item.Title}</li>
+      ))}
+    </ul>
+  );
+});
+
+export default function TasksWebPart(): React.ReactElement {
+  const [tasks, setTasks] = React.useState<any[]>([]);
+  const [filter, setFilter] = React.useState('');
+
+  // useMemo: only recalculate when tasks or filter change
+  const filtered = React.useMemo(
+    () => tasks.filter((t) => t.Title.toLowerCase().includes(filter.toLowerCase())),
+    [tasks, filter]
+  );
+
+  // useCallback: stable reference for event handler
+  const handleFilterChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setFilter(e.target.value),
+    []
+  );
+
+  return (
+    <div>
+      <input onChange={handleFilterChange} placeholder="Filter tasks..." />
+      <ItemList items={filtered} />
+    </div>
+  );
+}
+\\\`\\\`\\\`
+
+### When to Memoize
+
+| Scenario | Tool | Worth It? |
+|----------|------|-----------|
+| Component receives same props | \\\`React.memo\\\` | ✅ Yes |
+| Expensive computation | \\\`useMemo\\\` | ✅ Yes |
+| Callback passed to child | \\\`useCallback\\\` | ✅ If child is memoized |
+| Simple text/icon component | \\\`React.memo\\\` | ❌ Overhead > benefit |
+
+---
+
+## 6. Batch API Calls with PnPjs
+
+If your web part makes 5 separate SharePoint REST calls on load, you're wasting round-trips. Use [PnPjs batching](/blog/building-spfx-web-part-crud-react-pnpjs-2026) to combine them:
+
+\\\`\\\`\\\`typescript
+import { spfi, SPFx } from '@pnp/sp';
+import { createBatch } from '@pnp/sp/batching';
+import '@pnp/sp/lists';
+import '@pnp/sp/items';
+
+async function loadDashboardData(context: any) {
+  const sp = spfi().using(SPFx(context));
+  const [batchedSP, execute] = createBatch(sp);
+
+  // Queue 3 requests — they'll execute in a single HTTP call
+  const tasksPromise = batchedSP.web.lists
+    .getByTitle('Tasks').items.top(20)();
+  const eventsPromise = batchedSP.web.lists
+    .getByTitle('Events').items.top(10)();
+  const announcementsPromise = batchedSP.web.lists
+    .getByTitle('Announcements').items.top(5)();
+
+  await execute();
+
+  const [tasks, events, announcements] = await Promise.all([
+    tasksPromise, eventsPromise, announcementsPromise
+  ]);
+
+  return { tasks, events, announcements };
+}
+\\\`\\\`\\\`
+
+**Impact:** 3 sequential API calls taking ~900ms total → 1 batched call taking ~350ms.
+
+> For more PnPjs patterns, see [PnP PowerShell for SharePoint Online](/blog/pnp-powershell-sharepoint-online-scripts-2026).
+
+---
+
+## 7. Production Build Checklist
+
+Before every \\\`gulp bundle --ship\\\`, run through this checklist:
+
+### Pre-Deploy Performance Checklist
+
+- [ ] **Bundle analyzed** — no dependency > 100 KB unbundled
+- [ ] **Path imports** — Fluent UI uses \\\`/lib/\\\` paths
+- [ ] **Externals configured** — React, ReactDOM externalized
+- [ ] **Lazy loading** — heavy components use \\\`React.lazy()\\\`
+- [ ] **No dev imports** — remove \\\`console.log\\\`, test utils
+- [ ] **API batching** — PnPjs \\\`createBatch()\\\` for multiple calls
+- [ ] **React.memo** — applied to list-rendering components
+- [ ] **Images optimized** — icons are SVG, photos are compressed
+- [ ] **Production flag** — \\\`gulp bundle --ship\\\` (not debug)
+
+### Measuring Results
+
+Run the SharePoint **Page Diagnostics** tool (browser extension) before and after optimization. Key metrics to track:
+
+| Metric | Target | How to Improve |
+|--------|--------|----------------|
+| SPRequestDuration | < 800ms | Batch API calls |
+| Custom JS bundle | < 200 KB | Externals + tree shaking |
+| First Meaningful Paint | < 2s | Lazy loading |
+| Total Blocking Time | < 300ms | Code splitting |
+
+---
+
+## FAQ
+
+### How much can I realistically reduce my SPFx bundle size?
+
+Most SPFx projects can reduce their bundle by **40–60%** with path imports, CDN externals, and lazy loading. A typical project going from 800 KB to 300 KB is common.
+
+### Should I use the new Heft build system in SPFx 1.22+?
+
+Yes — the Heft-based toolchain has better tree shaking and faster builds. If you're starting a new project in 2026, use SPFx 1.22+. For existing projects, the migration is straightforward.
+
+### Does lazy loading work with the Property Pane?
+
+Yes. SPFx has built-in support via \\\`loadPropertyPaneResources()\\\`. The property pane code is only loaded when a user clicks "Edit" on your web part — saving ~50 KB on every page load.
+
+### How do I know if my externals are loading correctly?
+
+Open browser DevTools → Network tab → filter by JS. You should see your externalized libraries loading from the CDN URL you configured, not from your bundle.
+
+### Is it worth optimizing a web part that's only used on one page?
+
+Yes — that one page might be your organization's homepage, loaded thousands of times daily. A 200ms improvement × 5,000 daily loads = significant cumulative impact on user experience.
+
+---
+
+## Wrapping Up
+
+SPFx performance isn't a nice-to-have — it's the difference between a "SharePoint is slow" complaint and a seamless user experience. Start with the **bundle analyzer** to find your biggest wins, then apply externals, lazy loading, and memoization in that order.
+
+Need help building a web part from scratch? Start with [Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs](/blog/building-spfx-web-part-crud-react-pnpjs-2026), then come back here to optimize it for production.
+
+For more SharePoint developer guides, check out the [Microsoft Graph API examples](/blog/microsoft-graph-api-sharepoint-examples-2026) and [SharePoint REST API cheat sheet](/blog/sharepoint-rest-api-cheat-sheet-2026).
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '16 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'performance', 'webpack', 'react', 'optimization'],
+  },
+  {
     id: '25',
     slug: 'sharepoint-list-formatting-json-complete-guide-2026',
     title: 'SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)',
