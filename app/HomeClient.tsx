@@ -84,6 +84,10 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
                   <span className="profile-card__stat-label">Years Exp.</span>
                 </div>
                 <div className="profile-card__stat">
+                  <span className="profile-card__stat-value">20+</span>
+                  <span className="profile-card__stat-label">Projects</span>
+                </div>
+                <div className="profile-card__stat">
                   <span className="profile-card__stat-value">{initialPosts.length}+</span>
                   <span className="profile-card__stat-label">Articles</span>
                 </div>
@@ -97,9 +101,14 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
                   <span key={t} className="profile-card__tech-pill">{t}</span>
                 ))}
               </div>
-              <Link href="/contact" className="profile-card__cta">
-                💼 Hire Me
-              </Link>
+              <div className="profile-card__actions">
+                <Link href="/blog" className="profile-card__action">
+                  📖 Read the Blog
+                </Link>
+                <Link href="/tools" className="profile-card__action profile-card__action--secondary">
+                  🛠️ Free Tools
+                </Link>
+              </div>
             </div>
           </div>
         </div>
