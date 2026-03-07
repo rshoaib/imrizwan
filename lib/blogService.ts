@@ -41,6 +41,28 @@ function isCacheValid() {
     return cachedPosts && Date.now() - cacheTime < CACHE_TTL
 }
 
+// -------- merge logic --------
+// Merges Supabase posts with local posts. Supabase wins on slug conflicts.
+// This ensures articles in EITHER source are always visible.
+function mergePosts(dbPosts: BlogPost[], local: BlogPost[]): BlogPost[] {
+    const slugMap = new Map<string, BlogPost>()
+
+    // Add local posts first
+    for (const p of local) {
+        slugMap.set(p.slug, p)
+    }
+
+    // Supabase posts override local on same slug
+    for (const p of dbPosts) {
+        slugMap.set(p.slug, p)
+    }
+
+    // Sort by date descending
+    return Array.from(slugMap.values()).sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+}
+
 // -------- public API --------
 
 export async function getAllPosts(): Promise<BlogPost[]> {
@@ -54,12 +76,13 @@ export async function getAllPosts(): Promise<BlogPost[]> {
             .select('*')
             .order('date', { ascending: false })
 
-        if (error || !data || data.length === 0) {
+        if (error || !data) {
             console.warn('[blogService] Supabase fetch failed, using local fallback', error)
             return localPosts
         }
 
-        cachedPosts = (data as DbRow[]).map(rowToPost)
+        const dbPosts = (data as DbRow[]).map(rowToPost)
+        cachedPosts = mergePosts(dbPosts, localPosts)
         cacheTime = Date.now()
         return cachedPosts
     } catch (err) {
