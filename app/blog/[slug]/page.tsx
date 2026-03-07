@@ -1,0 +1,93 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getAllPosts, getPostBySlug } from '@/lib/blogService'
+import BlogPostClient from './BlogPostClient'
+
+interface Props {
+  params: Promise<{ slug: string }>
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts()
+  return posts.map((post) => ({ slug: post.slug }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
+  if (!post) return {}
+
+  const fullUrl = `https://imrizwan.com/blog/${post.slug}`
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.excerpt,
+      url: fullUrl,
+      publishedTime: post.date,
+      tags: post.tags,
+      images: post.image ? [post.image] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.image ? [post.image] : [],
+    },
+    other: {
+      'article:published_time': post.date,
+    },
+  }
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params
+  const [post, allPosts] = await Promise.all([
+    getPostBySlug(slug),
+    getAllPosts(),
+  ])
+
+  if (!post) notFound()
+
+  // Article JSON-LD — rendered server-side for SEO crawlers
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image ? [post.image] : [],
+    datePublished: post.date,
+    author: {
+      '@type': 'Person',
+      name: 'Rizwan',
+      url: 'https://imrizwan.com/about',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'ImRizwan',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://imrizwan.com/favicon.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://imrizwan.com/blog/${post.slug}`,
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <BlogPostClient post={post} allPosts={allPosts} />
+    </>
+  )
+}

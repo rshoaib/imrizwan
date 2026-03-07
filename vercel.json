@@ -1,8 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/privacy-azan", "destination": "/privacy-azan.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
