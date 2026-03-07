@@ -3,6 +3,8 @@ import BlogCard from '@/components/BlogCard'
 import NewsletterCTA from '@/components/NewsletterCTA'
 import { getAllPosts } from '@/lib/blogService'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const allPosts = await getAllPosts()
   const posts = allPosts.slice(0, 3)

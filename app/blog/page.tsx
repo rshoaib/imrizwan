@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import { getAllPosts } from '@/lib/blogService'
 import BlogListClient from './BlogListClient'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Blog',
   description:
