@@ -14,6 +14,503 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '25',
+    slug: 'sharepoint-list-formatting-json-complete-guide-2026',
+    title: 'SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)',
+    excerpt:
+      'Transform plain SharePoint lists into visual dashboards using JSON formatting \u2014 column formatting, view formatting, row formatting, and form customization with 15 ready-to-use templates.',
+    image: '/images/blog/sharepoint-list-formatting-json-guide.png',
+    content: `
+## Why JSON Formatting Changes Everything
+
+SharePoint lists are the backbone of most Microsoft 365 solutions \u2014 project trackers, asset inventories, helpdesk tickets, HR onboarding checklists. But out of the box, they look like spreadsheets.
+
+**JSON formatting** lets you transform any column, row, or entire view into a visual dashboard \u2014 without writing a single line of C#, deploying an SPFx web part, or touching the app catalog. You write JSON, paste it into SharePoint, and it works instantly for everyone who views that list.
+
+### What You Can Format
+
+| Formatting Type | What It Does | Where to Apply |
+|----------------|-------------|----------------|
+| **Column formatting** | Customize how a single column renders | Column settings \u2192 Format this column |
+| **View formatting** | Customize the entire list view layout | View dropdown \u2192 Format current view |
+| **Row formatting** | Apply styles to entire rows conditionally | View formatting with \`rowFormatter\` |
+| **Form customization** | Customize the new/edit form layout | List settings \u2192 Configure layout \u2192 Form |
+
+> **New in 2026:** SharePoint now supports the v2 schema with Excel-style expressions, making formatting significantly easier to write and read.
+
+---
+
+## Getting Started: How to Apply JSON Formatting
+
+### Column Formatting
+
+1. Go to your SharePoint list
+2. Click the column header \u2192 **Column settings** \u2192 **Format this column**
+3. Switch to **Advanced mode**
+4. Paste your JSON
+5. Click **Preview** to verify, then **Save**
+
+### View Formatting
+
+1. Click the view dropdown (top right of the list)
+2. Select **Format current view**
+3. Switch to **Advanced mode**
+4. Paste your JSON and save
+
+> **Pro tip:** Always include the \`$schema\` line at the top of your JSON. It enables IntelliSense in VS Code and validates your formatting before you paste it into SharePoint.
+
+---
+
+## The JSON Formatting Structure
+
+Every formatting JSON follows this pattern:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "padding": "8px",
+    "font-weight": "600"
+  },
+  "attributes": {
+    "class": "sp-css-color-GreenDark"
+  },
+  "txtContent": "@currentField",
+  "children": []
+}
+\\\`\\\`\\\`
+
+| Property | Purpose | Example |
+|----------|---------|---------|
+| \`elmType\` | HTML element type | \`div\`, \`span\`, \`a\`, \`img\`, \`button\` |
+| \`txtContent\` | Text to display | \`@currentField\`, \`[$Title]\` |
+| \`style\` | CSS styles | \`background-color\`, \`padding\`, \`border-radius\` |
+| \`attributes\` | HTML attributes and CSS classes | \`class\`, \`href\`, \`title\`, \`iconName\` |
+| \`children\` | Nested elements | Array of child elements |
+
+### Key Variables
+
+| Variable | Returns | Example Use |
+|----------|---------|-------------|
+| \`@currentField\` | Current column value | Status text, number, date |
+| \`[$ColumnName]\` | Any other column\\\u2019s value | \`[$Priority]\`, \`[$DueDate]\` |
+| \`@me\` | Current user\\\u2019s email | Personalize per user |
+| \`@now\` | Current date/time | Compare with due dates |
+| \`[$Editor.title]\` | Person field\\\u2019s display name | Show who last edited |
+
+---
+
+## Template 1: Status Badges with Icons
+
+Turn a Choice column into colored pills with Fluent UI icons:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "align-items": "center",
+    "gap": "6px",
+    "padding": "4px 12px",
+    "border-radius": "16px",
+    "font-size": "13px",
+    "font-weight": "600",
+    "background-color": "=if(@currentField == 'Active', '#dff6dd', if(@currentField == 'Pending', '#fff4ce', '#fde7e9'))",
+    "color": "=if(@currentField == 'Active', '#107c10', if(@currentField == 'Pending', '#797600', '#a80000'))"
+  },
+  "children": [
+    {
+      "elmType": "span",
+      "attributes": {
+        "iconName": "=if(@currentField == 'Active', 'CompletedSolid', if(@currentField == 'Pending', 'Clock', 'ErrorBadge'))"
+      }
+    },
+    {
+      "elmType": "span",
+      "txtContent": "@currentField"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 2: Progress Bar
+
+Show a Number column (0\u2013100) as a visual bar that changes color based on progress:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "width": "100%",
+    "height": "20px",
+    "background-color": "#f0f0f0",
+    "border-radius": "10px",
+    "overflow": "hidden",
+    "position": "relative"
+  },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "width": "=toString(@currentField) + '%'",
+        "height": "100%",
+        "background-color": "=if(@currentField >= 80, '#0078d4', if(@currentField >= 50, '#ffaa44', '#d13438'))",
+        "border-radius": "10px",
+        "transition": "width 0.3s"
+      }
+    },
+    {
+      "elmType": "span",
+      "style": {
+        "position": "absolute",
+        "left": "50%",
+        "top": "50%",
+        "transform": "translate(-50%,-50%)",
+        "font-size": "11px",
+        "font-weight": "600",
+        "color": "#333"
+      },
+      "txtContent": "=toString(@currentField) + '%'"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 3: Due Date with Overdue Highlight
+
+Highlight a Date column red if overdue, yellow if due within 7 days, and green if future:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "align-items": "center",
+    "gap": "6px",
+    "padding": "4px 10px",
+    "border-radius": "4px",
+    "background-color": "=if(@currentField <= @now, '#fde7e9', if(@currentField <= @now + 604800000, '#fff4ce', '#dff6dd'))",
+    "color": "=if(@currentField <= @now, '#a80000', if(@currentField <= @now + 604800000, '#797600', '#107c10'))"
+  },
+  "children": [
+    {
+      "elmType": "span",
+      "attributes": {
+        "iconName": "=if(@currentField <= @now, 'Warning', 'Calendar')"
+      }
+    },
+    {
+      "elmType": "span",
+      "txtContent": "@currentField"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+> **Note:** \`604800000\` is 7 days in milliseconds. Use this for date arithmetic with \`@now\`.
+
+---
+
+## Template 4: Person Column with Profile Image
+
+Display a Person column as an avatar with name instead of plain text:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "align-items": "center",
+    "gap": "8px"
+  },
+  "children": [
+    {
+      "elmType": "img",
+      "style": {
+        "width": "32px",
+        "height": "32px",
+        "border-radius": "50%",
+        "object-fit": "cover"
+      },
+      "attributes": {
+        "src": "='/_layouts/15/userphoto.aspx?size=S&accountname=' + @currentField.email"
+      }
+    },
+    {
+      "elmType": "span",
+      "style": { "font-weight": "600" },
+      "txtContent": "@currentField.title"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 5: Priority Column with Color Dots
+
+Show a priority level as a colored dot + text:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": { "display": "flex", "align-items": "center", "gap": "8px" },
+  "children": [
+    {
+      "elmType": "div",
+      "style": {
+        "width": "10px",
+        "height": "10px",
+        "border-radius": "50%",
+        "background-color": "=if(@currentField == 'Critical', '#d13438', if(@currentField == 'High', '#ffaa44', if(@currentField == 'Medium', '#0078d4', '#76b900')))"
+      }
+    },
+    {
+      "elmType": "span",
+      "txtContent": "@currentField"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 6: Clickable URL Button
+
+Convert a hyperlink column into a styled action button:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "a",
+  "style": {
+    "display": "inline-flex",
+    "align-items": "center",
+    "gap": "6px",
+    "padding": "6px 14px",
+    "border-radius": "4px",
+    "background-color": "#0078d4",
+    "color": "#ffffff",
+    "text-decoration": "none",
+    "font-size": "13px"
+  },
+  "attributes": {
+    "href": "@currentField",
+    "target": "_blank"
+  },
+  "children": [
+    {
+      "elmType": "span",
+      "attributes": { "iconName": "OpenInNewWindow" }
+    },
+    {
+      "elmType": "span",
+      "txtContent": "Open Link"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 7: Yes/No Toggle with Icons
+
+Replace the default checkbox with a visual indicator:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "align-items": "center",
+    "gap": "6px",
+    "color": "=if(@currentField == true, '#107c10', '#a80000')"
+  },
+  "children": [
+    {
+      "elmType": "span",
+      "attributes": {
+        "iconName": "=if(@currentField == true, 'CheckboxComposite', 'Checkbox')"
+      },
+      "style": { "font-size": "18px" }
+    },
+    {
+      "elmType": "span",
+      "txtContent": "=if(@currentField == true, 'Complete', 'Incomplete')"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Template 8: Row Formatting \u2014 Highlight Overdue Items
+
+Apply background color to entire rows using view formatting:
+
+\\\`\\\`\\\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/view-formatting.schema.json",
+  "schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+  "additionalRowClass": "=if([$DueDate] <= @now && [$Status] != 'Completed', 'sp-css-backgroundColor-errorBackground', if([$DueDate] <= @now + 604800000 && [$Status] != 'Completed', 'sp-css-backgroundColor-warningBackground', ''))"
+}
+\\\`\\\`\\\`
+
+This highlights overdue rows in red and approaching-due rows in yellow, but leaves completed items unstyled.
+
+---
+
+## Excel-Style Expressions vs AST Syntax
+
+SharePoint supports two expression syntaxes. The v2 schema (2024+) supports **Excel-style expressions**, which are much easier to read:
+
+| Syntax | Example | Readability |
+|--------|---------|:-----------:|
+| **Excel-style** (recommended) | \`=if(@currentField == 'Active', 'green', 'red')\` | \u2705 Easy |
+| **AST (legacy)** | \`{"operator": "?", "operands": [{"operator": "==", "operands": ["@currentField", "Active"]}, "green", "red"]}\` | \u274C Verbose |
+
+> **Always use Excel-style expressions** unless you need to support SharePoint Server 2019, which only understands AST syntax.
+
+### Nesting If Statements
+
+\\\`\\\`\\\`
+=if(@currentField == 'Critical', '#d13438',
+  if(@currentField == 'High', '#ffaa44',
+    if(@currentField == 'Medium', '#0078d4', '#76b900')))
+\\\`\\\`\\\`
+
+---
+
+## Fluent UI Classes and Icons
+
+SharePoint provides predefined CSS classes and icons from [Fluent UI](https://developer.microsoft.com/fluentui#/styles/web/icons). Using these classes ensures your formatting looks consistent with the rest of SharePoint.
+
+### Useful Predefined Classes
+
+| Class | Effect |
+|-------|--------|
+| \`sp-css-backgroundColor-successBackground\` | Green background |
+| \`sp-css-backgroundColor-warningBackground\` | Yellow background |
+| \`sp-css-backgroundColor-errorBackground\` | Red background |
+| \`sp-css-color-GreenDark\` | Dark green text |
+| \`sp-field-severity--warning\` | Warning severity style |
+| \`sp-field-severity--good\` | Good severity style |
+
+### Popular Icon Names
+
+| Icon | \`iconName\` Value | Use Case |
+|------|------------------|----------|
+| \u2705 Checkmark | \`CompletedSolid\` | Task done |
+| \u26A0\uFE0F Warning | \`Warning\` | Overdue item |
+| \u2B50 Star | \`FavoriteStar\` | Featured/important |
+| \uD83D\uDCC5 Calendar | \`Calendar\` | Date fields |
+| \uD83D\uDC64 Person | \`Contact\` | People columns |
+| \uD83D\uDCC4 Document | \`Document\` | File references |
+
+Browse all icons at [Fluent UI Icons](https://developer.microsoft.com/fluentui#/styles/web/icons).
+
+---
+
+## Form Customization with JSON
+
+Customize the new/edit form layout by grouping fields into sections:
+
+1. Open list settings \u2192 **Forms** \u2192 **Configure layout**
+2. Select **Header**, **Body**, or **Footer**
+3. Paste your JSON
+
+### Example: Form Header
+
+\\\`\\\`\\\`json
+{
+  "elmType": "div",
+  "style": {
+    "display": "flex",
+    "align-items": "center",
+    "gap": "12px",
+    "padding": "12px",
+    "background-color": "#f3f2f1",
+    "border-bottom": "2px solid #0078d4"
+  },
+  "children": [
+    {
+      "elmType": "span",
+      "attributes": { "iconName": "TaskManager" },
+      "style": { "font-size": "24px", "color": "#0078d4" }
+    },
+    {
+      "elmType": "span",
+      "style": { "font-size": "18px", "font-weight": "600" },
+      "txtContent": "=if([$ID], 'Edit Task: ' + [$Title], 'New Task')"
+    }
+  ]
+}
+\\\`\\\`\\\`
+
+---
+
+## Debugging Tips
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Formatting doesn\\\u2019t appear | Invalid JSON syntax | Validate at jsonlint.com before pasting |
+| Column shows raw JSON text | Missing \`$schema\` or wrong schema URL | Use the v2 column-formatting schema |
+| Icons don\\\u2019t render | Wrong \`iconName\` value | Check the [Fluent UI icon catalog](https://developer.microsoft.com/fluentui#/styles/web/icons) |
+| Colors look wrong | Using hex instead of theme classes | Use \`sp-css-\` classes for theme-aware colors |
+| Person field shows \`[object]\` | Not accessing \`.title\` or \`.email\` | Use \`@currentField.title\` for display name |
+
+---
+
+## Frequently Asked Questions
+
+**Can I format any column type?**
+Almost. JSON formatting works with Text, Choice, Number, Date, Yes/No, Person, Hyperlink, Lookup, and Managed Metadata columns. It does NOT work with Calculated columns.
+
+**Does formatting change the actual data?**
+No. JSON formatting only changes how data **displays**. The underlying values remain unchanged. Other systems consuming the list data via REST or Graph API see the raw values.
+
+**Can different users see different formatting?**
+The formatting is applied to the view, so everyone who uses that view sees the same formatting. However, you can use \`@me\` in expressions to personalize the display per user (e.g., highlight items assigned to the current user).
+
+**Is there a character limit for the JSON?**
+Yes \u2014 the column formatting JSON limit is approximately **100 KB**. For complex formatting, keep your JSON concise by using Excel-style expressions instead of AST.
+
+**Where can I find more templates?**
+Check Microsoft\\\u2019s official community repository: [SharePoint List Formatting Samples](https://github.com/SharePoint/sp-dev-list-formatting) \u2014 it contains 300+ community-contributed templates.
+
+---
+
+## Your Next Steps
+
+1. **Start with Template 1** (Status Badges) \u2014 it works on any Choice column in 30 seconds
+2. **Combine templates** \u2014 apply different formatting to each column for a dashboard effect
+3. **Use row formatting** (Template 8) to highlight overdue or high-priority items across all columns
+4. **Explore form customization** to give your new/edit forms a branded, professional look
+
+For related guides:
+- [SharePoint CAML Query Guide](/blog/sharepoint-caml-query-complete-guide-examples-2026) \u2014 query the data behind your formatted views
+- [SPFx Web Part: CRUD Operations](/blog/building-spfx-web-part-crud-react-pnpjs-2026) \u2014 when formatting isn\\\u2019t enough, build a custom web part
+- [PnP PowerShell: 25 Admin Scripts](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) \u2014 deploy formatting at scale with PowerShell
+- [SharePoint Permissions Explained](/blog/sharepoint-permissions-explained-every-level-role-inheritance-2026) \u2014 understand who can edit list formatting
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '14 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'JSON Formatting', 'Column Formatting', 'View Formatting', 'No-Code'],
+  },
+  {
     id: '24',
     slug: 'sharepoint-agents-copilot-studio-build-deploy-guide-2026',
     title: 'SharePoint Agents: Build & Deploy AI Assistants with Copilot Studio (2026)',

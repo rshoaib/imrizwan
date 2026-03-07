@@ -1,11 +1,9 @@
 // Build-time script to generate rss.xml and sitemap.xml from blog data
 // Run: node scripts/generate-feeds.js
 
-import { readFileSync, writeFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+const { readFileSync, writeFileSync } = require('fs')
+const { join } = require('path')
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
 const rootDir = join(__dirname, '..')
 
 // Parse blog posts from the blog.ts source file

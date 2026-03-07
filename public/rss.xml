@@ -5,8 +5,24 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Mar 2026 03:20:22 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Mar 2026 15:28:06 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)</title>
+      <link>https://imrizwan.com/blog/sharepoint-list-formatting-json-complete-guide-2026</link>
+      <description>Transform plain SharePoint lists into visual dashboards using JSON formatting \u2014 column formatting, view formatting, row formatting, and form customization with 15 ready-to-use templates.</description>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-list-formatting-json-complete-guide-2026</guid>
+      <category>SharePoint</category>
+    </item>
+    <item>
+      <title>SharePoint Agents: Build &amp; Deploy AI Assistants with Copilot Studio (2026)</title>
+      <link>https://imrizwan.com/blog/sharepoint-agents-copilot-studio-build-deploy-guide-2026</link>
+      <description>Step-by-step guide to building SharePoint Agents with Copilot Studio \u2014 connect document libraries, configure knowledge sources, add Power Automate actions, and deploy to your sites.</description>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-agents-copilot-studio-build-deploy-guide-2026</guid>
+      <category>Microsoft 365</category>
+    </item>
     <item>
       <title>SharePoint CAML Query: Complete Guide with Examples (2026)</title>
       <link>https://imrizwan.com/blog/sharepoint-caml-query-complete-guide-examples-2026</link>
@@ -128,9 +144,9 @@
       <category>SPFx</category>
     </item>
     <item>
-      <title>Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data</title>
+      <title>Microsoft Graph API in SPFx: 10 Practical Examples for SharePoint Developers (2026)</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-spfx-user-profiles-teams</link>
-      <description>Learn how to use Microsoft Graph API in SharePoint Framework web parts — from setting up permissions to fetching user profiles, Teams memberships, and SharePoint site data with real code examples.</description>
+      <description>Master Microsoft Graph API inside SPFx web parts — 10 real examples covering user profiles, Teams data, calendar events, and site analytics with production-ready code.</description>
       <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-api-spfx-user-profiles-teams</guid>
       <category>SPFx</category>
