@@ -40,6 +40,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 | pnp powershell sharepoint admin scripts | ✅ Blog exists |
 | sharepoint site scripts site designs provisioning | ✅ Blog exists |
 | sharepoint permissions levels roles inheritance | ✅ Blog exists |
+| sharepoint caml query guide examples | ✅ Blog exists |
 
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
@@ -53,6 +54,8 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 9. "PnP PowerShell for SharePoint Online: 25 Scripts Every Admin Needs (2026)" ✅ Published
 10. "SharePoint Site Scripts & Site Designs: Automate Site Provisioning (2026)" ✅ Published
 11. "SharePoint Permissions Explained: Every Level, Role & Inheritance Pattern (2026)" ✅ Published
+12. "SharePoint CAML Query: Complete Guide with Examples (2026)" ✅ Published
+
 
 
 
