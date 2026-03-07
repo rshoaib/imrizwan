@@ -27,7 +27,7 @@ export default function AdSlot({ type = 'leaderboard' }: AdSlotProps) {
   }
 
   return (
-    <div className={`ad-slot ${type === 'rectangle' ? 'ad-slot--rectangle' : ''}`}>
+    <div className={`ad-slot ${type === 'rectangle' ? 'ad-slot--rectangle' : ''}`} aria-label="Advertisement">
       <ins
         className="adsbygoogle"
         style={{ display: 'block', width: '100%', height: '100%' }}

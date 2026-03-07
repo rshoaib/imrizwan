@@ -72,10 +72,15 @@ const staticPages = [
   { loc: '/tools/json-column-formatter', priority: '0.8', changefreq: 'monthly' },
   { loc: '/tools/guid-generator', priority: '0.8', changefreq: 'monthly' },
   { loc: '/tools/caml-query-builder', priority: '0.8', changefreq: 'monthly' },
+  { loc: '/tools/permission-matrix', priority: '0.8', changefreq: 'monthly' },
+  { loc: '/tools/rest-api-builder', priority: '0.8', changefreq: 'monthly' },
+  { loc: '/tools/site-script-generator', priority: '0.8', changefreq: 'monthly' },
+  { loc: '/tools/pnp-script-generator', priority: '0.8', changefreq: 'monthly' },
   { loc: '/projects', priority: '0.8', changefreq: 'monthly' },
   { loc: '/about', priority: '0.7', changefreq: 'monthly' },
   { loc: '/contact', priority: '0.6', changefreq: 'monthly' },
 ]
+
 
 const sitemapUrls = [
   ...staticPages.map(
