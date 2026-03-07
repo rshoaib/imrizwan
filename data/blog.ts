@@ -37,13 +37,13 @@ This guide covers the **7 highest-impact optimizations** you can apply today —
 
 Before optimizing anything, **measure**. Install Webpack Bundle Analyzer:
 
-\\\`\\\`\\\`bash
+\`\`\`bash
 npm install --save-dev webpack-bundle-analyzer
-\\\`\\\`\\\`
+\`\`\`
 
 Add it to your \\\`gulpfile.js\\\`:
 
-\\\`\\\`\\\`javascript
+\`\`\`javascript
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 build.configureWebpack.mergeConfig({
@@ -58,7 +58,7 @@ build.configureWebpack.mergeConfig({
     return generatedConfiguration;
   },
 });
-\\\`\\\`\\\`
+\`\`\`
 
 Run \\\`gulp bundle --ship\\\` and open \\\`bundle-report.html\\\`. You'll see a visual treemap of every dependency and its size.
 
@@ -78,16 +78,16 @@ Run \\\`gulp bundle --ship\\\` and open \\\`bundle-report.html\\\`. You'll see a
 **Tree shaking** eliminates unused code at build time — but only works with ES module imports. The biggest offender in SPFx projects is Fluent UI.
 
 **Bad** — imports the entire library (~300 KB):
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { Dropdown, TextField, PrimaryButton } from '@fluentui/react';
-\\\`\\\`\\\`
+\`\`\`
 
 **Good** — imports only what you use (~15 KB per component):
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { Dropdown } from '@fluentui/react/lib/Dropdown';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
-\\\`\\\`\\\`
+\`\`\`
 
 > **SPFx 1.22+ tip:** If you're using Fluent UI v9 with the new Heft build system, tree shaking works out of the box. Path imports are still recommended for v8.
 
@@ -99,7 +99,7 @@ import { PrimaryButton } from '@fluentui/react/lib/Button';
 
 Large third-party libraries like React, ReactDOM, and Fluent UI don't need to be bundled — SharePoint already loads them. Configure externals in \\\`config/config.json\\\`:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "externals": {
     "react": {
@@ -112,7 +112,7 @@ Large third-party libraries like React, ReactDOM, and Fluent UI don't need to be
     }
   }
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ### When to Use Externals
 
@@ -132,7 +132,7 @@ Large third-party libraries like React, ReactDOM, and Fluent UI don't need to be
 
 Load heavy components only when they're needed. This is the single biggest win for web parts that have multiple views or tabs.
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import * as React from 'react';
 
 // Lazy-load the chart component (only loaded when tab is clicked)
@@ -155,7 +155,7 @@ export default function DashboardWebPart(): React.ReactElement {
     </div>
   );
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ### What to Lazy-Load
 
@@ -173,7 +173,7 @@ export default function DashboardWebPart(): React.ReactElement {
 
 Every re-render in a SharePoint page costs CPU time. Use React's memoization APIs to skip unnecessary renders:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import * as React from 'react';
 
 // Memoize expensive list rendering
@@ -210,7 +210,7 @@ export default function TasksWebPart(): React.ReactElement {
     </div>
   );
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ### When to Memoize
 
@@ -227,7 +227,7 @@ export default function TasksWebPart(): React.ReactElement {
 
 If your web part makes 5 separate SharePoint REST calls on load, you're wasting round-trips. Use [PnPjs batching](/blog/building-spfx-web-part-crud-react-pnpjs-2026) to combine them:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { spfi, SPFx } from '@pnp/sp';
 import { createBatch } from '@pnp/sp/batching';
 import '@pnp/sp/lists';
@@ -253,7 +253,7 @@ async function loadDashboardData(context: any) {
 
   return { tasks, events, announcements };
 }
-\\\`\\\`\\\`
+\`\`\`
 
 **Impact:** 3 sequential API calls taking ~900ms total → 1 batched call taking ~350ms.
 
@@ -380,7 +380,7 @@ SharePoint lists are the backbone of most Microsoft 365 solutions \u2014 project
 
 Every formatting JSON follows this pattern:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -394,7 +394,7 @@ Every formatting JSON follows this pattern:
   "txtContent": "@currentField",
   "children": []
 }
-\\\`\\\`\\\`
+\`\`\`
 
 | Property | Purpose | Example |
 |----------|---------|---------|
@@ -420,7 +420,7 @@ Every formatting JSON follows this pattern:
 
 Turn a Choice column into colored pills with Fluent UI icons:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -448,7 +448,7 @@ Turn a Choice column into colored pills with Fluent UI icons:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -456,7 +456,7 @@ Turn a Choice column into colored pills with Fluent UI icons:
 
 Show a Number column (0\u2013100) as a visual bar that changes color based on progress:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -494,7 +494,7 @@ Show a Number column (0\u2013100) as a visual bar that changes color based on pr
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -502,7 +502,7 @@ Show a Number column (0\u2013100) as a visual bar that changes color based on pr
 
 Highlight a Date column red if overdue, yellow if due within 7 days, and green if future:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -528,7 +528,7 @@ Highlight a Date column red if overdue, yellow if due within 7 days, and green i
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 > **Note:** \`604800000\` is 7 days in milliseconds. Use this for date arithmetic with \`@now\`.
 
@@ -538,7 +538,7 @@ Highlight a Date column red if overdue, yellow if due within 7 days, and green i
 
 Display a Person column as an avatar with name instead of plain text:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -567,7 +567,7 @@ Display a Person column as an avatar with name instead of plain text:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -575,7 +575,7 @@ Display a Person column as an avatar with name instead of plain text:
 
 Show a priority level as a colored dot + text:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -596,7 +596,7 @@ Show a priority level as a colored dot + text:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -604,7 +604,7 @@ Show a priority level as a colored dot + text:
 
 Convert a hyperlink column into a styled action button:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "a",
@@ -634,7 +634,7 @@ Convert a hyperlink column into a styled action button:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -642,7 +642,7 @@ Convert a hyperlink column into a styled action button:
 
 Replace the default checkbox with a visual indicator:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json",
   "elmType": "div",
@@ -666,7 +666,7 @@ Replace the default checkbox with a visual indicator:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -674,13 +674,13 @@ Replace the default checkbox with a visual indicator:
 
 Apply background color to entire rows using view formatting:
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/view-formatting.schema.json",
   "schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
   "additionalRowClass": "=if([$DueDate] <= @now && [$Status] != 'Completed', 'sp-css-backgroundColor-errorBackground', if([$DueDate] <= @now + 604800000 && [$Status] != 'Completed', 'sp-css-backgroundColor-warningBackground', ''))"
 }
-\\\`\\\`\\\`
+\`\`\`
 
 This highlights overdue rows in red and approaching-due rows in yellow, but leaves completed items unstyled.
 
@@ -699,11 +699,11 @@ SharePoint supports two expression syntaxes. The v2 schema (2024+) supports **Ex
 
 ### Nesting If Statements
 
-\\\`\\\`\\\`
+\`\`\`
 =if(@currentField == 'Critical', '#d13438',
   if(@currentField == 'High', '#ffaa44',
     if(@currentField == 'Medium', '#0078d4', '#76b900')))
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -747,7 +747,7 @@ Customize the new/edit form layout by grouping fields into sections:
 
 ### Example: Form Header
 
-\\\`\\\`\\\`json
+\`\`\`json
 {
   "elmType": "div",
   "style": {
@@ -771,7 +771,7 @@ Customize the new/edit form layout by grouping fields into sections:
     }
   ]
 }
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -869,13 +869,13 @@ Before you start building, ensure you have:
 2. Click **Create** \u2192 **New Agent**
 3. Configure the basics:
 
-\\\`\\\`\\\`
+\`\`\`
 Name:           HR Policy Assistant
 Description:    Answers employee questions about HR policies, benefits, and leave procedures
 Instructions:   You are an HR assistant for Contoso. Answer questions using only the
                 documents in the connected SharePoint library. If you don't know the
                 answer, say "I don't have that information" and suggest contacting HR.
-\\\`\\\`\\\`
+\`\`\`
 
 **Pro tip:** Be specific in the instructions. Tell the agent what NOT to do \u2014 this reduces hallucination. Include the department name, company name, and scope boundaries.
 
@@ -889,9 +889,9 @@ This is the most important step. The agent\u2019s responses are only as good as 
 2. Select **SharePoint** as the source type
 3. Enter your SharePoint site URL:
 
-\\\`\\\`\\\`
+\`\`\`
 https://contoso.sharepoint.com/sites/HR-Policies
-\\\`\\\`\\\`
+\`\`\`
 
 ### What You Can Connect
 
@@ -919,11 +919,11 @@ Topics define how your agent handles specific types of questions.
 
 Every agent has a system topic that fires when no other topic matches. Customize this:
 
-\\\`\\\`\\\`
+\`\`\`
 Fallback message:
 "I can help with HR policies including leave, benefits, compliance, and onboarding.
 Could you rephrase your question? If I still can't help, contact hr@contoso.com."
-\\\`\\\`\\\`
+\`\`\`
 
 ### Creating a Custom Topic
 
@@ -937,9 +937,9 @@ Example: **Leave Balance Inquiry**
 3. Add a **Generative Answers** node that searches the connected SharePoint library
 4. Add a follow-up message:
 
-\\\`\\\`\\\`
+\`\`\`
 "For your exact balance, check the Leave Tracker list or contact HR at hr@contoso.com."
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -952,7 +952,7 @@ This is where agents go from "answering questions" to "getting things done."
 1. In your topic, click **Add node** \u2192 **Call an action** \u2192 **Power Automate**
 2. Create a new flow:
 
-\\\`\\\`\\\`
+\`\`\`
 Trigger:        When called from Copilot Studio
 Input:          EmployeeName (text), StartDate (date), EndDate (date), LeaveType (text)
 Actions:
@@ -964,7 +964,7 @@ Actions:
   2. Send approval email to manager
   3. Post in Teams channel #hr-requests
 Output:         RequestID (number)
-\\\`\\\`\\\`
+\`\`\`
 
 3. Map the flow inputs to agent variables collected during the conversation
 4. Use the flow output to confirm: "Your leave request #{RequestID} has been submitted."
@@ -2806,9 +2806,9 @@ This cheat sheet is the **definitive reference** for the SharePoint REST API in 
 
 Every SharePoint REST API call follows this pattern:
 
-\\\`\\\`\\\`
+\`\`\`
 https://{tenant}.sharepoint.com/sites/{site}/_api/web/{resource}
-\\\`\\\`\\\`
+\`\`\`
 
 | Part | Example | Description |
 |------|---------|-------------|
@@ -2822,47 +2822,47 @@ https://{tenant}.sharepoint.com/sites/{site}/_api/web/{resource}
 ## List & Library Endpoints
 
 ### Get All Lists
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists
-\\\`\\\`\\\`
+\`\`\`
 Returns every list and library in the site, including hidden system lists.
 
 ### Get a List by Title
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Documents')
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get a List by GUID
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists(guid'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get List Fields (Columns)
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/fields
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get List Content Types
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Documents')/contenttypes
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
 ## List Item Endpoints (CRUD)
 
 ### Read: Get All Items
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items
-\\\`\\\`\\\`
+\`\`\`
 
 ### Read: Get a Single Item
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items(42)
-\\\`\\\`\\\`
+\`\`\`
 
 ### Create: Add a New Item
-\\\`\\\`\\\`
+\`\`\`
 POST /_api/web/lists/getbytitle('Tasks')/items
 
 Headers:
@@ -2875,12 +2875,12 @@ Body:
   "__metadata": { "type": "SP.Data.TasksListItem" },
   "Title": "New Task"
 }
-\\\`\\\`\\\`
+\`\`\`
 
 **Tip:** The \\\`type\\\` value follows the pattern \\\`SP.Data.{ListName}ListItem\\\`. For a list named "Project Tasks", it becomes \\\`SP.Data.Project_x0020_TasksListItem\\\` (spaces become \\\`_x0020_\\\`).
 
 ### Update: Modify an Existing Item
-\\\`\\\`\\\`
+\`\`\`
 POST /_api/web/lists/getbytitle('Tasks')/items(42)
 
 Headers:
@@ -2895,19 +2895,19 @@ Body:
   "__metadata": { "type": "SP.Data.TasksListItem" },
   "Title": "Updated Task Title"
 }
-\\\`\\\`\\\`
+\`\`\`
 
 > **Why POST instead of PATCH?** SharePoint REST uses \\\`X-HTTP-Method: MERGE\\\` on a POST verb for compatibility. Using \\\`IF-MATCH: *\\\` skips the ETag check.
 
 ### Delete: Remove an Item
-\\\`\\\`\\\`
+\`\`\`
 POST /_api/web/lists/getbytitle('Tasks')/items(42)
 
 Headers:
   X-RequestDigest: {formDigestValue}
   IF-MATCH: *
   X-HTTP-Method: DELETE
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
@@ -2916,15 +2916,15 @@ Headers:
 This is where the real power is. OData parameters let you filter, sort, and shape your data **server-side** before it hits the wire.
 
 ### $select — Choose Which Fields to Return
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items?$select=Title,Status,DueDate
-\\\`\\\`\\\`
+\`\`\`
 **Always use \\\`$select\\\`.** Without it, SharePoint returns every field — including hidden ones — which wastes bandwidth and processing.
 
 ### $filter — Server-Side Filtering
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items?$filter=Status eq 'Active'
-\\\`\\\`\\\`
+\`\`\`
 
 | Operator | Meaning | Example |
 |----------|---------|---------|
@@ -2940,87 +2940,87 @@ GET /_api/web/lists/getbytitle('Tasks')/items?$filter=Status eq 'Active'
 | \\\`substringof\\\` | String contains | \\\`substringof('report', Title)\\\` |
 
 ### $expand — Include Lookup & Person Fields
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items
   ?$select=Title,AssignedTo/Title,AssignedTo/EMail
   &$expand=AssignedTo
-\\\`\\\`\\\`
+\`\`\`
 Without \\\`$expand\\\`, lookup and person fields only return the ID. Use \\\`$expand\\\` to get the display name, email, or other lookup properties.
 
 ### $orderby — Sort Results
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items?$orderby=Created desc
-\\\`\\\`\\\`
+\`\`\`
 Add \\\`desc\\\` for descending order. Default is ascending (\\\`asc\\\`).
 
 ### $top — Limit Results
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items?$top=10
-\\\`\\\`\\\`
+\`\`\`
 The default page size is 100 items. Maximum is **5,000** per request, but stay under 100 for performance.
 
 ### Combining All Parameters
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/lists/getbytitle('Tasks')/items
   ?$select=Title,Status,DueDate,AssignedTo/Title
   &$filter=Status eq 'Active' and DueDate lt '2026-12-31'
   &$expand=AssignedTo
   &$orderby=DueDate asc
   &$top=25
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
 ## Site & User Endpoints
 
 ### Get Site Information
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get Current User
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/currentuser
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get All Site Users
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/siteusers
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get SharePoint Groups
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/sitegroups
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get Site Content Types
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/contenttypes
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
 ## File & Folder Endpoints
 
 ### Get Files in a Folder
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')/Files
-\\\`\\\`\\\`
+\`\`\`
 
 ### Get Folder Properties
-\\\`\\\`\\\`
+\`\`\`
 GET /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')
-\\\`\\\`\\\`
+\`\`\`
 
 ### Upload a File (< 2 MB)
-\\\`\\\`\\\`
+\`\`\`
 POST /_api/web/GetFolderByServerRelativeUrl('/sites/MySite/Shared Documents')
   /Files/add(url='filename.docx', overwrite=true)
 
 Headers:
   X-RequestDigest: {formDigestValue}
 Body: [binary file content]
-\\\`\\\`\\\`
+\`\`\`
 
 For files **> 2 MB**, use the chunked upload approach with \\\`StartUpload\\\`, \\\`ContinueUpload\\\`, and \\\`FinishUpload\\\`.
 
@@ -3031,11 +3031,11 @@ For files **> 2 MB**, use the chunked upload approach with \\\`StartUpload\\\`, 
 ### In SPFx Web Parts (Automatic)
 SPFx handles authentication for you. Use \\\`this.context.spHttpClient\\\` or PnPjs — no tokens needed:
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 import { spfi, SPFx } from "@pnp/sp";
 const sp = spfi().using(SPFx(this.context));
 const items = await sp.web.lists.getByTitle("Tasks").items();
-\\\`\\\`\\\`
+\`\`\`
 
 ### External Apps (Microsoft Entra ID)
 Register an app in **Microsoft Entra ID** (Azure AD) and use OAuth 2.0:

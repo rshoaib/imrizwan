@@ -43,6 +43,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 | sharepoint caml query guide examples | ✅ Blog exists |
 
 | sharepoint list formatting json templates | ✅ Blog exists |
+| spfx performance optimization bundle lazy loading | ✅ Blog exists |
 
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
@@ -59,6 +60,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 12. "SharePoint CAML Query: Complete Guide with Examples (2026)" ✅ Published
 13. "SharePoint Agents: Build & Deploy AI Assistants with Copilot Studio (2026)" ✅ Published
 14. "SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)" ✅ Published
+15. "SPFx Performance Optimization: Bundle Size, Lazy Loading & Best Practices (2026)" ✅ Published
 
 
 
