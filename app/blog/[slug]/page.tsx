@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getAllPosts, getPostBySlug } from '@/lib/blogService'
+import { extractFaqItems, buildFaqJsonLd } from '@/lib/faqSchema'
 import BlogPostClient from './BlogPostClient'
 
 export const revalidate = 60 // ISR: re-fetch from Supabase every 60 seconds
@@ -85,12 +86,22 @@ export default async function BlogPostPage({ params }: Props) {
     },
   }
 
+  // FAQPage JSON-LD — auto-extracted from FAQ section in content
+  const faqItems = extractFaqItems(post.content)
+  const faqJsonLd = buildFaqJsonLd(faqItems)
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       <BlogPostClient post={post} allPosts={allPosts} />
     </>
   )
