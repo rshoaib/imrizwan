@@ -15,7 +15,6 @@ import RestApiBuilder from './pages/RestApiBuilder'
 import SiteScriptGenerator from './pages/SiteScriptGenerator'
 import PnPScriptGenerator from './pages/PnPScriptGenerator'
 import Tasks from './pages/Tasks'
-import TaskBoard from './pages/TaskBoard'
 import PinGate from './components/PinGate'
 import GoogleAnalytics from './components/GoogleAnalytics'
 
@@ -40,7 +39,6 @@ function App() {
           <Route path="/tools/pnp-script-generator" element={<PnPScriptGenerator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tasks" element={<PinGate><Tasks /></PinGate>} />
-          <Route path="/board" element={<PinGate><TaskBoard /></PinGate>} />
         </Routes>
       </Layout>
     </BrowserRouter>
