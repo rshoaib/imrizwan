@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Mar 2026 00:25:37 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Mar 2026 00:30:47 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>SharePoint CAML Query: Complete Guide with Examples (2026)</title>
+      <link>https://imrizwan.com/blog/sharepoint-caml-query-complete-guide-examples-2026</link>
+      <description>Master CAML queries for SharePoint Online \u2014 syntax, operators, field types, joins, and ready-to-use examples for every common scenario.</description>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-caml-query-complete-guide-examples-2026</guid>
+      <category>SharePoint</category>
+    </item>
     <item>
       <title>SharePoint Permissions Explained: Every Level, Role &amp; Inheritance Pattern (2026)</title>
       <link>https://imrizwan.com/blog/sharepoint-permissions-explained-every-level-role-inheritance-2026</link>

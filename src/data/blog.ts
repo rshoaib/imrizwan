@@ -14,6 +14,401 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '23',
+    slug: 'sharepoint-caml-query-complete-guide-examples-2026',
+    title: 'SharePoint CAML Query: Complete Guide with Examples (2026)',
+    excerpt:
+      'Master CAML queries for SharePoint Online \u2014 syntax, operators, field types, joins, and ready-to-use examples for every common scenario.',
+    image: '/images/blog/sharepoint-caml-query-guide.png',
+    content: `
+## What Is CAML and Why Does It Still Matter in 2026?
+
+CAML (Collaborative Application Markup Language) is SharePoint\u2019s native XML-based query language. Despite Microsoft pushing REST and Graph APIs, CAML remains the most powerful way to query SharePoint lists and libraries when you need:
+
+- **Complex filters** with nested AND/OR logic
+- **Specific field projections** (return only the columns you need)
+- **Server-side sorting and pagination**
+- **Queries inside SPFx web parts** and Power Automate flows
+
+If you\u2019ve ever tried to build a multi-condition filter using REST API\u2019s \`\$filter\` parameter, you know how limited it is. CAML gives you full control.
+
+> **Shortcut:** Use our free [CAML Query Builder](/tools/caml-query-builder) to build queries visually \u2014 select fields, operators, and values, then copy the generated XML. No memorization needed.
+
+---
+
+## CAML Query Structure
+
+Every CAML query follows this skeleton:
+
+\`\`\`xml
+<View>
+  <Query>
+    <Where>
+      <!-- Your filter conditions go here -->
+    </Where>
+    <OrderBy>
+      <FieldRef Name="Created" Ascending="FALSE" />
+    </OrderBy>
+  </Query>
+  <ViewFields>
+    <FieldRef Name="Title" />
+    <FieldRef Name="Status" />
+  </ViewFields>
+  <RowLimit>100</RowLimit>
+</View>
+\`\`\`
+
+| Element | Purpose | Required? |
+|---------|---------|:---------:|
+| \`<View>\` | Root element | \u2705 Yes |
+| \`<Query>\` | Contains Where + OrderBy | \u2705 Yes |
+| \`<Where>\` | Filter conditions | Optional |
+| \`<OrderBy>\` | Sort results | Optional |
+| \`<ViewFields>\` | Columns to return (projection) | Optional |
+| \`<RowLimit>\` | Max items to return | Optional |
+
+---
+
+## Comparison Operators
+
+### Basic Operators
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| \`<Eq>\` | Equals | Status = "Active" |
+| \`<Neq>\` | Not equals | Status \u2260 "Archived" |
+| \`<Gt>\` | Greater than | Priority > 3 |
+| \`<Geq>\` | Greater than or equal | DueDate \u2265 Today |
+| \`<Lt>\` | Less than | Score < 50 |
+| \`<Leq>\` | Less than or equal | Budget \u2264 10000 |
+| \`<Contains>\` | Contains text | Title contains "Report" |
+| \`<BeginsWith>\` | Starts with | FileLeafRef begins with "2026" |
+| \`<IsNull>\` | Field is empty | AssignedTo is null |
+| \`<IsNotNull>\` | Field is not empty | DueDate is not null |
+| \`<In>\` | Value in list | Status in ("Active", "Pending") |
+
+### Example: Simple Equality Filter
+
+\`\`\`xml
+<View>
+  <Query>
+    <Where>
+      <Eq>
+        <FieldRef Name="Status" />
+        <Value Type="Choice">Active</Value>
+      </Eq>
+    </Where>
+  </Query>
+</View>
+\`\`\`
+
+---
+
+## Field Types and Value Types
+
+Getting the \`Type\` attribute right is critical. A wrong type will silently return zero results.
+
+| SharePoint Field Type | CAML Value Type | Example |
+|----------------------|----------------|---------|
+| Single line of text | \`Text\` | \`<Value Type="Text">Report</Value>\` |
+| Multiple lines | \`Note\` | \`<Value Type="Note">Description</Value>\` |
+| Number | \`Number\` | \`<Value Type="Number">42</Value>\` |
+| Currency | \`Currency\` | \`<Value Type="Currency">1500.00</Value>\` |
+| Date/Time | \`DateTime\` | \`<Value Type="DateTime">2026-03-07T00:00:00Z</Value>\` |
+| Yes/No | \`Boolean\` | \`<Value Type="Boolean">1</Value>\` (1=Yes, 0=No) |
+| Choice | \`Choice\` | \`<Value Type="Choice">High</Value>\` |
+| Person/Group | \`Integer\` | \`<Value Type="Integer">15</Value>\` (user ID) |
+| Lookup | \`Lookup\` | \`<Value Type="Lookup">Marketing</Value>\` |
+| Managed Metadata | \`Text\` | Use the term label as text |
+
+---
+
+## Combining Conditions: AND / OR
+
+### AND: Both Conditions Must Be True
+
+\`\`\`xml
+<Where>
+  <And>
+    <Eq>
+      <FieldRef Name="Status" />
+      <Value Type="Choice">Active</Value>
+    </Eq>
+    <Geq>
+      <FieldRef Name="DueDate" />
+      <Value Type="DateTime"><Today /></Value>
+    </Geq>
+  </And>
+</Where>
+\`\`\`
+
+### OR: Either Condition Can Be True
+
+\`\`\`xml
+<Where>
+  <Or>
+    <Eq>
+      <FieldRef Name="Priority" />
+      <Value Type="Choice">High</Value>
+    </Eq>
+    <Eq>
+      <FieldRef Name="Priority" />
+      <Value Type="Choice">Critical</Value>
+    </Eq>
+  </Or>
+</Where>
+\`\`\`
+
+### Nesting: Complex Multi-Condition Queries
+
+CAML requires binary nesting \u2014 each \`<And>\` or \`<Or>\` takes exactly **two** children. For three+ conditions, nest them:
+
+\`\`\`xml
+<Where>
+  <And>
+    <Eq>
+      <FieldRef Name="Status" />
+      <Value Type="Choice">Active</Value>
+    </Eq>
+    <And>
+      <Geq>
+        <FieldRef Name="DueDate" />
+        <Value Type="DateTime"><Today /></Value>
+      </Geq>
+      <Eq>
+        <FieldRef Name="Priority" />
+        <Value Type="Choice">High</Value>
+      </Eq>
+    </And>
+  </And>
+</Where>
+\`\`\`
+
+> **Tip:** This binary nesting gets messy fast with 4+ conditions. Use our [CAML Query Builder](/tools/caml-query-builder) to generate the nested XML automatically.
+
+---
+
+## Ready-to-Use Examples
+
+### 1. Active Items Due This Week
+
+\`\`\`xml
+<View>
+  <Query>
+    <Where>
+      <And>
+        <Eq>
+          <FieldRef Name="Status" />
+          <Value Type="Choice">In Progress</Value>
+        </Eq>
+        <And>
+          <Geq>
+            <FieldRef Name="DueDate" />
+            <Value Type="DateTime"><Today /></Value>
+          </Geq>
+          <Leq>
+            <FieldRef Name="DueDate" />
+            <Value Type="DateTime"><Today OffsetDays="7" /></Value>
+          </Leq>
+        </And>
+      </And>
+    </Where>
+    <OrderBy>
+      <FieldRef Name="DueDate" Ascending="TRUE" />
+    </OrderBy>
+  </Query>
+  <RowLimit>50</RowLimit>
+</View>
+\`\`\`
+
+### 2. Documents Modified in the Last 30 Days
+
+\`\`\`xml
+<View Scope="RecursiveAll">
+  <Query>
+    <Where>
+      <Geq>
+        <FieldRef Name="Modified" />
+        <Value Type="DateTime"><Today OffsetDays="-30" /></Value>
+      </Geq>
+    </Where>
+    <OrderBy>
+      <FieldRef Name="Modified" Ascending="FALSE" />
+    </OrderBy>
+  </Query>
+  <ViewFields>
+    <FieldRef Name="FileLeafRef" />
+    <FieldRef Name="Modified" />
+    <FieldRef Name="Editor" />
+    <FieldRef Name="File_x0020_Size" />
+  </ViewFields>
+</View>
+\`\`\`
+
+### 3. Items Assigned to the Current User
+
+\`\`\`xml
+<View>
+  <Query>
+    <Where>
+      <Eq>
+        <FieldRef Name="AssignedTo" />
+        <Value Type="Integer"><UserID /></Value>
+      </Eq>
+    </Where>
+  </Query>
+</View>
+\`\`\`
+
+### 4. Items Where a Choice Column Matches Multiple Values
+
+\`\`\`xml
+<View>
+  <Query>
+    <Where>
+      <In>
+        <FieldRef Name="Department" />
+        <Values>
+          <Value Type="Choice">Marketing</Value>
+          <Value Type="Choice">Sales</Value>
+          <Value Type="Choice">HR</Value>
+        </Values>
+      </In>
+    </Where>
+  </Query>
+</View>
+\`\`\`
+
+### 5. Files Larger Than 10 MB
+
+\`\`\`xml
+<View Scope="RecursiveAll">
+  <Query>
+    <Where>
+      <Gt>
+        <FieldRef Name="File_x0020_Size" />
+        <Value Type="Number">10485760</Value>
+      </Gt>
+    </Where>
+    <OrderBy>
+      <FieldRef Name="File_x0020_Size" Ascending="FALSE" />
+    </OrderBy>
+  </Query>
+</View>
+\`\`\`
+
+---
+
+## Using CAML in PowerShell
+
+\`\`\`powershell
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/Project" -Interactive
+
+\$caml = @"
+<View>
+  <Query>
+    <Where>
+      <And>
+        <Eq>
+          <FieldRef Name='Status' />
+          <Value Type='Choice'>Active</Value>
+        </Eq>
+        <Geq>
+          <FieldRef Name='DueDate' />
+          <Value Type='DateTime'><Today /></Value>
+        </Geq>
+      </And>
+    </Where>
+  </Query>
+  <RowLimit>100</RowLimit>
+</View>
+"@
+
+\$items = Get-PnPListItem -List "Tasks" -Query \$caml
+\$items | ForEach-Object {
+  Write-Host "\$(\$_.FieldValues.Title) - Due: \$(\$_.FieldValues.DueDate)"
+}
+\`\`\`
+
+For more PowerShell scripts, see my [PnP PowerShell: 25 Admin Scripts](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026).
+
+---
+
+## Using CAML with the REST API
+
+\`\`\`javascript
+// SPFx or JavaScript context
+const camlXml = [
+  "<View><Query><Where>",
+  "<Eq><FieldRef Name='Status' />",
+  "<Value Type='Choice'>Active</Value></Eq>",
+  "</Where></Query><RowLimit>50</RowLimit></View>"
+].join("");
+
+const response = await sp.web.lists
+  .getByTitle("Tasks")
+  .getItemsByCAMLQuery({ ViewXml: camlXml });
+\`\`\`
+
+For the full REST API reference, see our [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-every-endpoint-2026).
+
+---
+
+## CAML vs REST \$filter vs Microsoft Graph
+
+| Feature | CAML | REST \$filter | Graph API |
+|---------|:-:|:-:|:-:|
+| Complex AND/OR nesting | \u2705 Unlimited | \u26A0\uFE0F Limited | \u26A0\uFE0F Limited |
+| Date offsets (Today +7) | \u2705 Built-in | \u274C Manual | \u274C Manual |
+| Current user filter | \u2705 <UserID /> | \u274C Manual | \u2705 /me |
+| Recursive folder search | \u2705 Scope=RecursiveAll | \u274C No | \u274C No |
+| Managed metadata | \u2705 Yes | \u26A0\uFE0F Tricky | \u274C No |
+| Learning curve | \u274C Steep (XML) | \u2705 Easy | \u2705 Easy |
+| Modern tooling support | \u26A0\uFE0F SPFx/PnP only | \u2705 Universal | \u2705 Universal |
+
+**Use CAML when** you need complex filters, date offsets, recursive folder search, or current-user context. **Use REST/Graph** for simple queries and cross-platform integrations.
+
+---
+
+## Frequently Asked Questions
+
+**Is CAML deprecated in SharePoint Online?**
+No. CAML is fully supported in SharePoint Online as of 2026. Microsoft has not announced any deprecation. It is used internally by SharePoint\u2019s own views, and PnP PowerShell uses it extensively via the \`-Query\` parameter.
+
+**Why does my CAML query return zero results?**
+The most common cause is a wrong \`Type\` attribute in the \`<Value>\` element. For example, using \`Type="Text"\` on a Choice column will silently return nothing. Always match the Value type to the actual SharePoint field type.
+
+**Can I use CAML with Microsoft Graph API?**
+No. Microsoft Graph does not support CAML queries. You must use Graph\u2019s own \`\$filter\` syntax. If you need CAML\u2019s power, use the SharePoint REST API (\`/_api/web/lists/getbytitle('List')/GetItems\`) instead.
+
+**How do I query a Person/Group field?**
+Use \`Type="Integer"\` with the user\u2019s ID, or use \`<UserID />\` for the current user. You cannot query by email directly in CAML \u2014 use the user ID lookup.
+
+**What is the maximum RowLimit?**
+There is no hard maximum, but SharePoint enforces a **list view threshold of 5,000 items**. Queries that scan more than 5,000 items may be throttled. Use indexed columns in your \`<Where>\` clause to avoid this.
+
+---
+
+## Your Next Steps
+
+1. **Start with simple queries** \u2014 single Eq/Neq filters on indexed columns
+2. **Build complex queries visually** with our free [CAML Query Builder](/tools/caml-query-builder) \u2014 select fields, operators, and logic, then copy production-ready XML
+3. **Test in PowerShell first** using \`Get-PnPListItem -Query\` before embedding in SPFx code
+4. **Index your filter columns** to avoid the 5,000-item threshold
+
+For related guides:
+- [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-every-endpoint-2026) \u2014 every endpoint you need
+- [PnP PowerShell: 25 Admin Scripts](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) \u2014 run CAML queries from the terminal
+- [SharePoint Column Formatting](/blog/sharepoint-column-formatting-json) \u2014 style the results of your queries
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '12 min read',
+    category: 'SharePoint',
+    tags: ['SharePoint', 'CAML', 'Query', 'REST API', 'PowerShell'],
+  },
+
+  {
     id: '22',
     slug: 'sharepoint-permissions-explained-every-level-role-inheritance-2026',
     title: 'SharePoint Permissions Explained: Every Level, Role & Inheritance Pattern (2026)',
