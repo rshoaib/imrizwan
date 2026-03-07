@@ -14,6 +14,244 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '24',
+    slug: 'sharepoint-agents-copilot-studio-build-deploy-guide-2026',
+    title: 'SharePoint Agents: Build & Deploy AI Assistants with Copilot Studio (2026)',
+    excerpt:
+      'Step-by-step guide to building SharePoint Agents with Copilot Studio \u2014 connect document libraries, configure knowledge sources, add Power Automate actions, and deploy to your sites.',
+    image: '/images/blog/sharepoint-agents-hero.png',
+    content: `
+## What Are SharePoint Agents?
+
+SharePoint Agents are AI assistants that live directly inside your SharePoint sites. They use your organization\u2019s documents, lists, and pages as their knowledge base to answer employee questions, summarize documents, and automate workflows \u2014 all without leaving SharePoint.
+
+Unlike generic chatbots, SharePoint Agents are **grounded in your content**. They respect SharePoint permissions (a user can only get answers based on documents they have access to), and they\u2019re built using Microsoft Copilot Studio \u2014 no coding required.
+
+### Why This Matters in 2026
+
+- **AI in SharePoint** (formerly Knowledge Agent) is now GA in SharePoint Online
+- **Copilot Studio** supports direct deployment to SharePoint sites
+- **Power Automate integration** lets agents take action \u2014 create tickets, send emails, update lists
+- **Permission-aware**: agents respect existing SharePoint security trimming
+
+> **Related:** If you\u2019re new to Copilot Studio, start with our [Copilot Studio: Build AI Assistants for SharePoint](/blog/copilot-studio-build-ai-assistants-sharepoint-sites-2026) overview first.
+
+---
+
+## Prerequisites
+
+Before you start building, ensure you have:
+
+| Requirement | Details |
+|-------------|---------|
+| **Microsoft 365 license** | E3/E5, or Microsoft 365 Copilot add-on |
+| **Copilot Studio access** | Via [copilotstudio.microsoft.com](https://copilotstudio.microsoft.com) |
+| **SharePoint permissions** | Site Owner or Site Collection Admin on target site |
+| **Power Automate** | Required only if adding workflow actions |
+
+---
+
+## Step 1: Create Your Agent in Copilot Studio
+
+1. Go to [Copilot Studio](https://copilotstudio.microsoft.com)
+2. Click **Create** \u2192 **New Agent**
+3. Configure the basics:
+
+\\\`\\\`\\\`
+Name:           HR Policy Assistant
+Description:    Answers employee questions about HR policies, benefits, and leave procedures
+Instructions:   You are an HR assistant for Contoso. Answer questions using only the
+                documents in the connected SharePoint library. If you don't know the
+                answer, say "I don't have that information" and suggest contacting HR.
+\\\`\\\`\\\`
+
+**Pro tip:** Be specific in the instructions. Tell the agent what NOT to do \u2014 this reduces hallucination. Include the department name, company name, and scope boundaries.
+
+---
+
+## Step 2: Connect SharePoint as a Knowledge Source
+
+This is the most important step. The agent\u2019s responses are only as good as the content you connect.
+
+1. In Copilot Studio, go to **Knowledge** \u2192 **Add Knowledge**
+2. Select **SharePoint** as the source type
+3. Enter your SharePoint site URL:
+
+\\\`\\\`\\\`
+https://contoso.sharepoint.com/sites/HR-Policies
+\\\`\\\`\\\`
+
+### What You Can Connect
+
+| Source Type | How to Add | Best For |
+|-------------|-----------|----------|
+| **Entire site** | Enter the site URL | Broad Q&A across all documents |
+| **Document library** | Enter library URL | Focused answers from specific docs |
+| **Specific folder** | Enter folder path | Narrow scope (e.g., only 2026 policies) |
+| **SharePoint list** | Enter list URL | Structured data queries (up to 15 lists) |
+
+### Knowledge Source Best Practices
+
+- **Curate your content first.** Remove outdated documents. The agent will cite 2019 policies if they\u2019re still in the library.
+- **Use descriptive filenames.** \\\`2026-Leave-Policy-v3.pdf\\\` is better than \\\`doc1.pdf\\\`.
+- **Add metadata.** Tag documents with categories, departments, and dates. The agent uses metadata for better retrieval.
+- **Keep it focused.** Connecting your entire tenant sounds powerful but produces vague answers. Start with one library.
+
+---
+
+## Step 3: Configure Topics and Prompts
+
+Topics define how your agent handles specific types of questions.
+
+### Default Fallback Topic
+
+Every agent has a system topic that fires when no other topic matches. Customize this:
+
+\\\`\\\`\\\`
+Fallback message:
+"I can help with HR policies including leave, benefits, compliance, and onboarding.
+Could you rephrase your question? If I still can't help, contact hr@contoso.com."
+\\\`\\\`\\\`
+
+### Creating a Custom Topic
+
+Example: **Leave Balance Inquiry**
+
+1. Go to **Topics** \u2192 **New Topic** \u2192 **From blank**
+2. Add trigger phrases:
+   - "How many leave days do I have?"
+   - "What is my PTO balance?"
+   - "Check my vacation days"
+3. Add a **Generative Answers** node that searches the connected SharePoint library
+4. Add a follow-up message:
+
+\\\`\\\`\\\`
+"For your exact balance, check the Leave Tracker list or contact HR at hr@contoso.com."
+\\\`\\\`\\\`
+
+---
+
+## Step 4: Add Power Automate Actions
+
+This is where agents go from "answering questions" to "getting things done."
+
+### Example: Create a Leave Request
+
+1. In your topic, click **Add node** \u2192 **Call an action** \u2192 **Power Automate**
+2. Create a new flow:
+
+\\\`\\\`\\\`
+Trigger:        When called from Copilot Studio
+Input:          EmployeeName (text), StartDate (date), EndDate (date), LeaveType (text)
+Actions:
+  1. Create item in SharePoint list "Leave Requests"
+     - Title: {EmployeeName} - {LeaveType}
+     - StartDate: {StartDate}
+     - EndDate: {EndDate}
+     - Status: "Pending Approval"
+  2. Send approval email to manager
+  3. Post in Teams channel #hr-requests
+Output:         RequestID (number)
+\\\`\\\`\\\`
+
+3. Map the flow inputs to agent variables collected during the conversation
+4. Use the flow output to confirm: "Your leave request #{RequestID} has been submitted."
+
+> **Related:** For more Power Automate patterns, see our [7 Document Workflows That Save Hours](/blog/power-automate-sharepoint-document-workflows-2026).
+
+---
+
+## Step 5: Test Your Agent
+
+Before deploying, test thoroughly in Copilot Studio\u2019s built-in simulator:
+
+### Test Checklist
+
+| Test | What to Verify |
+|------|---------------|
+| Simple Q&A | Agent finds and cites the correct document |
+| Permission trimming | Agent doesn\u2019t reveal docs the user can\u2019t access |
+| Out-of-scope question | Agent gracefully declines with fallback message |
+| Action execution | Power Automate flow completes and returns output |
+| Multi-turn conversation | Agent maintains context across follow-up questions |
+
+### Common Issues and Fixes
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Agent says "I don't know" for valid questions | Content not indexed | Rename files descriptively, re-sync knowledge |
+| Agent cites wrong document | Too many similar documents | Narrow the knowledge source or add metadata |
+| Action fails silently | Power Automate flow error | Check flow run history in Power Automate |
+| Slow responses | Large document library | Reduce scope to specific folders |
+
+---
+
+## Step 6: Deploy to Your SharePoint Site
+
+1. In Copilot Studio, go to **Channels** \u2192 **SharePoint**
+2. Select the target SharePoint site from the list
+3. Click **Deploy**
+4. Wait 5\u201330 minutes for the agent to appear in the SharePoint sidebar
+
+### Post-Deployment
+
+- **Approve the agent:** Work with the site owner to set the status to "Approved"
+- **Pin to sidebar:** The agent appears in the SharePoint copilot panel on the right
+- **Monitor usage:** Check Copilot Studio analytics for conversation volume and satisfaction
+
+---
+
+## Real-World Use Cases
+
+| Department | Agent Name | Knowledge Source | Actions |
+|------------|-----------|-----------------|---------|
+| **HR** | Policy Assistant | HR Policies library | Create leave requests, onboarding checklists |
+| **IT** | Help Desk Bot | IT Knowledge Base | Create support tickets, password reset links |
+| **Legal** | Contract Reviewer | Contracts library | Summarize clauses, flag renewal dates |
+| **Sales** | Product FAQ | Product Docs site | Generate quotes, update CRM |
+| **Finance** | Expense Guide | Finance Policies | Check expense limits, link to submission forms |
+
+---
+
+## Frequently Asked Questions
+
+**Do I need a Microsoft 365 Copilot license?**
+You need either an E3/E5 license with Copilot Studio access, or the Microsoft 365 Copilot add-on. The exact licensing depends on your tenant configuration.
+
+**Does the agent see documents the user can\u2019t access?**
+No. SharePoint Agents respect existing security trimming. If a user doesn\u2019t have Read access to a document, the agent won\u2019t use it to generate responses for that user.
+
+**Can I deploy one agent to multiple sites?**
+Yes. In Copilot Studio, go to Channels > SharePoint and add multiple sites. The agent\u2019s knowledge sources remain the same.
+
+**How often does the agent re-index SharePoint content?**
+New or updated documents typically appear in the agent\u2019s knowledge within minutes. For lists, updates are near real-time.
+
+**Can I use this with on-premises SharePoint?**
+No. SharePoint Agents require SharePoint Online (Microsoft 365). On-premises SharePoint Server does not support this feature.
+
+---
+
+## Your Next Steps
+
+1. **Start small** \u2014 build a single-purpose agent for one department
+2. **Curate your content** \u2014 clean up the target document library before connecting it
+3. **Test with real users** \u2014 have 3-5 department members test before broad deployment
+4. **Add actions gradually** \u2014 start with Q&A only, then add Power Automate flows
+5. **Monitor and iterate** \u2014 check Copilot Studio analytics weekly
+
+For related guides:
+- [Copilot Studio: Build 3 AI Assistants](/blog/copilot-studio-build-ai-assistants-sharepoint-sites-2026) \u2014 the introductory guide
+- [Power Automate + SharePoint: 7 Workflows](/blog/power-automate-sharepoint-document-workflows-2026) \u2014 common automation patterns
+- [SharePoint Permissions Explained](/blog/sharepoint-permissions-explained-every-level-role-inheritance-2026) \u2014 understand the security model agents rely on
+`,
+    date: '2026-03-07',
+    displayDate: 'March 7, 2026',
+    readTime: '10 min read',
+    category: 'Microsoft 365',
+    tags: ['SharePoint', 'Copilot Studio', 'AI Agents', 'Power Automate', 'Microsoft 365'],
+  },
+  {
     id: '23',
     slug: 'sharepoint-caml-query-complete-guide-examples-2026',
     title: 'SharePoint CAML Query: Complete Guide with Examples (2026)',
