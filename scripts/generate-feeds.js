@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const rootDir = join(__dirname, '..')
 
 // Parse blog posts from the blog.ts source file
-const blogSrc = readFileSync(join(rootDir, 'src/data/blog.ts'), 'utf-8')
+const blogSrc = readFileSync(join(rootDir, 'data/blog.ts'), 'utf-8')
 
 // Extract post metadata using regex (avoids TS compilation)
 const posts = []
