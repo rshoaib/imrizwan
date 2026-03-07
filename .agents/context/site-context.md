@@ -42,6 +42,8 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 | sharepoint permissions levels roles inheritance | ✅ Blog exists |
 | sharepoint caml query guide examples | ✅ Blog exists |
 
+| sharepoint list formatting json templates | ✅ Blog exists |
+
 ### Content Calendar
 1. "Building a Custom SPFx Web Part: CRUD Operations with React + PnPjs (2026)" ✅ Published
 2. "Microsoft Graph API: 10 Practical Examples for SharePoint (2026)" ✅ Published
@@ -56,6 +58,7 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 11. "SharePoint Permissions Explained: Every Level, Role & Inheritance Pattern (2026)" ✅ Published
 12. "SharePoint CAML Query: Complete Guide with Examples (2026)" ✅ Published
 13. "SharePoint Agents: Build & Deploy AI Assistants with Copilot Studio (2026)" ✅ Published
+14. "SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)" ✅ Published
 
 
 
