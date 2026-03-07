@@ -5772,9 +5772,9 @@ Viva Connections ACEs are the most direct way for SPFx developers to impact the 
   {
     id: '8',
     slug: 'microsoft-graph-api-spfx-user-profiles-teams',
-    title: 'Using Microsoft Graph API in SPFx: Fetch User Profiles, Teams, and Site Data',
+    title: 'Microsoft Graph API in SPFx: 10 Practical Examples for SharePoint Developers (2026)',
     excerpt:
-      'Learn how to use Microsoft Graph API in SharePoint Framework web parts — from setting up permissions to fetching user profiles, Teams memberships, and SharePoint site data with real code examples.',
+      'Master Microsoft Graph API inside SPFx web parts — 10 real examples covering user profiles, Teams data, calendar events, and site analytics with production-ready code.',
     content: `
 ## Why Microsoft Graph API in SPFx?
 

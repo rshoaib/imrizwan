@@ -64,7 +64,8 @@ export default async function BlogPostPage({ params }: Props) {
     headline: post.title,
     description: post.excerpt,
     image: post.image ? [post.image] : [],
-    datePublished: post.date,
+    datePublished: `${post.date}T00:00:00+00:00`,
+    dateModified: `${post.date}T00:00:00+00:00`,
     author: {
       '@type': 'Person',
       name: 'Rizwan',
