@@ -47,18 +47,59 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
 
   return (
     <>
-      {/* Compact Author Header */}
-      <section className="author-header">
+      {/* CV-Style Profile Card */}
+      <section className="profile-card">
         <div className="container">
-          <div className="author-header__inner">
-            <div className="author-header__avatar">R</div>
-            <div className="author-header__info">
-              <h1 className="author-header__name">
-                <span className="gradient-text">iamrizwan</span>
-              </h1>
-              <p className="author-header__tagline">
-                SharePoint &amp; Power Platform Developer — real solutions with code and step-by-step guides.
-              </p>
+          <div className="profile-card__inner">
+            {/* Left: Identity */}
+            <div className="profile-card__identity">
+              <div className="profile-card__avatar-wrap">
+                <div className="profile-card__avatar">R</div>
+                <span className="profile-card__status" title="Open to Work">
+                  <span className="profile-card__status-dot" />
+                </span>
+              </div>
+              <div className="profile-card__info">
+                <div className="profile-card__name-row">
+                  <h1 className="profile-card__name">
+                    <span className="gradient-text">Rizwan</span>
+                  </h1>
+                  <span className="profile-card__badge">
+                    <span className="profile-card__badge-dot" />
+                    Open to Work
+                  </span>
+                </div>
+                <p className="profile-card__role">SharePoint &amp; Power Platform Developer</p>
+                <p className="profile-card__bio">
+                  I build enterprise solutions on Microsoft 365 — and write about real problems I solve with code.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Stats + CTA */}
+            <div className="profile-card__right">
+              <div className="profile-card__stats">
+                <div className="profile-card__stat">
+                  <span className="profile-card__stat-value">5+</span>
+                  <span className="profile-card__stat-label">Years Exp.</span>
+                </div>
+                <div className="profile-card__stat">
+                  <span className="profile-card__stat-value">{initialPosts.length}+</span>
+                  <span className="profile-card__stat-label">Articles</span>
+                </div>
+                <div className="profile-card__stat">
+                  <span className="profile-card__stat-value">8</span>
+                  <span className="profile-card__stat-label">Free Tools</span>
+                </div>
+              </div>
+              <div className="profile-card__tech">
+                {['SPFx', 'Power Automate', 'Graph API', 'PnP', 'React'].map((t) => (
+                  <span key={t} className="profile-card__tech-pill">{t}</span>
+                ))}
+              </div>
+              <Link href="/contact" className="profile-card__cta">
+                💼 Hire Me
+              </Link>
             </div>
           </div>
         </div>
