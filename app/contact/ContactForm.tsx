@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [honeypot, setHoneypot] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -12,6 +13,13 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Honeypot — if filled, it's a bot
+    if (honeypot) {
+      setStatus('sent') // Silently pretend success
+      return
+    }
+
     setStatus('sending')
 
     try {
@@ -87,6 +95,12 @@ export default function ContactForm() {
           <div className="contact__field">
             <label htmlFor="contact-name">Name</label>
             <input id="contact-name" name="name" type="text" value={form.name} onChange={handleChange} required placeholder="Your name" disabled={status === 'sending'} />
+          </div>
+
+          {/* Honeypot — hidden from real users, catches bots */}
+          <div style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+            <label htmlFor="contact-website">Website</label>
+            <input id="contact-website" name="website" type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" />
           </div>
           <div className="contact__field">
             <label htmlFor="contact-email">Email</label>

@@ -84,6 +84,34 @@ export default async function BlogPostPage({ params }: Props) {
       '@type': 'WebPage',
       '@id': `https://imrizwan.com/blog/${post.slug}`,
     },
+    wordCount: post.content?.length ? Math.round(post.content.split(/\s+/).length) : undefined,
+    timeRequired: post.readTime ? `PT${parseInt(post.readTime)}M` : undefined,
+  }
+
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://imrizwan.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://imrizwan.com/blog',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://imrizwan.com/blog/${post.slug}`,
+      },
+    ],
   }
 
   // FAQPage JSON-LD — auto-extracted from FAQ section in content
@@ -92,6 +120,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}

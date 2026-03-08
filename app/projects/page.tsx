@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -16,6 +17,13 @@ const projects = [
     emoji: '💬',
   },
   {
+    name: 'BuildWithRiz',
+    url: 'https://buildwithriz.com',
+    description: 'Free invoice generator for freelancers — create professional invoices in seconds, download as PDF. No login, no signup, 100% free.',
+    stack: ['Next.js', 'TypeScript', 'PDF Generation', 'Vercel'],
+    emoji: '🧾',
+  },
+  {
     name: 'DailySmartCalc',
     url: 'https://dailysmartcalc.com',
     description: 'Collection of everyday calculators — BMI, age, percentage, loan EMI, and more. Built for speed with zero dependencies.',
@@ -28,6 +36,13 @@ const projects = [
     description: 'Financial calculators for retirement planning, compound interest, 401(k) projections, and investment returns.',
     stack: ['React', 'Supabase', 'Vercel'],
     emoji: '💰',
+  },
+  {
+    name: 'PDFToolkit',
+    url: 'https://pdftoolkit.com',
+    description: 'Free browser-based PDF tools — merge, split, compress, and convert PDFs without uploading to any server.',
+    stack: ['React', 'PDF.js', 'Vercel'],
+    emoji: '📄',
   },
   {
     name: 'OnlineImageShrinker',
@@ -45,9 +60,32 @@ const projects = [
   },
 ]
 
+const projectsJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Projects by Rizwan',
+  description: 'Portfolio of web apps built and maintained by Rizwan.',
+  numberOfItems: projects.length,
+  itemListElement: projects.map((project, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'SoftwareApplication',
+      name: project.name,
+      description: project.description,
+      url: project.url,
+      applicationCategory: 'WebApplication',
+      operatingSystem: 'Any',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  })),
+}
+
 export default function ProjectsPage() {
   return (
     <div className="container">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(projectsJsonLd) }} />
+
       <div className="page-title reveal">
         <h1>Projects</h1>
         <p>Web apps I&apos;ve built and maintain</p>

@@ -1,4 +1,7 @@
-// Build-time script to generate rss.xml and sitemap.xml from blog data
+// Build-time script to generate rss.xml from blog data
+// Note: sitemap.xml is now generated dynamically via app/sitemap.ts
+// Note: rss.xml is now also served dynamically via app/rss.xml/route.ts
+//       This script is kept as a build-time fallback for static hosting scenarios.
 // Run: node scripts/generate-feeds.js
 
 const { readFileSync, writeFileSync } = require('fs')
@@ -27,10 +30,9 @@ while ((match = postRegex.exec(blogSrc)) !== null) {
 }
 
 const SITE_URL = 'https://imrizwan.com'
-const SITE_NAME = 'iamrizwan'
-const now = new Date().toISOString()
+const SITE_NAME = 'ImRizwan'
 
-// --- RSS Feed ---
+// --- RSS Feed (build-time fallback) ---
 const rssItems = posts
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .map(
@@ -60,50 +62,6 @@ ${rssItems}
 `
 
 writeFileSync(join(rootDir, 'public/rss.xml'), rss)
-console.log(`✅ Generated rss.xml with ${posts.length} posts`)
-
-// --- Sitemap ---
-const staticPages = [
-  { loc: '/', priority: '1.0', changefreq: 'weekly' },
-  { loc: '/blog', priority: '0.9', changefreq: 'weekly' },
-  { loc: '/tools', priority: '0.9', changefreq: 'weekly' },
-  { loc: '/tools/json-column-formatter', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/guid-generator', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/caml-query-builder', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/permission-matrix', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/rest-api-builder', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/site-script-generator', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/tools/pnp-script-generator', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/projects', priority: '0.8', changefreq: 'monthly' },
-  { loc: '/about', priority: '0.7', changefreq: 'monthly' },
-  { loc: '/contact', priority: '0.6', changefreq: 'monthly' },
-]
-
-
-const sitemapUrls = [
-  ...staticPages.map(
-    (p) => `  <url>
-    <loc>${SITE_URL}${p.loc}</loc>
-    <lastmod>${now.split('T')[0]}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`
-  ),
-  ...posts.map(
-    (p) => `  <url>
-    <loc>${SITE_URL}/blog/${p.slug}</loc>
-    <lastmod>${p.date}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>`
-  ),
-].join('\n')
-
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemapUrls}
-</urlset>
-`
-
-writeFileSync(join(rootDir, 'public/sitemap.xml'), sitemap)
-console.log(`✅ Generated sitemap.xml with ${staticPages.length + posts.length} URLs`)
+console.log(`✅ Generated rss.xml with ${posts.length} posts (build-time fallback)`)
+console.log(`ℹ️  sitemap.xml is now generated dynamically via app/sitemap.ts`)
+console.log(`ℹ️  rss.xml is also served dynamically via app/rss.xml/route.ts`)

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { inter, jetbrainsMono } from './fonts'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ScrollAnimations from '@/components/ScrollAnimations'
@@ -13,10 +14,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://imrizwan.com'),
   title: {
     default: 'Rizwan | SharePoint & Power Platform Developer',
-    template: '%s | iamrizwan',
+    template: '%s | ImRizwan',
   },
   description:
     'Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips with real code and screenshots.',
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: 'ImRizwan',
@@ -52,22 +54,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         {/* Preconnect to critical origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-
-        {/* Non-blocking font load */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        />
 
         {/* Prevent white flash before CSS loads */}
         <style

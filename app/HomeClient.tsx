@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { BlogPost } from '@/data/blog'
 import { tools } from '@/data/tools'
 
@@ -150,10 +151,12 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
         </section>
 
         {/* ── Search & Filters ── */}
-        <section className="dashboard__controls">
+        <section className="dashboard__controls" aria-label="Search and filter blog posts">
           <div className="dashboard__search-wrap">
-            <span className="dashboard__search-icon">🔍</span>
+            <span className="dashboard__search-icon" aria-hidden="true">🔍</span>
+            <label htmlFor="post-search" className="sr-only">Search posts</label>
             <input
+              id="post-search"
               type="text"
               className="dashboard__search"
               placeholder="Search posts or #tag..."
@@ -170,10 +173,12 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
               </button>
             )}
           </div>
-          <div className="dashboard__filters">
+          <div className="dashboard__filters" role="tablist" aria-label="Filter by category">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
+                role="tab"
+                aria-selected={activeCategory === cat}
                 className={`filter-btn ${activeCategory === cat ? 'filter-btn--active' : ''}`}
                 onClick={() => handleCategoryChange(cat)}
               >
@@ -219,10 +224,13 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
               <Link href={`/blog/${featured.slug}`} className="dashboard__featured">
                 <div className="dashboard__featured-image-wrap">
                   {featured.image ? (
-                    <img
+                    <Image
                       src={featured.image}
                       alt={featured.title}
                       className="dashboard__featured-image"
+                      width={600}
+                      height={300}
+                      priority
                     />
                   ) : (
                     <div
@@ -277,11 +285,12 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
                 >
                   <div className="dashboard__recent-image-wrap">
                     {post.image ? (
-                      <img
+                      <Image
                         src={post.image}
                         alt={post.title}
                         className="dashboard__recent-image"
-                        loading="lazy"
+                        width={400}
+                        height={200}
                       />
                     ) : (
                       <div

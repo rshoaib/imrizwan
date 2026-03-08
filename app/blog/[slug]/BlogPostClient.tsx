@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import AdSlot from '@/components/AdSlot'
 import TableOfContents from '@/components/TableOfContents'
 import CopyCodeButton from '@/components/CopyCodeButton'
 import RelatedPosts from '@/components/RelatedPosts'
 import RelatedTools from '@/components/RelatedTools'
 import ShareButtons from '@/components/ShareButtons'
+import NewsletterCTA from '@/components/NewsletterCTA'
 import ReadingProgress from '@/components/ReadingProgress'
 import type { BlogPost } from '@/data/blog'
 
@@ -131,7 +133,7 @@ export default function BlogPostClient({
       </header>
 
       {post.image && (
-        <img src={post.image} alt={post.title} className="post__image" />
+        <Image src={post.image} alt={post.title} className="post__image" width={800} height={400} priority />
       )}
 
       <AdSlot type="leaderboard" />
@@ -152,7 +154,9 @@ export default function BlogPostClient({
 
       <RelatedPosts currentPost={post} allPosts={allPosts} />
 
-      <RelatedTools currentSlug="" />
+      <NewsletterCTA />
+
+      <RelatedTools currentSlug={post.category.toLowerCase().replace(/\s+/g, '-')} />
     </article>
     </>
   )

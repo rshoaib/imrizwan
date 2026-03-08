@@ -20,6 +20,7 @@ export default function Footer() {
             <p className="footer__col-title">Quick Links</p>
             <div className="footer__col-links">
               <Link href="/blog" className="footer__link">Blog</Link>
+              <Link href="/tools" className="footer__link">Tools</Link>
               <Link href="/projects" className="footer__link">Projects</Link>
               <Link href="/about" className="footer__link">About</Link>
               <Link href="/contact" className="footer__link">Contact</Link>

@@ -1,7 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { BlogPost } from '@/data/blog'
+
+const POSTS_PER_PAGE = 6
 
 function getCategoryClass(category: string): string {
   return `blog-card__category--${category.toLowerCase().replace(/\s+/g, '-')}`
@@ -23,7 +27,17 @@ function FeaturedPost({ post }: { post: BlogPost }) {
     <Link href={`/blog/${post.slug}`} className="featured-feed reveal">
       <div className="featured-feed__image-wrap">
         {post.image ? (
-          <img src={post.image} alt={post.title} className="featured-feed__image" />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Image
+              src={post.image}
+              alt={post.title}
+              className="featured-feed__image"
+              fill
+              sizes="(max-width: 768px) 100vw, 800px"
+              style={{ objectFit: 'cover' }}
+              priority
+            />
+          </div>
         ) : (
           <div className={`featured-feed__placeholder featured-feed__placeholder--${post.category.toLowerCase().replace(/\s+/g, '-')}`}>
             <span className="featured-feed__placeholder-icon">{getCategoryIcon(post.category)}</span>
@@ -55,6 +69,8 @@ export default function BlogFeed({
 }: {
   posts: BlogPost[]
 }) {
+  const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE)
+
   if (posts.length === 0) {
     return (
       <div className="empty-state">
@@ -66,23 +82,29 @@ export default function BlogFeed({
   }
 
   const [featured, ...rest] = posts
+  const visibleRest = rest.slice(0, visibleCount)
+  const hasMore = visibleCount < rest.length
 
   return (
     <div className="blog-feed">
       <FeaturedPost post={featured} />
 
-      {rest.length > 0 && (
+      {visibleRest.length > 0 && (
         <div className="blog-feed__list">
-          {rest.map((post, index) => (
+          {visibleRest.map((post, index) => (
             <article key={post.id} className="blog-feed__card reveal">
               <Link href={`/blog/${post.slug}`} className="blog-feed__card-image-link">
                 {post.image ? (
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="blog-feed__card-image"
-                    loading={index < 3 ? 'eager' : 'lazy'}
-                  />
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      className="blog-feed__card-image"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                 ) : (
                   <div className={`blog-feed__card-placeholder blog-feed__card-placeholder--${post.category.toLowerCase().replace(/\s+/g, '-')}`}>
                     <span className="blog-feed__card-placeholder-icon">{getCategoryIcon(post.category)}</span>
@@ -114,6 +136,17 @@ export default function BlogFeed({
               </div>
             </article>
           ))}
+        </div>
+      )}
+
+      {hasMore && (
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <button
+            className="home-btn home-btn--outline"
+            onClick={() => setVisibleCount((prev) => prev + POSTS_PER_PAGE)}
+          >
+            Load More Articles ({rest.length - visibleCount} remaining)
+          </button>
         </div>
       )}
     </div>

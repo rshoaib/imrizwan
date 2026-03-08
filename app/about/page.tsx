@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Rizwan is a SharePoint & Power Platform developer specializing in SPFx webparts, Power Automate flows, and Microsoft 365 solutions.',
+    'Rizwan is a SharePoint & Power Platform developer with 5+ years of enterprise experience in SPFx, Power Automate, and Microsoft 365 solutions.',
   alternates: { canonical: '/about' },
 }
 
@@ -22,22 +23,49 @@ const skills = [
   'Site Designs & Scripts',
 ]
 
+const certifications = [
+  { name: 'Microsoft 365 Certified: Developer Associate', icon: '🏅' },
+  { name: 'SharePoint Framework Specialist', icon: '⚡' },
+  { name: 'Power Platform Fundamentals', icon: '🔧' },
+]
+
+const timeline = [
+  {
+    period: '2021 — Present',
+    role: 'Senior SharePoint & M365 Developer',
+    description:
+      'Building production-grade SPFx webparts, Power Automate workflows, and custom Teams extensions for enterprise clients. Leading migration projects from classic to modern SharePoint.',
+  },
+  {
+    period: '2019 — 2021',
+    role: 'SharePoint Developer',
+    description:
+      'Developed custom solutions using SPFx, PnP JS, and REST APIs. Automated business processes with Power Automate and Power Apps across multiple organizations.',
+  },
+  {
+    period: '2017 — 2019',
+    role: 'Web Developer',
+    description:
+      'Built responsive web applications using React and Node.js. Transitioned into the Microsoft 365 ecosystem and began specializing in SharePoint development.',
+  },
+]
+
 export default function AboutPage() {
   return (
     <div className="about">
       <header className="about__header reveal">
         <div className="about__avatar">R</div>
         <h1 className="about__name">Rizwan</h1>
-        <p className="about__role">SharePoint &amp; Power Platform Developer</p>
+        <p className="about__role">SharePoint & Power Platform Developer</p>
       </header>
 
       <div className="about__content reveal">
         <p>
-          I&apos;m a Microsoft 365 developer with deep experience in SharePoint
+          I&apos;m a Microsoft 365 developer with 5+ years of deep experience in SharePoint
           Framework (SPFx), Power Platform, and modern SharePoint
           customization. I&apos;ve built production-grade webparts, extensions,
           application customizers, and Power Automate flows for enterprise
-          clients.
+          clients across multiple industries.
         </p>
         <p>
           This blog is where I document the real problems I solve every day —
@@ -51,8 +79,47 @@ export default function AboutPage() {
         </p>
       </div>
 
+      {/* Experience Timeline */}
       <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
-        Skills &amp; Technologies
+        Experience
+      </h2>
+      <div className="about__content reveal">
+        {timeline.map((entry) => (
+          <div
+            key={entry.period}
+            style={{
+              borderLeft: '3px solid var(--accent)',
+              paddingLeft: '1.25rem',
+              marginBottom: '1.5rem',
+            }}
+          >
+            <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--accent)', fontWeight: 600, marginBottom: '0.25rem' }}>
+              {entry.period}
+            </p>
+            <p style={{ fontWeight: 700, fontSize: 'var(--fs-lg)', marginBottom: '0.25rem' }}>
+              {entry.role}
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--fs-sm)' }}>
+              {entry.description}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Certifications */}
+      <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
+        Certifications
+      </h2>
+      <div className="about__skills reveal">
+        {certifications.map((cert) => (
+          <span key={cert.name} className="about__skill">
+            {cert.icon} {cert.name}
+          </span>
+        ))}
+      </div>
+
+      <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
+        Skills & Technologies
       </h2>
       <div className="about__skills reveal">
         {skills.map((skill) => (
@@ -85,6 +152,16 @@ export default function AboutPage() {
         >
           💼 LinkedIn
         </a>
+      </div>
+
+      {/* CTA */}
+      <div className="about__content reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          Looking for SharePoint development, Power Platform consulting, or collaboration?
+        </p>
+        <Link href="/contact" className="home-btn home-btn--primary">
+          Get in Touch →
+        </Link>
       </div>
     </div>
   )
