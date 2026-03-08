@@ -106,17 +106,12 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
           <div className="dashboard__banner-left">
             <div className="dashboard__avatar-wrap">
               <div className="dashboard__avatar">R</div>
-              <span className="dashboard__status-dot" title="Open to Work" />
             </div>
             <div className="dashboard__identity">
               <div className="dashboard__name-row">
                 <h1 className="dashboard__name">
                   <span className="gradient-text">Rizwan</span>
                 </h1>
-                <span className="dashboard__badge">
-                  <span className="dashboard__badge-pulse" />
-                  Open to Work
-                </span>
               </div>
               <p className="dashboard__role">SharePoint &amp; Power Platform Developer</p>
             </div>
