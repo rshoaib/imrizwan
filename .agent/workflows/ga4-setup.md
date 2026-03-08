@@ -1,4 +1,4 @@
----
+﻿---
 description: Add Google Analytics 4 (GA4) to the site for user behavior tracking and traffic analysis
 ---
 

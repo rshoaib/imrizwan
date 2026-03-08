@@ -1,4 +1,4 @@
----
+﻿---
 description: Check site against Google AdSense policies — ad placement, content quality, required pages, and compliance
 ---
 

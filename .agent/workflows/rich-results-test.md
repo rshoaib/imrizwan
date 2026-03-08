@@ -1,4 +1,4 @@
----
+﻿---
 description: Validate all structured data (JSON-LD) schemas using Google Rich Results Test and Schema Markup Validator
 ---
 

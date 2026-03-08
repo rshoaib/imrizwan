@@ -1,4 +1,4 @@
----
+﻿---
 description: Run a Google Search Console audit — indexing, performance, sitemap, and manual URL inspection
 ---
 

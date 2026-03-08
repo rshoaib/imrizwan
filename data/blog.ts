@@ -14,6 +14,90 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '27',
+    slug: 'sharepoint-provisioning-automation-guide-2026',
+    title: "Modern SharePoint Provisioning & Automation in 2026: A Developer's Guide",
+    excerpt:
+      'Stop manually configuring SharePoint sites. Learn how to automate site provisioning in 2026 using PnP PowerShell, Site Scripts, and REST APIs, complete with interactive generator tools.',
+    image: '/images/blog/sharepoint-provisioning-automation.png',
+    content: `
+## The Shift in SharePoint Provisioning
+
+In 2026, SharePoint site provisioning emphasizes automation, robust governance, and leveraging modern Hub Site architectures. The days of deep, nested subsite hierarchies and manual configurations are over. Organizations are now utilizing flat site structures connected via Hub Sites to ensure flexibility, discoverability, and AI readiness for Microsoft Copilot.
+
+Manual provisioning leads to "site sprawl" and inconsistent security policies. By automating your provisioning process, you enforce standard compliance, reduce errors, and save hours of repetitive work.
+
+In this guide, we'll explore the three essential pillars of modern SharePoint automation: **PnP PowerShell**, **Site Scripts**, and **REST APIs**, and provide interactive tools to generate your scripts instantly.
+
+---
+
+## 1. PnP PowerShell for Bulk Operations
+
+The SharePoint Patterns and Practices (PnP) PowerShell module remains the enterprise standard for automating SharePoint tasks. With over 500 cmdlets, PnP PowerShell allows you to programmatically create sites, apply templates, and execute bulk operations across your tenant.
+
+By extracting an XML template from an existing "gold standard" site, you can stamp that exact configuration—lists, libraries, content types, and permissions—onto hundreds of new sites.
+
+### Try It Now
+Instead of memorizing cmdlets, use our **[PnP PowerShell Generator](/tools/pnp-script-generator)** to interactively build ready-to-use scripts for site creation, list management, and bulk permissions.
+
+---
+
+## 2. Site Scripts and Site Designs
+
+For seamless integrations directly into the SharePoint UI, Site Scripts (now often applied via Site Templates) provide a lightweight, JSON-based declarative approach to provisioning. When a user creates a new site, a Site Script can automatically trigger actions such as:
+
+- Creating lists and document libraries
+- Applying custom theme colors and branding
+- Adding navigation links
+- Triggering a Power Automate flow for advanced approvals
+
+### Generate Your JSON
+Writing Site Script JSON by hand is error-prone. Use our visual **[Site Script Generator](/tools/site-script-generator)** to add your provisioning steps and export the exact JSON required for your tenant.
+
+---
+
+## 3. The Modern SharePoint REST API & CAML Queries
+
+When you're building custom applications, SPFx Web Parts, or external system integrations, the SharePoint REST API is your gateway to automation. Combined with CAML queries, you can dynamically fetch, filter, and provision resources with pinpoint accuracy.
+
+### Build Queries Visually
+- Need complex XML filters? Use the **[CAML Query Builder](/tools/caml-query-builder)** to construct conditions and generate raw XML.
+- Want to test API endpoints? The **[REST API Builder](/tools/rest-api-builder)** lets you construct OData queries and generates snippets in JavaScript, PnPjs, and PowerShell.
+
+---
+
+## The Role of Power Automate
+
+While developers rely on PnP and REST, Power Automate remains the go-to no-code solution for empowering end-users. You can pair a Microsoft Form with a Power Automate flow to automatically call the SharePoint Provisioning Service or trigger a PnP PowerShell runbook via Azure Automation. 
+
+---
+
+## FAQs
+
+### What is the recommended site structure in 2026?
+Microsoft strongly recommends a flat architecture using Hub Sites rather than deeply nested subsites. This provides flexible navigation, centralized branding, and optimized search capabilities for Copilot.
+
+### Should I use PnP PowerShell or Site Scripts?
+Use Site Scripts for lightweight, UI-driven provisioning where users trigger the creation themselves. Use PnP PowerShell for complex, multi-step automated deployments, heavy template extraction, or tenant-wide migrations.
+
+### How do I prevent site sprawl when automating?
+Implement a strict governance policy. Combine your automation with an approval workflow (via Power Automate) and enforce a site lifecycle policy that automatically archives or deletes inactive sites.
+
+---
+
+## Take Your Automation Further
+
+Stop writing boilerplate code. By leveraging the interactive tools available on this site, you can slash your development time in half. 
+
+Want to design the ultimate data view for your newly provisioned lists? Try our **[JSON Column Formatter](/tools/json-column-formatter)** to paste instant visual templates into your lists.
+`,
+    date: '2026-03-08',
+    displayDate: 'March 8, 2026',
+    readTime: '6 min read',
+    category: 'SharePoint',
+    tags: ['sharepoint', 'automation', 'pnp-powershell', 'provisioning', 'site-scripts'],
+  },
+  {
     id: '26',
     slug: 'spfx-performance-optimization-bundle-lazy-loading-2026',
     title: 'SPFx Performance Optimization: Bundle Size, Lazy Loading & Best Practices (2026)',

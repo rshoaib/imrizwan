@@ -1,4 +1,4 @@
----
+﻿---
 description: Run the COMPLETE SEO suite — audit, GSC analysis, rich results test, Bing setup, and GA4 setup — all in one command
 ---
 

@@ -1,4 +1,4 @@
----
+﻿---
 description: SEO audit and optimization workflow using Gemini 3.1 Pro
 ---
 

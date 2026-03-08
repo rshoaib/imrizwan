@@ -1,4 +1,4 @@
----
+﻿---
 description: Comprehensive content pipeline for all sites using Google Ultra subscription
 ---
 

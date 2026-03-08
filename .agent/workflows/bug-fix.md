@@ -1,4 +1,4 @@
----
+﻿---
 description: Systematic bug fix workflow with Claude Opus 4.5
 ---
 
