@@ -5,8 +5,16 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Mar 2026 13:29:02 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 08 Mar 2026 13:43:51 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Power Automate Expressions Cheat Sheet: Every Function You Need (2026)</title>
+      <link>https://imrizwan.com/blog/power-automate-expressions-cheat-sheet-2026</link>
+      <description>The complete reference for Power Automate expressions — 50+ functions organized by category with syntax, examples, and real-world tips. Bookmark this and never Google an expression again.</description>
+      <pubDate>Sun, 08 Mar 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-expressions-cheat-sheet-2026</guid>
+      <category>Power Platform</category>
+    </item>
     <item>
       <title>SPFx Performance Optimization: Bundle Size, Lazy Loading &amp; Best Practices (2026)</title>
       <link>https://imrizwan.com/blog/spfx-performance-optimization-bundle-lazy-loading-2026</link>

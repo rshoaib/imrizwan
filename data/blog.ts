@@ -14,6 +14,253 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '28',
+    slug: 'power-automate-expressions-cheat-sheet-2026',
+    title: 'Power Automate Expressions Cheat Sheet: Every Function You Need (2026)',
+    excerpt:
+      'The complete reference for Power Automate expressions — 50+ functions organized by category with syntax, examples, and real-world tips. Bookmark this and never Google an expression again.',
+    image: '/images/blog/power-automate-expressions-cheat-sheet.png',
+    content: `
+## Why You Need an Expressions Cheat Sheet
+
+If you've spent more than 10 minutes in Power Automate, you've hit the expression editor. That tiny text box where you type \`formatDateTime(utcNow(), 'yyyy-MM-dd')\` and pray it works.
+
+Power Automate expressions are **the bridge between no-code and low-code**. They let you format dates, manipulate strings, build conditions, and reference dynamic content — but the syntax is easy to forget because you only use each function once in a while.
+
+This cheat sheet organizes every expression you'll actually use, grouped by category, with copy-paste syntax and real output examples.
+
+> **Try it live:** Use our free **[Power Automate Expression Builder](/tools/power-automate-expressions)** to browse, search, and copy any expression instantly.
+
+---
+
+## String Functions
+
+String functions are the workhorses of Power Automate. You'll use them in almost every flow.
+
+| Function | Syntax | Example Output |
+|----------|--------|----------------|
+| \`concat\` | \`concat('Hello', ' ', 'World')\` | Hello World |
+| \`substring\` | \`substring('Hello World', 6, 5)\` | World |
+| \`replace\` | \`replace('Hi World', 'World', 'PA')\` | Hi PA |
+| \`toLower\` | \`toLower('HELLO')\` | hello |
+| \`toUpper\` | \`toUpper('hello')\` | HELLO |
+| \`trim\` | \`trim('  hello  ')\` | hello |
+| \`indexOf\` | \`indexOf('Hello World', 'World')\` | 6 |
+| \`startsWith\` | \`startsWith('Hello', 'He')\` | true |
+| \`endsWith\` | \`endsWith('Hello', 'lo')\` | true |
+| \`split\` | \`split('a,b,c', ',')\` | ['a','b','c'] |
+| \`length\` | \`length('Hello')\` | 5 |
+| \`guid\` | \`guid()\` | Random GUID string |
+
+### Pro Tips for Strings
+
+- **Always use single quotes** for string literals — double quotes cause errors
+- Chain functions by nesting: \`toLower(trim(triggerBody()?['Email']))\`
+- Use \`concat\` to build dynamic file names: \`concat('Report_', formatDateTime(utcNow(), 'yyyyMMdd'), '.pdf')\`
+
+---
+
+## Date & Time Functions
+
+Date expressions are the #1 reason developers search for help. Here's every function you need.
+
+| Function | Syntax | What It Does |
+|----------|--------|-------------|
+| \`utcNow\` | \`utcNow('yyyy-MM-dd')\` | Current UTC timestamp |
+| \`formatDateTime\` | \`formatDateTime(timestamp, 'dd/MM/yyyy')\` | Format any date |
+| \`addDays\` | \`addDays(utcNow(), 7)\` | Add days |
+| \`addHours\` | \`addHours(utcNow(), 3)\` | Add hours |
+| \`addMinutes\` | \`addMinutes(utcNow(), 30)\` | Add minutes |
+| \`convertTimeZone\` | \`convertTimeZone(utcNow(), 'UTC', 'Eastern Standard Time')\` | Change timezone |
+| \`dayOfWeek\` | \`dayOfWeek('2026-03-08')\` | Day number (0=Sun) |
+| \`dayOfMonth\` | \`dayOfMonth('2026-03-08')\` | Day of month (8) |
+| \`ticks\` | \`ticks('2026-03-08T00:00:00Z')\` | Ticks value |
+
+### Common Date Format Strings
+
+| Format | Output | Use Case |
+|--------|--------|----------|
+| \`yyyy-MM-dd\` | 2026-03-08 | ISO standard |
+| \`dd/MM/yyyy\` | 08/03/2026 | European format |
+| \`MMMM dd, yyyy\` | March 08, 2026 | Display in emails |
+| \`hh:mm tt\` | 02:30 PM | 12-hour time |
+| \`HH:mm:ss\` | 14:30:00 | 24-hour time |
+| \`dddd\` | Sunday | Day name |
+
+> **Common mistake:** Using \`mm\` (minutes) when you mean \`MM\` (months). Capital M = months, lowercase m = minutes.
+
+---
+
+## Collection Functions
+
+Working with arrays from SharePoint lists or API responses? These are essential.
+
+| Function | What It Does |
+|----------|-------------|
+| \`first(array)\` | Returns the first item |
+| \`last(array)\` | Returns the last item |
+| \`contains(collection, value)\` | Checks if value exists |
+| \`empty(collection)\` | Checks if empty |
+| \`join(array, delimiter)\` | Joins array into string |
+| \`createArray(items...)\` | Creates a new array |
+| \`union(arr1, arr2)\` | Merges arrays (no duplicates) |
+| \`intersection(arr1, arr2)\` | Returns common items |
+| \`length(array)\` | Count of items |
+
+### Real-World Example
+
+When you get items from a [SharePoint list](/blog/sharepoint-list-formatting-json-complete-guide-2026), check if results exist before processing:
+
+\`\`\`text
+if(empty(body('Get_items')?['value']), 'No items found', concat('Found ', string(length(body('Get_items')?['value'])), ' items'))
+\`\`\`
+
+---
+
+## Logical Functions
+
+Build conditions and branching logic without the Condition action.
+
+| Function | Syntax | Returns |
+|----------|--------|---------|
+| \`if\` | \`if(equals(1,1), 'yes', 'no')\` | yes |
+| \`equals\` | \`equals(value1, value2)\` | true/false |
+| \`and\` | \`and(expr1, expr2)\` | true if ALL true |
+| \`or\` | \`or(expr1, expr2)\` | true if ANY true |
+| \`not\` | \`not(expression)\` | Opposite boolean |
+| \`greater\` | \`greater(10, 5)\` | true |
+| \`less\` | \`less(5, 10)\` | true |
+| \`coalesce\` | \`coalesce(null, '', 'fallback')\` | First non-null value |
+
+> **Pro tip:** Use \`coalesce()\` to handle null values from SharePoint. Instead of errors, you get a clean fallback: \`coalesce(triggerBody()?['Manager'], 'No manager assigned')\`
+
+---
+
+## Conversion Functions
+
+Convert between data types — essential when [SharePoint REST API](/blog/sharepoint-rest-api-cheat-sheet-2026) responses return numbers as strings.
+
+| Function | Converts To | Example |
+|----------|------------|---------|
+| \`int('42')\` | Integer | 42 |
+| \`float('3.14')\` | Float | 3.14 |
+| \`string(42)\` | String | '42' |
+| \`bool(1)\` | Boolean | true |
+| \`json(jsonString)\` | Object/Array | Parsed JSON |
+| \`base64(value)\` | Base64 string | Encoded |
+| \`base64ToString(b64)\` | Plain string | Decoded |
+| \`uriComponent(value)\` | URL-safe string | Encoded |
+
+---
+
+## Math Functions
+
+Simple arithmetic without variables.
+
+| Function | Example | Result |
+|----------|---------|--------|
+| \`add(10, 5)\` | Sum | 15 |
+| \`sub(10, 5)\` | Subtract | 5 |
+| \`mul(3, 4)\` | Multiply | 12 |
+| \`div(10, 3)\` | Divide (integer) | 3 |
+| \`mod(10, 3)\` | Remainder | 1 |
+| \`min(1, 5, 3)\` | Smallest | 1 |
+| \`max(1, 5, 3)\` | Largest | 5 |
+| \`rand(1, 100)\` | Random int | 42 |
+
+---
+
+## Referencing Functions
+
+Access trigger data, action outputs, and variables at runtime.
+
+| Function | What It Returns |
+|----------|----------------|
+| \`triggerBody()\` | Trigger's body payload |
+| \`triggerOutputs()\` | Trigger's full output |
+| \`body('actionName')\` | Action's body output |
+| \`outputs('actionName')\` | Action's full output |
+| \`items('loopName')\` | Current item in Apply to Each |
+| \`variables('varName')\` | Variable value |
+| \`parameters('paramName')\` | Workflow parameter |
+| \`workflow()\` | Workflow metadata |
+
+### Safe Property Access
+
+Always use the \`?\` operator to avoid null reference errors:
+
+\`\`\`text
+triggerBody()?['value']?[0]?['Title']
+\`\`\`
+
+This safely navigates nested objects — if any level is null, the whole expression returns null instead of crashing your flow.
+
+---
+
+## 5 Expression Patterns Every Developer Should Know
+
+### 1. Dynamic File Names
+\`\`\`text
+concat(triggerBody()?['CompanyName'], '_Invoice_', formatDateTime(utcNow(), 'yyyyMMdd'), '.pdf')
+\`\`\`
+
+### 2. Null-Safe Email Greeting
+\`\`\`text
+concat('Hello ', coalesce(triggerBody()?['FirstName'], 'there'), ',')
+\`\`\`
+
+### 3. Business Days Check (Skip Weekends)
+\`\`\`text
+if(or(equals(dayOfWeek(utcNow()), 0), equals(dayOfWeek(utcNow()), 6)), 'Weekend', 'Business Day')
+\`\`\`
+
+### 4. Clean and Standardize Input
+\`\`\`text
+trim(toLower(triggerBody()?['Email']))
+\`\`\`
+
+### 5. Conditional Priority Badge
+\`\`\`text
+if(equals(triggerBody()?['Priority'], 'High'), '🔴 Urgent', if(equals(triggerBody()?['Priority'], 'Medium'), '🟡 Normal', '🟢 Low'))
+\`\`\`
+
+---
+
+## FAQs
+
+### Where do I type expressions in Power Automate?
+Click any input field in an action, then click \"Expression\" tab (fx icon) in the dynamic content panel. Type your expression and click OK.
+
+### Can I nest expressions inside each other?
+Yes — and you should. Nested expressions are common: \`toLower(trim(triggerBody()?['Email']))\` first trims whitespace, then lowercases the result.
+
+### Why does my expression return an error about null values?
+The most common cause is accessing a property that doesn't exist. Always use the \`?\` operator for safe access: \`body('action')?['property']\` instead of \`body('action')['property']\`.
+
+### How do I debug expressions?
+Use a **Compose** action. Paste your expression in the Compose input, run the flow, and check the output in the run history. This lets you test expressions in isolation without affecting downstream actions.
+
+### What's the difference between body() and outputs()?
+\`body()\` returns just the response body (the data). \`outputs()\` returns the full response including headers and status code. Use \`body()\` for data and \`outputs()\` when you need HTTP headers.
+
+---
+
+## Build Expressions Faster
+
+Stop Googling expressions one at a time. Use our free **[Power Automate Expression Builder](/tools/power-automate-expressions)** to browse all 50+ expressions, search by name, filter by category, and copy syntax with one click.
+
+For more Power Platform guides, check out:
+- [Power Automate + SharePoint: 7 Document Workflows](/blog/power-automate-sharepoint-document-workflows-2026)
+- [PnP PowerShell for SharePoint Online: 25 Scripts](/blog/pnp-powershell-sharepoint-online-scripts-2026)
+- [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-2026)
+`,
+    date: '2026-03-08',
+    displayDate: 'March 8, 2026',
+    readTime: '12 min read',
+    category: 'Power Platform',
+    tags: ['power-automate', 'expressions', 'cheat-sheet', 'workflow', 'low-code'],
+  },
+  {
     id: '27',
     slug: 'sharepoint-provisioning-automation-guide-2026',
     title: "Modern SharePoint Provisioning & Automation in 2026: A Developer's Guide",
