@@ -55,4 +55,12 @@ export const tools = [
         emoji: '🔧',
         tags: ['PowerShell', 'PnP', 'Automation'],
     },
+    {
+        name: 'Power Automate Expressions',
+        slug: 'power-automate-expressions',
+        description:
+            'Browse, search, and copy Power Automate expressions — with syntax, examples, and usage tips for every function.',
+        emoji: '⚙️',
+        tags: ['Power Automate', 'Expressions', 'Workflow'],
+    },
 ]

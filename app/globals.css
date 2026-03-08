@@ -6481,3 +6481,164 @@ pre:hover .copy-btn {
   background: #fff;
   border-color: #e2e8f0;
 }
+
+/* ============================================
+   Power Automate Expressions Tool
+   ============================================ */
+
+/* Search */
+.pa-search-wrap {
+  position: relative;
+}
+
+.pa-search-icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fs-base);
+  pointer-events: none;
+}
+
+.pa-search {
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-12);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+  font-family: var(--font-body);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.pa-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.pa-search-clear {
+  position: absolute;
+  right: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  padding: var(--space-1);
+}
+
+/* Expression Cards Grid */
+.pa-expressions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: var(--space-4);
+}
+
+.pa-expression-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.pa-expression-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.pa-expression-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.pa-expression-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.pa-expression-card__name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  background: none;
+  padding: 0;
+}
+
+.pa-expression-card__category {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.pa-expression-card__desc {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-relaxed);
+  margin: 0;
+}
+
+.pa-expression-card__syntax,
+.pa-expression-card__example {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-code);
+  border: 1px solid var(--border-light);
+}
+
+.pa-expression-card__syntax code,
+.pa-expression-card__example code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-primary);
+  word-break: break-all;
+  background: none;
+  padding: 0;
+}
+
+.pa-expression-card__label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-1);
+}
+
+@media (max-width: 768px) {
+  .pa-expressions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+[data-theme="light"] .pa-search {
+  background: #fff;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .pa-expression-card {
+  background: #fff;
+}
+
+[data-theme="light"] .pa-expression-card__syntax,
+[data-theme="light"] .pa-expression-card__example {
+  background: #f8fafc;
+}
