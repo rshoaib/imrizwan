@@ -5,7 +5,9 @@ import AdSlot from '@/components/AdSlot'
 import TableOfContents from '@/components/TableOfContents'
 import CopyCodeButton from '@/components/CopyCodeButton'
 import RelatedPosts from '@/components/RelatedPosts'
+import RelatedTools from '@/components/RelatedTools'
 import ShareButtons from '@/components/ShareButtons'
+import ReadingProgress from '@/components/ReadingProgress'
 import type { BlogPost } from '@/data/blog'
 
 /** Very simple markdown-to-HTML renderer for blog content */
@@ -100,6 +102,8 @@ export default function BlogPostClient({
   allPosts: BlogPost[]
 }) {
   return (
+    <>
+    <ReadingProgress />
     <article className="post">
       <Link href="/blog" className="post__back">
         ← Back to Blog
@@ -147,6 +151,9 @@ export default function BlogPostClient({
       <ShareButtons url={`/blog/${post.slug}`} title={post.title} />
 
       <RelatedPosts currentPost={post} allPosts={allPosts} />
+
+      <RelatedTools currentSlug="" />
     </article>
+    </>
   )
 }

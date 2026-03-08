@@ -6378,3 +6378,106 @@ pre:hover .copy-btn {
     height: 150px;
   }
 }
+
+/* ============================================
+   Reading Progress Bar
+   ============================================ */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 200;
+  background: transparent;
+  pointer-events: none;
+}
+
+.reading-progress__bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+  transition: width 50ms linear;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ============================================
+   Light Mode — Dashboard Overrides
+   ============================================ */
+[data-theme="light"] .dashboard__stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .dashboard__stat-card:hover {
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12), 0 0 20px rgba(79, 70, 229, 0.08);
+}
+
+[data-theme="light"] .dashboard__stat-value {
+  background: linear-gradient(135deg, #0f172a 0%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="light"] .dashboard__banner {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .dashboard__widget {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .dashboard__tool-item {
+  background: var(--bg-secondary);
+}
+
+[data-theme="light"] .dashboard__tool-item:hover {
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .dashboard__controls {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .dashboard__recent {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .dashboard__recent-card {
+  background: #fff;
+}
+
+[data-theme="light"] .dashboard__recent-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dashboard__featured {
+  background: #fff;
+}
+
+[data-theme="light"] .dashboard__featured:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dashboard__cta {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .dashboard__pill {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .dashboard__search {
+  background: #fff;
+  border-color: #e2e8f0;
+}
