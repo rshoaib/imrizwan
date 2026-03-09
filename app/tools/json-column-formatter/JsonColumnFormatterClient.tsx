@@ -629,6 +629,7 @@ export default function JsonColumnFormatter() {
               in SharePoint lists and libraries are displayed. Instead of building
               custom SPFx solutions, you can apply a JSON object to change colors,
               icons, layouts, and conditional styling — all without writing any code.
+              Want to master list formatting? Check out our <Link href="/blog/sharepoint-list-formatting-json-complete-guide-2026" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Complete Guide to SharePoint List Formatting (2026)</Link> for 15+ ready-to-use templates covering columns, rows, and forms.
             </p>
             <h3>How to Apply Column Formatting</h3>
             <ul>

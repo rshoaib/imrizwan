@@ -143,9 +143,9 @@ If you don't want to type out deployment commands manually, you can pair your ne
   {
     id: '28',
     slug: 'power-automate-expressions-cheat-sheet-2026',
-    title: 'Power Automate Expressions Cheat Sheet: Every Function You Need (2026)',
+    title: '99+ Power Automate Expressions: The Ultimate 2026 Cheat Sheet',
     excerpt:
-      'The complete reference for Power Automate expressions — 50+ functions organized by category with syntax, examples, and real-world tips. Bookmark this and never Google an expression again.',
+      'Stop guessing formulas! Get the ultimate 2026 Power Automate expressions cheat sheet. Master 99+ functions with exact syntax, real-world examples, and copy-paste code.',
     image: '/images/blog/power-automate-expressions-cheat-sheet.png',
     content: `
 ## Why You Need an Expressions Cheat Sheet
@@ -7042,9 +7042,9 @@ Viva Connections ACEs are the most direct way for SPFx developers to impact the 
   {
     id: '8',
     slug: 'microsoft-graph-api-spfx-user-profiles-teams',
-    title: 'Microsoft Graph API in SPFx: 10 Practical Examples for SharePoint Developers (2026)',
+    title: '10 Microsoft Graph API Examples Every SPFx Developer Must Know (2026)',
     excerpt:
-      'Master Microsoft Graph API inside SPFx web parts — 10 real examples covering user profiles, Teams data, calendar events, and site analytics with production-ready code.',
+      'Unlock the power of Microsoft Graph in your SPFx web parts! Copy these 10 production-ready examples for user profiles, Teams, and calendar data.',
     content: `
 ## Why Microsoft Graph API in SPFx?
 
