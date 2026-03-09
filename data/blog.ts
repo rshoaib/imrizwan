@@ -14,6 +14,133 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '29',
+    slug: 'spfx-heft-cli-migration-2026',
+    title: 'Migrating SPFx to Heft & the New CLI: A 2026 Developer Guide',
+    excerpt: 'The SharePoint Framework (SPFx) toolchain has moved from Gulp to Heft. Learn how to migrate your existing web parts to Webpack 5, remove Yeoman, and prepare for the new 2026 open-source SPFx CLI.',
+    image: '/images/blog/spfx-heft-cli-migration-2026.png',
+    content: `
+## The End of Yeoman and Gulp
+
+The SharePoint Framework (SPFx) ecosystem is undergoing its most significant architectural shift since its inception. Starting with SPFx v1.22 and fully cementing in 2026 with v1.24, Microsoft is replacing the legacy **Gulp** and **Yeoman** toolchain with **Heft** (from the Rush Stack ecosystem) and a brand-new, open-source **SPFx CLI**.
+
+If you've built a [custom SPFx web part](/blog/building-spfx-web-part-crud-react-pnpjs-2026) in the past, your muscle memory probably defaults to \`gulp bundle --ship\`. 
+
+That era is over. Heft brings Webpack 5, declarative JSON configurations, significantly faster build times, and zero \`npm audit\` warnings from unmaintained Gulp plugins.
+
+Here is exactly how to migrate your existing projects and prepare for the new CLI.
+
+---
+
+## 1. Why Heft Over Gulp?
+
+For years, developers have struggled with SPFx bundle sizes and bloated node_modules. Moving to Heft brings three major advantages:
+
+1. **Declarative Configuration:** \`gulpfile.js\` is gone. You now configure builds via JSON files (\`heft.json\`, \`typescript.json\`). 
+2. **Speed & Caching:** Heft is designed for large-scale monorepos. Incremental builds for React components are incredibly fast.
+3. **Modern Webpack:** By moving to Webpack 5, you get out-of-the-box support for better tree shaking. Check out our [SPFx Performance Optimization guide](/blog/spfx-performance-optimization-bundle-lazy-loading-2026) to see just how much bundle size you can save.
+
+---
+
+## 2. Step-by-Step Migration Guide
+
+To upgrade an existing project, follow these steps. 
+
+> **Best Practice:** Before starting, ensure you are using NVM (Node Version Manager) to switch to Node.js v18+. The new Heft toolchain requires modern Node environments.
+
+### Step A: Clean Up Gulp
+First, remove all traces of Gulp from your project:
+\`\`\`bash
+npm uninstall gulp gulp-core-build @microsoft/sp-build-web
+npm uninstall @microsoft/rush-stack-compiler-4.5
+\`\`\`
+Delete \`gulpfile.js\` completely.
+
+### Step B: Install Heft Dependencies
+\`\`\`bash
+npm install @microsoft/spfx-web-build-rig @microsoft/spfx-heft-plugins @rushstack/heft --save-dev
+\`\`\`
+
+### Step C: Update Package Scripts
+In your \`package.json\`, replace your old Gulp commands:
+\`\`\`json
+"scripts": {
+  "build": "heft build --clean",
+  "bundle": "heft build --production",
+  "serve": "heft start",
+  "package-solution": "heft test --production"
+}
+\`\`\`
+
+### Step D: Add Configuration Files
+Create a new \`config/rig.json\` file to tell Heft to use the SPFx rig:
+\`\`\`json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rushstack/rig.schema.json",
+  "rigPackageName": "@microsoft/spfx-web-build-rig"
+}
+\`\`\`
+
+> **Note:** The old \`config/config.json\` used for externals is deprecated. You now define externals using standard Webpack patterns in Heft. 
+
+---
+
+## 3. The New Open-Source SPFx CLI
+
+Releasing in preview alongside SPFx v1.23.1 (April 2026), the new **SPFx CLI** completely replaces Yeoman (\`yo @microsoft/sharepoint\`).
+
+The biggest advantage? **Custom Templates.**
+Because the CLI is open-sourced on GitHub, your enterprise can fork the repository and create custom scaffolding templates. Instead of every developer starting from scratch, you can scaffold a new project that already includes PnPjs, Fluent UI path imports, and your company's authentication wrapper.
+
+\`\`\`bash
+# The future of scaffolding
+spfx new webpart --template my-enterprise-react-template
+\`\`\`
+
+---
+
+## 4. Resolving Migration Errors
+
+When you run \`npm run build\` for the first time, you might hit a few walls. Here are the most common fixes:
+
+### Missing Sass Configurations
+If your \`.module.scss\` files fail to compile, ensure you've replaced \`sass.json\` with the updated Heft Sass plugin configurations.
+
+### Third-Party Library Issues
+Libraries that relied on specific Webpack 4 polyfills (like old versions of crypto or stream APIs) will break in Webpack 5. You must either update those libraries or manually add polyfills to a custom Webpack config inside your Heft setup.
+
+### Rest API Calls Failing?
+If your local workbench API mocks break, remember that the local dev server architecture has changed. For production data querying, always rely on standard batching patterns. Check out our [SharePoint REST API Cheat Sheet](/blog/sharepoint-rest-api-cheat-sheet-2026) for updated 2026 endpoint structures.
+
+---
+
+## FAQs
+
+### Can I still use Gulp in 2026?
+Technically, yes for older projects on SPFx v1.21 or lower. However, starting with v1.24, Gulp is officially unsupported by Microsoft. It's time to migrate.
+
+### How does this affect PnP PowerShell scripts?
+It doesn't! Your [PnP PowerShell scripts](/blog/pnp-powershell-sharepoint-online-scripts-2026) used for provisioning assets and app catalogs will continue to work exactly as they did before. The build toolchain only affects the frontend compilation.
+
+### Does Heft support React 18?
+Yes, moving to the new Heft-based SPFx versions provides much stronger alignment with React 18 and Fluent UI v9.
+
+---
+
+## Conclusion & Next Steps
+
+The shift to Heft and the new CLI removes years of technical debt from the SharePoint Framework. Builds are faster, dependencies are cleaner, and the ability to use custom templates will change how enterprise teams operate.
+
+If you don't want to type out deployment commands manually, you can pair your newly built web parts with our **[PnP PowerShell Generator](/tools/pnp-script-generator)** to automate the deployment process straight to your app catalog.
+`,
+    date: '2026-03-09',
+    displayDate: 'March 9, 2026',
+    readTime: '6 min read',
+    category: 'SPFx',
+    tags: ['spfx', 'heft', 'webpack-5', 'cli', 'react'],
+  },
+
+  {
     id: '28',
     slug: 'power-automate-expressions-cheat-sheet-2026',
     title: 'Power Automate Expressions Cheat Sheet: Every Function You Need (2026)',
