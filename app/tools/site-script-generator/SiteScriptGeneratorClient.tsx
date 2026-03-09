@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ───────────── Types ───────────── */
 
@@ -548,6 +550,10 @@ export default function SiteScriptGenerator() {
               Actions include creating lists, adding columns, applying themes, setting navigation, configuring regional settings, triggering Power Automate flows, and installing SPFx solutions. Each action maps to a <code>verb</code> in the JSON schema.
             </p>
           </section>
+
+          <ToolFAQ slug="site-script-generator" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="site-script-generator" />
         </div>

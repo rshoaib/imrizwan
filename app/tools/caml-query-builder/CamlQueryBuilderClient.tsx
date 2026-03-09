@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ───────────── Types ───────────── */
 type CamlOperator = 
@@ -362,6 +364,10 @@ export default function CamlQueryBuilder() {
               <li>Limiting the response size manually using <code>&lt;RowLimit&gt;</code> and <code>&lt;ViewFields&gt;</code>.</li>
             </ul>
           </section>
+
+          <ToolFAQ slug="caml-query-builder" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="caml-query-builder" />
         </div>

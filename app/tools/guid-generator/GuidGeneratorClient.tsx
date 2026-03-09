@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 type GuidFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces' | 'urn'
 
@@ -269,6 +271,10 @@ export default function GuidGenerator() {
               <li><strong>SharePoint Content Types</strong> — custom content type IDs</li>
             </ul>
           </section>
+
+          <ToolFAQ slug="guid-generator" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="guid-generator" />
         </div>

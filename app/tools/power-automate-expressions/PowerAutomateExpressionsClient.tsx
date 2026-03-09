@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ── Expression Data ── */
 
@@ -314,6 +316,10 @@ export default function PowerAutomateExpressionsClient() {
               <li>Test expressions in a <strong>Compose</strong> action before using them in production flows</li>
             </ul>
           </section>
+
+          <ToolFAQ slug="power-automate-expressions" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="power-automate-expressions" />
         </div>

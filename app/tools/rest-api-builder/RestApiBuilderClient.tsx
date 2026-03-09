@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import ToolFAQ from '@/components/ToolFAQ'
+import AdSlot from '@/components/AdSlot'
 
 /* ───────────── Types ───────────── */
 
@@ -534,6 +536,10 @@ Invoke-PnPSPRestMethod -Method Post \\
               In <strong>SPFx web parts</strong>, authentication is handled automatically via the context. For external apps, use <strong>Microsoft Entra ID</strong> (Azure AD) app registration with <code>Sites.Read.All</code> or <code>Sites.ReadWrite.All</code> permissions.
             </p>
           </section>
+
+          <ToolFAQ slug="rest-api-builder" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="rest-api-builder" />
         </div>

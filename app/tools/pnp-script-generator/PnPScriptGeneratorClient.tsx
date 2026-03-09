@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ───────────── Types ───────────── */
 
@@ -567,6 +569,10 @@ export default function PnPScriptGenerator() {
               <li>Active community — monthly releases and community calls</li>
             </ul>
           </section>
+
+          <ToolFAQ slug="pnp-script-generator" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="pnp-script-generator" />
         </div>

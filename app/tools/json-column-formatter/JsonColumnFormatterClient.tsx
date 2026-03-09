@@ -3,6 +3,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ───────────── Templates ───────────── */
 interface Template {
@@ -682,6 +684,10 @@ export default function JsonColumnFormatter() {
               </li>
             </ul>
           </section>
+
+          <ToolFAQ slug="json-column-formatter" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="json-column-formatter" />
         </div>

@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
+import ToolFAQ from '@/components/ToolFAQ'
 
 /* ───────────── Types ───────────── */
 type ResourceType = 'Site' | 'Library' | 'List' | 'Folder'
@@ -679,6 +681,10 @@ export default function PermissionMatrix() {
               </li>
             </ul>
           </section>
+
+          <ToolFAQ slug="permission-matrix" />
+
+          <AdSlot type="leaderboard" />
 
           <RelatedTools currentSlug="permission-matrix" />
         </div>
