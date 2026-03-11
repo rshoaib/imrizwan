@@ -8,9 +8,10 @@ description: Quick reference for when and how often to run each SEO/growth workf
 
 | Workflow | Purpose |
 |----------|---------|
-| `/bing-setup` | Register with Bing Webmaster Tools |
+| `/gsc-setup` | Add property to Google Search Console & submit sitemap |
+| `/bing-setup` | Register with Bing Webmaster Tools & submit sitemap |
 | `/ga4-setup` | Add Google Analytics 4 tracking |
-| `/full-seo` | Run ALL audits in one shot (good for new sites) |
+| `/full-seo` | Run ALL audits in one shot (after setup is complete) |
 
 ---
 

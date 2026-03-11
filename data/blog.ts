@@ -14,6 +14,111 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '30',
+    slug: 'sharepoint-ai-copilot-governance-checklist-2026',
+    title: 'SharePoint AI Governance: A Developer\'s Checklist (2026)',
+    excerpt: 'Prepare your SharePoint for Copilot. Learn why AI governance as code is mandatory, and use our free tools to map permissions and automate site lifecycles.',
+    image: '/images/blog/sharepoint-ai-copilot-governance-checklist-2026.png',
+    content: `
+## Why AI Changes SharePoint Governance Forever
+
+Before Microsoft 365 Copilot, poor SharePoint governance resulted in cluttered search results and mild user frustration. Today, poor governance is a severe security liability.
+
+Copilot does not respect security through obscurity. If an intern has read access to a 2018 HR folder named "Confidential_Salary_Data" buried ten levels deep, Copilot will cheerfully summarize those salaries when asked, *"What is the average bonus in engineering?"*
+
+Because Copilot perfectly respects existing SharePoint permission models, **oversharing is the single biggest blocker to enterprise AI adoption.**
+
+This developer checklist covers the architectural steps required to clean up your tenant, implement "governance as code," and safely deploy AI.
+
+---
+
+## 1. Implement "Just Enough Access" (JEA)
+
+The foundational rule of AI governance is moving from implicit access to explicit, least-privilege access. 
+
+### The Problem with "Everyone except external users"
+Many legacy intranets rely on open permission models where all employees can read all sites by default. This is catastrophic for AI.
+
+### The Developer's Governance Checklist:
+- **Audit Group Memberships:** Ensure Microsoft 365 Groups and Security Groups are tightly scoped. Let AI summarize data only for authorized members.
+- **Visualize Permissions:** Don't guess who has access. Use our free **[Permission Matrix Generator](/tools/permission-matrix)** to map out access levels across your site collections before turning on Copilot.
+- **Remove Orphaned Users:** Users who have left the company or changed departments should have their explicit item-level permissions purged.
+
+---
+
+## 2. Flatten Your Architecture
+
+AI thrives on beautifully structured, metadata-rich hub architectures. Deeply nested subsites break inheritance, complicate permissions, and confuse AI indexing.
+
+### The Hub Site Advantage
+By flattening your architecture (one site per project/team) and connecting them to Hub Sites, you ensure that search scopes are logical. Copilot understands that a document in the "Engineering Hub" is contextually different from a document in the "HR Hub".
+
+> **Need to modernization advice?** Read our complete guide on [Modern SharePoint Provisioning & Automation](/blog/sharepoint-provisioning-automation-guide-2026) to see how to architect flat hierarchies at scale.
+
+---
+
+## 3. Automate Site Lifecycle & Archiving
+
+Copilot cannot distinguish between a "Final_Architecture_v2.docx" from 2026 and a "Draft_Architecture.docx" from 2021 if both are sitting in the same active document library. **Stale content leads to AI hallucinations and inaccurate answers.**
+
+### Automated Archiving Workflows
+You must build automated workflows that move or delete stale content:
+1. **Identify Stale Sites:** Query the Microsoft Graph API to find sites with no activity in 90 days.
+2. **Owner Attestation:** Trigger a Power Automate flow asking the site owner to certify if the site is still active.
+3. **Automated Archiving:** If no response is received, automatically mark the site as read-only or move it to cheap archive storage.
+
+---
+
+## 4. Governance as Code: PnP PowerShell
+
+Manual governance does not scale. To secure thousands of sites for Copilot, developers must rely on code.
+
+**PnP PowerShell** is the most powerful tool for implementing governance at scale. You can write scripts to:
+- Find all externally shared files
+- Enforce default sharing link types (e.g., "Specific People" instead of "Organization-wide")
+- Apply sensitivity labels to bulk document libraries
+
+### Stop Writing Boilerplate Script
+If you're tasked with securing a tenant for Copilot, use our **[PnP PowerShell Generator](/tools/pnp-script-generator)**. You can visually select the governance actions you need (like modifying sharing settings or updating list permissions) and instantly generate the executable PowerShell script.
+
+---
+
+## 5. Standardize Content with Site Scripts
+
+If every new SharePoint site is created differently, Copilot struggles to find consistent patterns. By using **Site Scripts** and **Site Designs (Templates)**, you guarantee that every new team site has the exact same document library structure, metadata columns, and default labels.
+
+For example, a "Project Site" script can automatically create a library with a "Confidentiality" metadata column required on every upload.
+
+**Try it out:** Build your standardized templates quickly using our visual **[Site Script Generator](/tools/site-script-generator)**, then deploy them to your tenant so new sites are AI-ready from day one.
+
+---
+
+## Conclusion
+
+Rolling out Microsoft 365 Copilot isn't just about buying licenses; it's a massive data cleanup operation. As developers and architects, our job is to replace manual oversight with automated, code-driven governance.
+
+Start by mapping your permissions, flattening your topology, and automating your administrative tasks using tools like the **[PnP PowerShell Generator](/tools/pnp-script-generator)**. A clean, governed SharePoint tenant is the only way to build trust in enterprise AI.
+
+---
+
+## FAQs
+
+### Why is SharePoint permissions auditing critical for Copilot?
+Copilot honors the exact permissions of the user. If an employee has unintended access to a sensitive document buried in an old library, Copilot can discover and summarize that document, exposing confidential data.
+
+### Can Copilot differentiate between draft and final documents?
+Only if you tell it to. Without proper metadata or automated archiving of stale sites, Copilot might reference a 5-year-old draft policy instead of the current version. Archiving inactive sites is a crucial governance step.
+
+### How do I automate SharePoint governance?
+The most reliable method is using PnP PowerShell. You can write scripts to find overshared files, apply sensitivity labels, and run daily reports. Use our free [PnP PowerShell Generator](/tools/pnp-script-generator) to create these scripts quickly.
+`,
+    date: '2026-03-11',
+    displayDate: 'March 11, 2026',
+    readTime: '6 min read',
+    category: 'SharePoint',
+    tags: ['sharepoint', 'governance', 'ai', 'copilot', 'pnp-powershell'],
+  },
+  {
     id: '29',
     slug: 'spfx-heft-cli-migration-2026',
     title: 'Migrating SPFx to Heft & the New CLI: A 2026 Developer Guide',

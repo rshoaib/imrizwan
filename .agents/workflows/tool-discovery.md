@@ -56,11 +56,12 @@ Say: `/tool-discovery` while in any project folder.
 ## Phase 3: Keyword Research
 <!-- progress: "🔑 Phase 3/6: Researching search volumes for tool candidates..." -->
 
-1. **Search Google** for "[tool type] online free" for each gap found:
-   - Check search volume indicators (Google autocomplete, "People also ask")
-   - Note the competition level (are top results big brands or small sites?)
+1. **Gather Hard Data** — use explicit SEO tools to find actual monthly search volumes (MSV):
+   - Navigate to Google Keyword Planner (Free) or Ahrefs Free Keyword Generator
+   - Search for "[tool type] online free", "[niche] calculator", or "[niche] converter"
+   - Document the exact Monthly Search Volume (MSV) and Keyword Difficulty (KD) / Competition.
 2. **Check your own GSC** (if available) for queries you get impressions for but have no tool
-3. **Search trending tools** — "best free online tools 2026" type queries
+3. **Search trending tools** — "best free online tools 2026" type queries to spot rising trends
 
 Output a keyword table:
 

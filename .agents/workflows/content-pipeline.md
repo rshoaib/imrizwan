@@ -132,10 +132,11 @@ Before writing ANY content, read the context files for the target site:
 11. **Read brand voice** — apply tone, sentence length, and formatting rules
 12. Generate blog post draft with SEO-optimized headings
 13. **Read internal links map** — add 3-6 internal links using natural anchor text
-14. Create meta descriptions and Open Graph tags
-15. Write structured data (JSON-LD FAQPage schema) for FAQ sections
-16. End the article with a clear CTA linking to the most relevant tool
-17. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
+14. Create meta descriptions (under 155 chars) and Open Graph tags
+15. Write structured data (`Article`/`BlogPosting` schema AND `FAQPage` schema)
+16. Create a short, keyword-dense **URL slug** (remove stop words like 'and', 'the', 'what')
+17. End the article with a clear CTA linking to the most relevant tool
+18. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory. Ensure the image reference includes a descriptive, SEO-optimized `alt` tag.
 
 ### Phase 4: Quality Check (before code)
 <!-- progress: "✅ Phase 4/8: Running quality checks (readability, links, SEO)..." -->
@@ -151,13 +152,14 @@ Before writing ANY content, read the context files for the target site:
     - No broken URLs (check against internal links map)
     - Descriptive anchor text (never "click here")
 20. **SEO checklist**:
-    - [ ] Title tag includes primary keyword + year
+    - [ ] Title tag includes primary keyword + year AND is under 60 characters
     - [ ] H1 matches title tag
     - [ ] Meta description < 155 chars with keyword + "free"
-    - [ ] FAQ section with 3-5 questions
+    - [ ] FAQ section with 3-5 questions and JSON-LD
     - [ ] CTA at end linking to relevant tool
     - [ ] Article length 800-2000 words
-    - [ ] Hero image generated and referenced
+    - [ ] Hero image generated and referenced with descriptive `alt` text
+    - [ ] URL slug is short and keyword-dense
 
 ### Phase 5: Code Implementation (Claude Opus 4.5)
 <!-- progress: "💻 Phase 5/8: Adding article to codebase..." -->
@@ -218,6 +220,15 @@ Focus: [keywords/technical/speed]
 Site: [site-name]
 Type: bug-fix
 Issue: [describe the bug]
+```
+
+### Content Refresh
+```
+/content-pipeline
+Site: [site-name]
+Type: content-refresh
+Target URL: [path/to/old/post]
+Focus: [Add FAQ / Update Data / Improve CTR]
 ```
 
 ---

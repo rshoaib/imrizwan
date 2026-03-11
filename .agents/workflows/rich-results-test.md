@@ -18,7 +18,8 @@ Say: `/rich-results-test https://your-site.com`
    grep -r "application/ld+json" src/
    ```
 2. List each schema type found (e.g., WebApplication, BlogPosting, FAQPage, HowTo, Organization, BreadcrumbList, Person)
-3. Note which pages/components render each schema
+3. **CRITICAL:** Ensure `BreadcrumbList` is present on all nested pages for expanded search footprints.
+4. Note which pages/components render each schema
 
 ---
 

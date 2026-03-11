@@ -12,6 +12,8 @@ Example: "🔍 Sprint 1/5: Running 79-checkpoint SEO audit..."
 
 One command to run **everything**: site inventory, 79-checkpoint code audit, Google Search Console analysis, Rich Results validation, Bing Webmaster setup, and GA4 setup.
 
+*Note: You must have already run `@[/gsc-setup]` on Day 1 to create the property and submit the initial sitemap before running this audit suite.*
+
 ## How to Use
 Say: `/full-seo https://your-site.com`
 
