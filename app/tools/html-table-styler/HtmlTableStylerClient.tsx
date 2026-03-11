@@ -21,6 +21,8 @@ export default function HtmlTableStylerClient() {
   const [fontFamily, setFontFamily] = useState('Segoe UI, sans-serif')
   const [tableWidth, setTableWidth] = useState('100%')
   const [paddingCell, setPaddingCell] = useState('12px 16px')
+  const [textAlign, setTextAlign] = useState('left')
+  const [headerFontWeight, setHeaderFontWeight] = useState('600')
   
   const [generatedCss, setGeneratedCss] = useState('')
   const [copied, setCopied] = useState(false)
@@ -38,15 +40,16 @@ table {
 th {
   background-color: ${headerBgColor};
   color: ${headerTextColor};
-  font-weight: 600;
+  font-weight: ${headerFontWeight};
   padding: ${paddingCell};
-  text-align: left;
+  text-align: ${textAlign};
   border: 1px solid ${borderColor};
 }
 td {
   padding: ${paddingCell};
   border: 1px solid ${borderColor};
   color: #334155;
+  text-align: ${textAlign};
 }
 tr:nth-child(even) td {
   background-color: ${rowStripeColor};
@@ -56,7 +59,7 @@ tr:nth-child(odd) td {
 }
 </style>`
     setGeneratedCss(css)
-  }, [headerBgColor, headerTextColor, rowStripeColor, borderColor, fontFamily, tableWidth, paddingCell])
+  }, [headerBgColor, headerTextColor, rowStripeColor, borderColor, fontFamily, tableWidth, paddingCell, textAlign, headerFontWeight])
 
   const handleCopy = async () => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -122,7 +125,7 @@ tr:nth-child(odd) td {
         <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', marginTop: '2rem' }}>
           
           {/* Controls Panel */}
-          <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ flex: '1 1 300px', minWidth: 0, background: 'var(--bg-card)', padding: '24px', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <h2 className="tool-section__label" style={{ marginTop: 0 }}>Styling Options</h2>
             
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -131,7 +134,7 @@ tr:nth-child(odd) td {
               <button className="formatter-action-btn" onClick={() => handleApplyTheme('simple')}>Minimal</button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>Header Background</label>
                 <input type="color" value={headerBgColor} onChange={(e) => setHeaderBgColor(e.target.value)} style={{ width: '100%', height: '40px', padding: '0', cursor: 'pointer', border: 'none', borderRadius: '6px' }} />
@@ -161,6 +164,22 @@ tr:nth-child(odd) td {
                 </select>
               </div>
               <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>Text Alignment</label>
+                <select value={textAlign} onChange={(e) => setTextAlign(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}>
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>Header Font Weight</label>
+                <select value={headerFontWeight} onChange={(e) => setHeaderFontWeight(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}>
+                  <option value="normal">Normal</option>
+                  <option value="600">Semibold (600)</option>
+                  <option value="bold">Bold (700)</option>
+                </select>
+              </div>
+              <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>Cell Padding</label>
                 <input type="text" value={paddingCell} onChange={(e) => setPaddingCell(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
               </div>
@@ -173,7 +192,7 @@ tr:nth-child(odd) td {
           </div>
 
           {/* Preview Panel */}
-          <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ flex: '2 1 500px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ background: '#ffffff', padding: '24px', borderRadius: '12px', border: '1px solid var(--border)', overflowX: 'auto' }}>
               <h2 className="tool-section__label" style={{ marginTop: 0, color: '#334155' }}>Live Preview</h2>
               {/* Inject the generated CSS into the component just for this preview, but scoped! */}
