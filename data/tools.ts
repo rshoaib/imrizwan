@@ -114,5 +114,19 @@ export const tools = [
             { question: 'How do I use this in SPFx?', answer: 'You can use the JSON generated here directly in a Viva Connections Adaptive Card Extension (ACE) template view.' },
             { question: 'Does this generate C# code?', answer: 'No, this tool generates the declarative JSON payload that can be parsed by the AdaptiveCards SDK in any language, including the SPFx TypeScript runtime.' }
         ]
+    },
+    {
+        name: 'Power Automate HTML Table Styler',
+        slug: 'html-table-styler',
+        description:
+            'Style SharePoint lists and Dataverse tables exported from Power Automate. Generate CSS for the "Create HTML table" action visually.',
+        emoji: '🎨',
+        tags: ['Power Automate', 'HTML Table', 'CSS', 'Styling'],
+        faqs: [
+            { question: 'How do I style an HTML table in Power Automate?', answer: 'You can style the output of the "Create HTML table" action by adding custom CSS in a Compose action and placing it directly above the table output in your email or message.' },
+            { question: 'Does this work with SharePoint data?', answer: 'Yes, this CSS works perfectly with SharePoint lists that have been converted to HTML tables using Power Automate.' },
+            { question: 'Do I need to know CSS to use this?', answer: 'No. This generator lets you pick colors, borders, and fonts visually, and it outputs the exact CSS string you need to copy and paste.' }
+        ]
     }
 ]
+
