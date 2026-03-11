@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 
-const PIN = 'rizwan2026'
+// Set NEXT_PUBLIC_TASK_PIN in .env.local (not committed to git)
+const PIN = process.env.NEXT_PUBLIC_TASK_PIN ?? ''
 
 export default function PinGate({ children }: { children: React.ReactNode }) {
     const [unlocked, setUnlocked] = useState(false)
@@ -10,14 +11,14 @@ export default function PinGate({ children }: { children: React.ReactNode }) {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        if (localStorage.getItem('task_pin') === PIN) {
+        if (PIN && localStorage.getItem('task_pin') === PIN) {
             setUnlocked(true)
         }
     }, [])
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        if (input === PIN) {
+        if (PIN && input === PIN) {
             localStorage.setItem('task_pin', PIN)
             setUnlocked(true)
         } else {

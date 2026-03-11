@@ -3,22 +3,23 @@ import { tools } from '@/data/tools'
 import type { MetadataRoute } from 'next'
 
 const SITE_URL = 'https://imrizwan.com'
+const SITE_LAUNCH = '2026-01-01'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = await getAllPosts()
 
     const staticPages: MetadataRoute.Sitemap = [
-        { url: `${SITE_URL}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
-        { url: `${SITE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-        { url: `${SITE_URL}/tools`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-        { url: `${SITE_URL}/projects`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-        { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-        { url: `${SITE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+        { url: `${SITE_URL}/`, lastModified: SITE_LAUNCH, changeFrequency: 'weekly', priority: 1.0 },
+        { url: `${SITE_URL}/blog`, lastModified: SITE_LAUNCH, changeFrequency: 'weekly', priority: 0.9 },
+        { url: `${SITE_URL}/tools`, lastModified: SITE_LAUNCH, changeFrequency: 'weekly', priority: 0.9 },
+        { url: `${SITE_URL}/projects`, lastModified: SITE_LAUNCH, changeFrequency: 'monthly', priority: 0.8 },
+        { url: `${SITE_URL}/about`, lastModified: SITE_LAUNCH, changeFrequency: 'monthly', priority: 0.7 },
+        { url: `${SITE_URL}/contact`, lastModified: SITE_LAUNCH, changeFrequency: 'monthly', priority: 0.6 },
     ]
 
     const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
         url: `${SITE_URL}/tools/${tool.slug}`,
-        lastModified: new Date(),
+        lastModified: SITE_LAUNCH,
         changeFrequency: 'monthly',
         priority: 0.8,
     }))
