@@ -86,19 +86,19 @@ export default function ProjectsPage() {
     <div className="container">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(projectsJsonLd) }} />
 
-      <div className="page-title reveal">
+      <div suppressHydrationWarning className="page-title reveal">
         <h1>Projects</h1>
         <p>Web apps I&apos;ve built and maintain</p>
       </div>
 
-      <div className="projects-grid reveal-stagger">
+      <div suppressHydrationWarning className="projects-grid reveal-stagger">
         {projects.map((project) => (
           <a
             key={project.name}
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="project-card reveal"
+            suppressHydrationWarning className="project-card reveal"
           >
             <div className="project-card__emoji">{project.emoji}</div>
             <h3 className="project-card__name">{project.name}</h3>

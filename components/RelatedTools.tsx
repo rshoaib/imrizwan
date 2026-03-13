@@ -11,7 +11,7 @@ export default function RelatedTools({ currentSlug }: RelatedToolsProps) {
   if (relatedTools.length === 0) return null
 
   return (
-    <div className="related-tools tool-section reveal" style={{ marginTop: '4rem', paddingTop: '3rem', borderTop: '1px solid var(--border)' }}>
+    <div suppressHydrationWarning className="related-tools tool-section reveal" style={{ marginTop: '4rem', paddingTop: '3rem', borderTop: '1px solid var(--border)' }}>
       <h2 className="tool-section__label" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
         Recommended Free Developer Tools
       </h2>

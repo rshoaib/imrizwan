@@ -63,12 +63,12 @@ export default function ContactForm() {
 
   return (
     <div className="contact">
-      <div className="page-title reveal">
+      <div suppressHydrationWarning className="page-title reveal">
         <h1>Get in Touch</h1>
         <p>Have a question or want to work together? Drop me a message.</p>
       </div>
 
-      <div className="contact__grid reveal">
+      <div suppressHydrationWarning className="contact__grid reveal">
         <div className="contact__info">
           <div className="contact__info-card">
             <span className="contact__info-icon">✉️</span>

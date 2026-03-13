@@ -24,7 +24,7 @@ function getCategoryIcon(category: string): string {
 
 function FeaturedPost({ post }: { post: BlogPost }) {
   return (
-    <Link href={`/blog/${post.slug}`} className="featured-feed reveal">
+    <Link href={`/blog/${post.slug}`} suppressHydrationWarning className="featured-feed reveal">
       <div className="featured-feed__image-wrap">
         {post.image ? (
           <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -92,7 +92,7 @@ export default function BlogFeed({
       {visibleRest.length > 0 && (
         <div className="blog-feed__list">
           {visibleRest.map((post, index) => (
-            <article key={post.id} className="blog-feed__card reveal">
+            <article key={post.slug} suppressHydrationWarning className="blog-feed__card reveal">
               <Link href={`/blog/${post.slug}`} className="blog-feed__card-image-link">
                 {post.image ? (
                   <div style={{ position: 'relative', width: '100%', height: '100%' }}>

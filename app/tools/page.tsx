@@ -12,17 +12,17 @@ export const metadata: Metadata = {
 export default function ToolsPage() {
   return (
     <div className="container">
-      <div className="page-title reveal">
+      <div suppressHydrationWarning className="page-title reveal">
         <h1>Developer Tools</h1>
         <p>Free, browser-based utilities for M365 &amp; SharePoint developers</p>
       </div>
 
-      <div className="tools-grid reveal-stagger">
+      <div suppressHydrationWarning className="tools-grid reveal-stagger">
         {tools.map((tool) => (
           <Link
             key={tool.slug}
             href={`/tools/${tool.slug}`}
-            className="tool-card reveal"
+            suppressHydrationWarning className="tool-card reveal"
           >
             <div className="tool-card__emoji">{tool.emoji}</div>
             <h3 className="tool-card__name">{tool.name}</h3>

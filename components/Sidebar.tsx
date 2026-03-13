@@ -18,6 +18,7 @@ export default function Sidebar({
 }) {
   return (
     <aside className="sidebar">
+      <div className="sidebar__sticky-wrapper">
       {/* Search */}
       <div className="sidebar__section">
         <div className="sidebar__search-wrap">
@@ -84,6 +85,7 @@ export default function Sidebar({
             </Link>
           ))}
         </div>
+      </div>
       </div>
     </aside>
   )

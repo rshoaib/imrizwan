@@ -103,7 +103,7 @@ tr:nth-child(odd) td {
 
   return (
     <div className="container">
-      <div className="tool-page reveal-stagger">
+      <div suppressHydrationWarning className="tool-page reveal-stagger">
         {/* Breadcrumb */}
         <nav className="tool-breadcrumb">
           <Link href="/tools">Tools</Link>

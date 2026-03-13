@@ -55,7 +55,7 @@ export default function BlogListClient({ initialPosts }: { initialPosts: BlogPos
 
   return (
     <div className="container">
-      <div className="page-title reveal">
+      <div suppressHydrationWarning className="page-title reveal">
         <h1>Blog</h1>
         <p>Real-world solutions with code and screenshots</p>
       </div>

@@ -53,13 +53,13 @@ const timeline = [
 export default function AboutPage() {
   return (
     <div className="about">
-      <header className="about__header reveal">
+      <header suppressHydrationWarning className="about__header reveal">
         <div className="about__avatar">R</div>
         <h1 className="about__name">Rizwan</h1>
         <p className="about__role">SharePoint & Power Platform Developer</p>
       </header>
 
-      <div className="about__content reveal">
+      <div suppressHydrationWarning className="about__content reveal">
         <p>
           I&apos;m a Microsoft 365 developer with 5+ years of deep experience in SharePoint
           Framework (SPFx), Power Platform, and modern SharePoint
@@ -80,10 +80,10 @@ export default function AboutPage() {
       </div>
 
       {/* Experience Timeline */}
-      <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
+      <h2 suppressHydrationWarning className="section__title reveal" style={{ marginTop: '2rem' }}>
         Experience
       </h2>
-      <div className="about__content reveal">
+      <div suppressHydrationWarning className="about__content reveal">
         {timeline.map((entry) => (
           <div
             key={entry.period}
@@ -107,10 +107,10 @@ export default function AboutPage() {
       </div>
 
       {/* Certifications */}
-      <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
+      <h2 suppressHydrationWarning className="section__title reveal" style={{ marginTop: '2rem' }}>
         Certifications
       </h2>
-      <div className="about__skills reveal">
+      <div suppressHydrationWarning className="about__skills reveal">
         {certifications.map((cert) => (
           <span key={cert.name} className="about__skill">
             {cert.icon} {cert.name}
@@ -118,10 +118,10 @@ export default function AboutPage() {
         ))}
       </div>
 
-      <h2 className="section__title reveal" style={{ marginTop: '2rem' }}>
+      <h2 suppressHydrationWarning className="section__title reveal" style={{ marginTop: '2rem' }}>
         Skills & Technologies
       </h2>
-      <div className="about__skills reveal">
+      <div suppressHydrationWarning className="about__skills reveal">
         {skills.map((skill) => (
           <span key={skill} className="about__skill">
             {skill}
@@ -129,7 +129,7 @@ export default function AboutPage() {
         ))}
       </div>
 
-      <div className="about__links reveal">
+      <div suppressHydrationWarning className="about__links reveal">
         <a
           href="mailto:sh_rizwan44@hotmail.com"
           className="about__social-link"
@@ -155,7 +155,7 @@ export default function AboutPage() {
       </div>
 
       {/* CTA */}
-      <div className="about__content reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
+      <div suppressHydrationWarning className="about__content reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
           Looking for SharePoint development, Power Platform consulting, or collaboration?
         </p>

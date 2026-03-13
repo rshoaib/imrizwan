@@ -425,7 +425,7 @@ export default function PnPScriptGenerator() {
     <>
 
       <div className="container">
-        <div className="tool-page glass-panel reveal-stagger">
+        <div suppressHydrationWarning className="tool-page glass-panel reveal-stagger">
           <nav className="tool-breadcrumb">
             <Link href="/tools">Tools</Link>
             <span className="tool-breadcrumb__sep">/</span>

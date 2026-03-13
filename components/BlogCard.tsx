@@ -5,7 +5,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
   const categoryClass = `blog-card__category--${post.category.toLowerCase().replace(/\s+/g, '-')}`
 
   return (
-    <Link href={`/blog/${post.slug}`} className="blog-card reveal">
+    <Link href={`/blog/${post.slug}`} suppressHydrationWarning className="blog-card reveal">
       {post.image && (
         <div className="blog-card__image-wrapper">
           <img src={post.image} alt={post.title} className="blog-card__image" loading="lazy" />

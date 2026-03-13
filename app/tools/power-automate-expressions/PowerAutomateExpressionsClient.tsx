@@ -167,7 +167,7 @@ export default function PowerAutomateExpressionsClient() {
   return (
     <>
       <div className="container">
-        <div className="tool-page glass-panel reveal-stagger">
+        <div suppressHydrationWarning className="tool-page glass-panel reveal-stagger">
           {/* Breadcrumb */}
           <nav className="tool-breadcrumb">
             <Link href="/tools">Tools</Link>
