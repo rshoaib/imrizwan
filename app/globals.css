@@ -680,7 +680,7 @@ img {
 /* --- Mobile --- */
 @media (max-width: 768px) {
   .home-hero {
-    padding: var(--space-12) 0 var(--space-8);
+    padding: var(--space-20) 0 var(--space-8);
   }
 
   .home-hero__grid {
@@ -2967,9 +2967,9 @@ pre:hover .copy-btn {
 
 .segment-btn--active {
   color: white;
-  background: var(--bg-card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--accent);
+  box-shadow: 0 2px 8px var(--accent-glow);
+  border: 1px solid var(--accent);
 }
 
 /* --- Generate Button --- */
@@ -6116,6 +6116,7 @@ pre:hover .copy-btn {
   color: var(--text-primary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

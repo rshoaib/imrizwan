@@ -106,7 +106,9 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
         <section className="dashboard__banner">
           <div className="dashboard__banner-left">
             <div className="dashboard__avatar-wrap">
-              <div className="dashboard__avatar">R</div>
+              <div className="dashboard__avatar" style={{ padding: 0, overflow: 'hidden' }}>
+                <Image src="/images/avatar.png" alt="Rizwan" width={120} height={120} style={{ objectFit: 'cover' }} />
+              </div>
             </div>
             <div className="dashboard__identity">
               <div className="dashboard__name-row">
