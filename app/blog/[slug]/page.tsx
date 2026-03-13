@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getAllPosts, getPostBySlug } from '@/lib/blogService'
 import { extractFaqItems, buildFaqJsonLd } from '@/lib/faqSchema'
+import { renderMarkdown } from '@/lib/markdown'
 import BlogPostClient from './BlogPostClient'
 
 export const revalidate = 60 // ISR: re-fetch from Supabase every 60 seconds
@@ -118,6 +119,17 @@ export default async function BlogPostPage({ params }: Props) {
   const faqItems = extractFaqItems(post.content)
   const faqJsonLd = buildFaqJsonLd(faqItems)
 
+  const htmlContent = renderMarkdown(post.content)
+
+  const related = allPosts
+    .filter(
+      (p) =>
+        p.id !== post.id &&
+        (p.category === post.category ||
+          (p.tags || []).some((t) => (post.tags || []).includes(t)))
+    )
+    .slice(0, 3)
+
   return (
     <>
       <script
@@ -134,7 +146,7 @@ export default async function BlogPostPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       )}
-      <BlogPostClient post={post} allPosts={allPosts} />
+      <BlogPostClient post={post} relatedPosts={related} htmlContent={htmlContent} />
     </>
   )
 }

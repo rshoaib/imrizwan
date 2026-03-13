@@ -32,14 +32,7 @@ function rowToPost(r: DbRow): BlogPost {
     }
 }
 
-// -------- cache --------
-const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
-let cachedPosts: BlogPost[] | null = null
-let cacheTime = 0
-
-function isCacheValid() {
-    return cachedPosts && Date.now() - cacheTime < CACHE_TTL
-}
+// Removed manual module-level cache to allow Next.js ISR to function correctly
 
 // -------- merge logic --------
 // Merges Supabase posts with local posts. Supabase wins on slug conflicts.
@@ -66,8 +59,6 @@ function mergePosts(dbPosts: BlogPost[], local: BlogPost[]): BlogPost[] {
 // -------- public API --------
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-    if (isCacheValid()) return cachedPosts!
-
     if (!supabase) return localPosts
 
     try {
@@ -82,9 +73,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
         }
 
         const dbPosts = (data as DbRow[]).map(rowToPost)
-        cachedPosts = mergePosts(dbPosts, localPosts)
-        cacheTime = Date.now()
-        return cachedPosts
+        return mergePosts(dbPosts, localPosts)
     } catch (err) {
         console.warn('[blogService] Network error, using local fallback', err)
         return localPosts
