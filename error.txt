@@ -1,0 +1,6 @@
+Error: Missing env matching
+    at main (file:///C:/Projects/imrizwan/scripts/insert2.mjs:11:19)
+    at file:///C:/Projects/imrizwan/scripts/insert2.mjs:56:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
