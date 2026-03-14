@@ -238,6 +238,41 @@ export default function ArchitectureCanvasClient({ tool }: { tool: any }) {
           flex-direction: column;
           gap: var(--space-2);
         }
+        .m365-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-2);
+          width: 100%;
+          padding: var(--space-3);
+          border-radius: var(--radius-lg);
+          font-weight: var(--fw-semibold);
+          font-size: var(--fs-sm);
+          cursor: pointer;
+          transition: all var(--transition-fast);
+          border: 1px solid transparent;
+        }
+        .m365-btn-primary {
+          background: var(--accent);
+          color: white;
+          box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .m365-btn-primary:hover {
+          background: var(--accent-hover);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .m365-btn-secondary {
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+          border-color: var(--border);
+        }
+        .m365-btn-secondary:hover {
+          background: var(--bg-card);
+          border-color: var(--accent);
+          color: var(--accent);
+          transform: translateY(-2px);
+        }
         .m365-canvas {
           flex: 1;
           height: 100%;
@@ -354,10 +389,10 @@ export default function ArchitectureCanvasClient({ tool }: { tool: any }) {
           </div>
 
           <div className="m365-actions">
-            <button onClick={clearCanvas} className="btn-secondary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}>
+            <button onClick={clearCanvas} className="m365-btn m365-btn-secondary">
               <Trash2 size={16}/> Clear
             </button>
-            <button onClick={generateMarkdown} className="btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}>
+            <button onClick={generateMarkdown} className="m365-btn m365-btn-primary">
               <FileText size={16}/> Generate Docs
             </button>
           </div>
