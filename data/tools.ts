@@ -166,6 +166,19 @@ export const tools = [
             { question: 'Are these real responses?', answer: 'They are realistic mock responses modeled exactly after the official Microsoft Graph API documentation for v1.0.' },
             { question: 'Why does it separate Delegated and Application permissions?', answer: 'When building M365 apps, you either act on behalf of a user (Delegated) or as a background service (Application). It is crucial to request the correct permission type.' }
         ]
+    },
+    {
+        name: 'M365 Challenge Mode',
+        slug: 'm365-challenge',
+        description:
+            'Test your Microsoft 365, SharePoint, and Power Platform knowledge with this gamified developer quiz. Review detailed explanations after you finish!',
+        emoji: '🏆',
+        tags: ['Quiz', 'SharePoint', 'Power Platform', 'SPFx'],
+        faqs: [
+            { question: 'What topics are covered?', answer: 'The question bank features intermediate to advanced topics across SharePoint Framework (SPFx), Power Automate, Microsoft Graph, and general M365 App Development.' },
+            { question: 'Are the questions realistic?', answer: 'Yes, they are based on common architectural decisions, API quirks, and development scenarios you encounter in the real world.' },
+            { question: 'Do I get to see the correct answers?', answer: 'Absolutely! At the end of the challenge, you get a full review screen explaining why the correct answer is right and why the others are wrong.' }
+        ]
     }
 ]
 
