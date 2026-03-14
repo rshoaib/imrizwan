@@ -1299,10 +1299,13 @@ img {
   justify-content: center;
   margin: var(--space-16) auto;
   max-width: 728px;
+  min-height: 90px;
+  background-color: transparent;
 }
 
 .ad-slot--rectangle {
   max-width: 300px;
+  min-height: 250px;
 }
 
 /* --- Loading State --- */

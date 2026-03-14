@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
         ],
     },
     devIndicators: false,
+    async redirects() {
+        return [
+            {
+                source: '/blog/spfx-1-23-new-cli-replacing-yeoman-heft-migration-guide-2026',
+                destination: '/blog/spfx-migrate-gulp-heft-webpack-2026',
+                permanent: true,
+            },
+        ]
+    },
 }
 
 export default nextConfig
