@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import ArchitectureCanvasClient from './ArchitectureCanvasClient'
 import { tools } from '@/data/tools'
 import Script from 'next/script'
+import ToolFAQ from '@/components/ToolFAQ'
+import RelatedTools from '@/components/RelatedTools'
+import AdSlot from '@/components/AdSlot'
 
 const tool = tools.find((t) => t.slug === 'm365-architecture-canvas')!
 
@@ -45,22 +48,9 @@ export default function ArchitectureCanvasPage() {
       </div>
 
       <div className="mt-16 reveal">
-        <h2 className="text-2xl font-bold mb-6 text-slate-100">
-          Frequently Asked Questions
-        </h2>
-        <div className="grid gap-6">
-          {tool.faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6"
-            >
-              <h3 className="text-lg font-semibold text-sky-400 mb-2">
-                {faq.question}
-              </h3>
-              <p className="text-slate-300 leading-relaxed">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
+        <ToolFAQ slug={tool.slug} />
+        <AdSlot type="leaderboard" />
+        <RelatedTools currentSlug={tool.slug} />
       </div>
     </div>
   )
