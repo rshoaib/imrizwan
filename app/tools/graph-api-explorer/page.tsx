@@ -47,7 +47,6 @@ export default function GraphExplorerPage() {
     }
 
     return (
-    return (
         <div className="container">
             <script
                 type="application/ld+json"
@@ -73,6 +72,5 @@ export default function GraphExplorerPage() {
                 <RelatedTools currentSlug={tool.slug} />
             </div>
         </div>
-    )
     )
 }
