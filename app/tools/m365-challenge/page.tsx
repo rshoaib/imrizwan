@@ -58,15 +58,15 @@ export default function M365ChallengePage() {
                 <p>{tool.description}</p>
             </div>
 
-            <div className="mb-12">
+            <div style={{ marginBottom: 'var(--space-12)' }}>
                 <AdSlot type="leaderboard" />
             </div>
 
-            <div className="reveal min-h-[500px]">
+            <div className="reveal" style={{ minHeight: '500px' }}>
                 <ChallengeClient />
             </div>
 
-            <div className="mt-16 reveal">
+            <div className="reveal" style={{ marginTop: 'var(--space-16)' }}>
                 <ToolFAQ slug={tool.slug} />
                 <AdSlot type="leaderboard" />
                 <RelatedTools currentSlug={tool.slug} />

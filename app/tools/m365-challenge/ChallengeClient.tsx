@@ -15,18 +15,18 @@ export default function ChallengeClient() {
   // Shuffle questions once on mount so it's a random 10-question set
   const questions = useMemo(() => {
     return [...m365QuizBank].sort(() => 0.5 - Math.random()).slice(0, 10)
-  }, [gameState === 'start']) // Re-shuffle when restarting
+  }, [gameState === 'start'])
 
   const currentQuestion = questions[currentQuestionIndex]
   const score = userAnswers.filter((ans, idx) => ans === questions[idx].correctAnswerIndex).length
 
   const getRank = (score: number, total: number) => {
     const percentage = score / total
-    if (percentage === 1) return { title: 'M365 Architect', color: '#10b981' } // Emerald
-    if (percentage >= 0.8) return { title: 'Senior Developer', color: '#3b82f6' } // Blue
-    if (percentage >= 0.6) return { title: 'Intermediate Dev', color: '#f59e0b' } // Amber
-    if (percentage >= 0.4) return { title: 'Junior Developer', color: '#a78bfa' } // Purple
-    return { title: 'M365 Novice', color: '#ef4444' } // Red
+    if (percentage === 1) return { title: 'M365 Architect', color: 'var(--cat-sharepoint)' }
+    if (percentage >= 0.8) return { title: 'Senior Developer', color: 'var(--cat-spfx)' }
+    if (percentage >= 0.6) return { title: 'Intermediate Dev', color: 'var(--cat-power)' }
+    if (percentage >= 0.4) return { title: 'Junior Developer', color: 'var(--accent)' }
+    return { title: 'M365 Novice', color: 'var(--cat-m365)' }
   }
 
   const handleStart = () => {
@@ -55,15 +55,15 @@ export default function ChallengeClient() {
     return (
       <div className="mc-container">
         <style>{styles}</style>
-        <div className="mc-panel mc-center text-center">
-          <div className="mc-icon-wrapper mb-6">
-            <Trophy size={48} className="text-amber-400" />
+        <div className="mc-panel mc-center">
+          <div className="mc-icon-wrapper">
+            <Trophy size={48} style={{ color: 'var(--cat-power)' }} />
           </div>
           <h2 className="mc-title">M365 Developer Challenge</h2>
-          <p className="mc-desc mb-8">
+          <p className="mc-desc">
             Can you score 10/10? Test your knowledge across SharePoint Framework (SPFx), Power Automate, Microsoft Graph, and general M365 Development.
           </p>
-          <div className="flex justify-center gap-4 text-sm text-slate-400 mb-8">
+          <div className="mc-badges">
             <span className="mc-badge">10 Questions</span>
             <span className="mc-badge">Intermediate / Advanced</span>
           </div>
@@ -81,19 +81,19 @@ export default function ChallengeClient() {
     return (
       <div className="mc-container">
         <style>{styles}</style>
-        <div className="mc-panel mc-center text-center">
-          <h2 className="mc-title mb-2">Challenge Complete!</h2>
-          <p className="mc-desc mb-8">Here is how you performed against the M365 ecosystem.</p>
+        <div className="mc-panel mc-center">
+          <h2 className="mc-title">Challenge Complete!</h2>
+          <p className="mc-desc">Here is how you performed against the M365 ecosystem.</p>
           
           <div className="mc-score-circle" style={{ borderColor: rank.color, boxShadow: `0 0 30px ${rank.color}40` }}>
-            <span className="mc-score-text">{score}<span className="text-2xl text-slate-500">/{questions.length}</span></span>
+            <span className="mc-score-text">{score}<span className="mc-score-total">/{questions.length}</span></span>
           </div>
           
-          <div className="mc-rank-title mb-8" style={{ color: rank.color }}>
+          <div className="mc-rank-title" style={{ color: rank.color }}>
             Rank: {rank.title}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mc-actions">
             <button onClick={() => setGameState('review')} className="mc-btn mc-btn-secondary">
               Review Answers <Info size={18} />
             </button>
@@ -111,48 +111,48 @@ export default function ChallengeClient() {
     return (
       <div className="mc-container">
         <style>{styles}</style>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Answer Review</h2>
-          <button onClick={handleStart} className="mc-btn mc-btn-secondary text-sm py-2">
+        <div className="mc-review-header">
+          <h2 className="mc-title" style={{ marginBottom: 0 }}>Answer Review</h2>
+          <button onClick={handleStart} className="mc-btn mc-btn-secondary mc-btn-sm">
             Retry Challenge <RotateCcw size={16} />
           </button>
         </div>
         
-        <div className="flex flex-col gap-6">
+        <div className="mc-review-list">
           {questions.map((q, qIndex) => {
             const userAnswer = userAnswers[qIndex]
             const isCorrect = userAnswer === q.correctAnswerIndex
 
             return (
-              <div key={q.id} className="mc-panel p-6">
-                <div className="flex items-start gap-3 mb-4">
+              <div key={q.id} className="mc-panel mc-review-card">
+                <div className="mc-review-q-header">
                   {isCorrect ? (
-                    <CheckCircle2 className="text-emerald-500 flex-shrink-0 mt-1" size={24} />
+                    <CheckCircle2 style={{ color: 'var(--cat-sharepoint)' }} size={24} className="mc-review-icon" />
                   ) : (
-                    <XCircle className="text-rose-500 flex-shrink-0 mt-1" size={24} />
+                    <XCircle style={{ color: 'var(--cat-m365)' }} size={24} className="mc-review-icon" />
                   )}
-                  <div>
-                    <span className="text-xs uppercase tracking-wider text-slate-400 font-bold mb-1 block">{q.category}</span>
-                    <h3 className="text-lg font-medium text-slate-200">{q.question}</h3>
+                  <div className="mc-review-q-titles">
+                    <span className="mc-review-category">{q.category}</span>
+                    <h3 className="mc-review-question">{q.question}</h3>
                   </div>
                 </div>
                 
-                <div className="pl-9 space-y-4">
-                  <div className="grid grid-cols-1 gap-2">
+                <div className="mc-review-body">
+                  <div className="mc-review-options">
                     {q.options.map((opt, optIndex) => {
-                      let bgClass = "bg-slate-800/50 border-slate-700 text-slate-400"
+                      let bgClass = "mc-opt-neutral"
                       let badge = null
 
                       if (optIndex === q.correctAnswerIndex) {
-                        bgClass = "bg-emerald-500/10 border-emerald-500/50 text-emerald-400 font-medium"
-                        badge = <span className="text-xs ml-auto">Correct Answer</span>
+                        bgClass = "mc-opt-correct"
+                        badge = <span className="mc-opt-badge">Correct Answer</span>
                       } else if (optIndex === userAnswer) {
-                        bgClass = "bg-rose-500/10 border-rose-500/50 text-rose-400"
-                        badge = <span className="text-xs ml-auto">Your Answer</span>
+                        bgClass = "mc-opt-wrong"
+                        badge = <span className="mc-opt-badge">Your Answer</span>
                       }
 
                       return (
-                        <div key={optIndex} className={`p-3 rounded-lg border flex items-center ${bgClass}`}>
+                        <div key={optIndex} className={`mc-review-opt ${bgClass}`}>
                           <span>{opt}</span>
                           {badge}
                         </div>
@@ -160,7 +160,7 @@ export default function ChallengeClient() {
                     })}
                   </div>
                   
-                  <div className="p-4 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-200 text-sm leading-relaxed mt-4">
+                  <div className="mc-explanation">
                     <strong>Explanation:</strong> {q.explanation}
                   </div>
                 </div>
@@ -169,7 +169,7 @@ export default function ChallengeClient() {
           })}
         </div>
         
-        <div className="mt-8 text-center">
+        <div className="mc-center" style={{ paddingTop: 'var(--space-8)' }}>
             <button onClick={handleStart} className="mc-btn mc-btn-primary">
               Play Again <RotateCcw size={18} />
             </button>
@@ -186,24 +186,24 @@ export default function ChallengeClient() {
       <style>{styles}</style>
       
       {/* Progress */}
-      <div className="flex justify-between items-center mb-4 text-sm font-medium text-slate-400">
-        <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
-        <span className="px-3 py-1 bg-slate-800 rounded-full border border-slate-700">{currentQuestion.category}</span>
+      <div className="mc-progress-header">
+        <span className="mc-progress-text">Question {currentQuestionIndex + 1} of {questions.length}</span>
+        <span className="mc-progress-cat">{currentQuestion.category}</span>
       </div>
       
-      <div className="w-full bg-slate-800 rounded-full h-2 mb-8 overflow-hidden">
+      <div className="mc-progress-bar-bg">
         <div 
-          className="bg-indigo-500 h-2 rounded-full transition-all duration-500" 
+          className="mc-progress-bar-fill" 
           style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
         ></div>
       </div>
 
       <div className="mc-panel">
-        <h2 className="text-xl md:text-2xl font-medium text-slate-100 mb-8 leading-relaxed">
+        <h2 className="mc-question-text">
           {currentQuestion.question}
         </h2>
         
-        <div className="flex flex-col gap-3 mb-8">
+        <div className="mc-options-list">
           {currentQuestion.options.map((option, idx) => {
             const isSelected = selectedAnswer === idx
             return (
@@ -216,13 +216,13 @@ export default function ChallengeClient() {
                 <div className="mc-option-marker">
                   {String.fromCharCode(65 + idx)}
                 </div>
-                <div className="text-left">{option}</div>
+                <div className="mc-option-text">{option}</div>
               </button>
             )
           })}
         </div>
         
-        <div className="flex justify-end border-t border-slate-800 pt-6">
+        <div className="mc-play-footer">
           <button 
             onClick={handleNext} 
             disabled={!isQuestionAnswered}
@@ -240,8 +240,10 @@ const styles = `
   .mc-container {
     width: 100%;
     max-width: 800px;
-    margin: 0 auto;
+    margin: var(--space-8) auto var(--space-12);
     font-family: var(--font-body);
+    /* Ensure padding-top creates breathing room below the sticky header */
+    padding-top: var(--space-6); 
   }
   
   .mc-panel {
@@ -257,9 +259,14 @@ const styles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
     padding: var(--space-12) var(--space-6);
   }
   
+  .mc-icon-wrapper {
+    margin-bottom: var(--space-6);
+  }
+
   .mc-title {
     font-size: var(--fs-3xl);
     font-weight: var(--fw-bold);
@@ -270,23 +277,34 @@ const styles = `
   .mc-desc {
     font-size: var(--fs-lg);
     color: var(--text-secondary);
-    max-width: 500px;
+    max-width: 600px;
     line-height: var(--lh-relaxed);
+    margin-bottom: var(--space-8);
+  }
+
+  .mc-badges {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
   }
   
   .mc-badge {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    padding: 6px 12px;
+    padding: 6px 16px;
     border-radius: var(--radius-full);
     font-weight: var(--fw-medium);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
   }
   
   .mc-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 12px 24px;
+    padding: 12px 28px;
     border-radius: var(--radius-xl);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-base);
@@ -294,6 +312,11 @@ const styles = `
     transition: all var(--transition-fast);
   }
   
+  .mc-btn-sm {
+    padding: 8px 16px;
+    font-size: var(--fs-sm);
+  }
+
   .mc-btn-primary {
     background: var(--accent);
     color: white;
@@ -324,7 +347,26 @@ const styles = `
     cursor: not-allowed;
     opacity: 0.5;
   }
+
+  .mc-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    justify-content: center;
+  }
+  @media (min-width: 640px) {
+    .mc-actions {
+      flex-direction: row;
+    }
+  }
   
+  .mc-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
   .mc-option {
     display: flex;
     align-items: center;
@@ -338,6 +380,7 @@ const styles = `
     font-size: var(--fs-lg);
     cursor: pointer;
     transition: all var(--transition-fast);
+    text-align: left;
   }
   
   .mc-option:hover:not(:disabled) {
@@ -347,9 +390,9 @@ const styles = `
   }
   
   .mc-option.selected {
-    background: rgba(99, 102, 241, 0.1);
+    background: var(--accent-glow);
     border-color: var(--accent);
-    color: white;
+    color: var(--text-primary);
   }
   
   .mc-option.selected .mc-option-marker {
@@ -362,8 +405,8 @@ const styles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
     border-radius: 8px;
     background: var(--bg-secondary);
@@ -372,24 +415,32 @@ const styles = `
     color: var(--text-muted);
     transition: all var(--transition-fast);
   }
+
+  .mc-option-text {
+    flex-grow: 1;
+  }
   
   .mc-score-circle {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto var(--space-6);
     border-radius: 50%;
     border: 8px solid;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: var(--space-6);
   }
   
   .mc-score-text {
-    font-size: 3.5rem;
+    font-size: var(--fs-5xl);
     font-weight: var(--fw-extrabold);
-    color: white;
+    color: var(--text-primary);
     font-family: var(--font-mono);
+  }
+
+  .mc-score-total {
+    font-size: var(--fs-2xl);
+    color: var(--text-muted);
   }
   
   .mc-rank-title {
@@ -397,5 +448,168 @@ const styles = `
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin-bottom: var(--space-8);
+  }
+
+  .mc-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+  }
+
+  .mc-progress-cat {
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+  }
+
+  .mc-progress-bar-bg {
+    width: 100%;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    height: 8px;
+    margin-bottom: var(--space-8);
+    overflow: hidden;
+  }
+
+  .mc-progress-bar-fill {
+    background: var(--accent);
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease-out;
+  }
+
+  .mc-question-text {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-8);
+    line-height: var(--lh-relaxed);
+  }
+
+  .mc-play-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-6);
+  }
+
+  .mc-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .mc-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .mc-review-card {
+    padding: var(--space-6);
+  }
+
+  .mc-review-q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .mc-review-icon {
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .mc-review-category {
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: var(--fw-bold);
+    margin-bottom: var(--space-1);
+    display: block;
+  }
+
+  .mc-review-question {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .mc-review-body {
+    padding-left: 36px; /* Offset for icon width + gap */
+  }
+
+  .mc-review-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .mc-review-opt {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--fs-base);
+  }
+
+  .mc-opt-neutral {
+    background: var(--bg-secondary);
+    border-color: var(--border);
+    color: var(--text-secondary);
+  }
+
+  .mc-opt-correct {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #10b981;
+    font-weight: var(--fw-medium);
+  }
+
+  .mc-opt-wrong {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+  }
+
+  .mc-opt-badge {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+  }
+
+  .mc-explanation {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--accent-glow);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: var(--text-primary);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-relaxed);
+  }
+
+  [data-theme="light"] .mc-option {
+    background: #fff;
+  }
+  
+  [data-theme="light"] .mc-progress-cat {
+    background: #fff;
+  }
+
+  [data-theme="light"] .mc-explanation {
+    background: rgba(79, 70, 229, 0.05);
+    color: #1e293b;
   }
 `
