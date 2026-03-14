@@ -127,6 +127,19 @@ export const tools = [
             { question: 'Does this work with SharePoint data?', answer: 'Yes, this CSS works perfectly with SharePoint lists that have been converted to HTML tables using Power Automate.' },
             { question: 'Do I need to know CSS to use this?', answer: 'No. This generator lets you pick colors, borders, and fonts visually, and it outputs the exact CSS string you need to copy and paste.' }
         ]
+    },
+    {
+        name: 'M365 Architecture Canvas',
+        slug: 'm365-architecture-canvas',
+        description:
+            'Design Microsoft 365 architectures visually. Drag and drop SharePoint, Teams, and Power Platform components to generate a structured markdown document.',
+        emoji: '🏗️',
+        tags: ['Architecture', 'M365', 'Diagram'],
+        faqs: [
+            { question: 'What is this canvas used for?', answer: 'It allows architects and consultants to quickly draft M365 technical solutions using a drag-and-drop interface instead of complex drawing tools.' },
+            { question: 'Can I export the design?', answer: 'Yes, the canvas automatically generates a professional Markdown document summarizing your architecture, ready to be pasted into GitHub or a proposal.' },
+            { question: 'Which services are supported?', answer: 'Currently, you can add nodes for SharePoint, Teams, Power Automate, Power Apps, and Entra ID.' }
+        ]
     }
 ]
 
