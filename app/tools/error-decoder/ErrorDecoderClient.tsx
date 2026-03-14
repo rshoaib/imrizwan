@@ -37,226 +37,27 @@ export default function ErrorDecoderClient() {
   }, [query])
 
   return (
-    <div className="error-decoder-wrapper">
-      <style>{`
-        .error-decoder-wrapper {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-8);
-          width: 100%;
-          max-width: 900px;
-          margin: 0 auto;
-        }
-        
-        .ed-search-container {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-2xl);
-          padding: var(--space-6);
-          box-shadow: var(--shadow-xl);
-          position: relative;
-        }
-        
-        .ed-search-label {
-          display: block;
-          font-size: var(--fs-sm);
-          font-weight: var(--fw-bold);
-          color: var(--text-muted);
-          margin-bottom: var(--space-2);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-        
-        .ed-search-input-wrapper {
-          position: relative;
-        }
-        
-        .ed-search-icon {
-          position: absolute;
-          top: 1rem;
-          left: 1rem;
-          color: var(--text-muted);
-        }
-        
-        .ed-textarea {
-          width: 100%;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-xl);
-          padding: 1rem 1rem 1rem 3rem;
-          color: var(--text-primary);
-          font-family: var(--font-mono);
-          font-size: var(--fs-sm);
-          resize: vertical;
-          min-height: 120px;
-          transition: border-color var(--transition-fast);
-        }
-        
-        .ed-textarea:focus {
-          outline: none;
-          border-color: var(--accent);
-          box-shadow: 0 0 0 1px var(--accent);
-        }
-        
-        .ed-search-help {
-          font-size: var(--fs-xs);
-          color: var(--text-secondary);
-          margin-top: var(--space-3);
-          display: flex;
-          align-items: center;
-          gap: var(--space-2);
-        }
-
-        .ed-results-header {
-          font-size: var(--fs-xl);
-          font-weight: var(--fw-bold);
-          color: var(--text-primary);
-          border-bottom: 1px solid var(--border);
-          padding-bottom: var(--space-2);
-          margin-bottom: var(--space-6);
-        }
-
-        .ed-empty-state {
-          background: var(--bg-secondary);
-          border: 1px dashed var(--border);
-          border-radius: var(--radius-xl);
-          padding: var(--space-8);
-          text-align: center;
-          color: var(--text-secondary);
-        }
-        
-        .ed-card {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-2xl);
-          overflow: hidden;
-          box-shadow: var(--shadow-lg);
-          transition: border-color var(--transition-fast), transform var(--transition-fast);
-        }
-        
-        .ed-card:hover {
-          border-color: var(--text-muted);
-          transform: translateY(-2px);
-        }
-
-        .ed-card-header {
-          padding: var(--space-4) var(--space-6);
-          background: var(--bg-secondary);
-          border-bottom: 1px solid var(--border);
-          display: flex;
-          align-items: center;
-          gap: var(--space-4);
-        }
-
-        .ed-service-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: var(--space-2);
-          border-radius: var(--radius-lg);
-          border: 1px solid;
-          background: rgba(255,255,255,0.05);
-        }
-        
-        .ed-service-label {
-          font-size: var(--fs-xs);
-          font-weight: var(--fw-bold);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: var(--text-muted);
-          margin-bottom: 2px;
-        }
-
-        .ed-error-title {
-          font-size: var(--fs-lg);
-          font-weight: var(--fw-bold);
-          color: var(--text-primary);
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          flex-wrap: wrap;
-        }
-
-        .ed-error-code {
-          font-size: var(--fs-xs);
-          font-weight: var(--fw-normal);
-          font-family: var(--font-mono);
-          background: var(--bg-primary);
-          padding: 2px 8px;
-          border-radius: var(--radius-sm);
-          border: 1px solid var(--border);
-          color: var(--text-secondary);
-        }
-
-        .ed-card-body {
-          padding: var(--space-6);
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-6);
-        }
-
-        .ed-section {
-          display: flex;
-          gap: var(--space-4);
-        }
-        
-        .ed-section-icon {
-          margin-top: 4px;
-        }
-
-        .ed-section-title {
-          font-weight: var(--fw-semibold);
-          color: var(--text-primary);
-          margin-bottom: var(--space-2);
-        }
-
-        .ed-section-text {
-          font-size: var(--fs-sm);
-          color: var(--text-secondary);
-          line-height: 1.6;
-        }
-
-        .ed-fix-box {
-          background: rgba(16, 185, 129, 0.05); /* Emerald tint */
-          border: 1px solid rgba(16, 185, 129, 0.2);
-          border-radius: var(--radius-xl);
-          padding: var(--space-4);
-        }
-
-        .ed-fix-list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-2);
-        }
-
-        .ed-fix-item {
-          display: flex;
-          gap: var(--space-2);
-          font-size: var(--fs-sm);
-          color: var(--text-primary);
-          line-height: 1.6;
-        }
-      `}</style>
+    <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto">
       
       {/* Search Bar Container */}
-      <div className="ed-search-container reveal">
-        <label htmlFor="error-input" className="ed-search-label">
+      <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl backdrop-blur-md reveal">
+        <label htmlFor="error-input" className="block text-sm font-semibold text-slate-300 mb-2 uppercase tracking-wider">
           Paste Error Message / Code
         </label>
-        <div className="ed-search-input-wrapper">
-          <div className="ed-search-icon">
+        <div className="relative">
+          <div className="absolute top-4 left-4 text-slate-500">
             <Search size={24} />
           </div>
           <textarea
             id="error-input"
             rows={4}
-            className="ed-textarea"
+            className="w-full bg-slate-900/80 border border-slate-700/80 rounded-xl py-4 pl-12 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all font-mono text-sm resize-y min-h-[120px]"
             placeholder="e.g. 0x80070005, ActionBranchingConditionNotSatisfied, Cannot convert a primitive value..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <p className="ed-search-help">
+        <p className="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
           <Info size={14} /> The decoder scans your pasted log against known M365 error patterns.
         </p>
       </div>
@@ -264,67 +65,67 @@ export default function ErrorDecoderClient() {
       {/* Results Section */}
       {query.trim() && (
         <div className="reveal">
-          <h2 className="ed-results-header">
+          <h2 className="text-xl font-bold border-b border-slate-800 pb-2 text-slate-200 mb-6">
             {filteredErrors.length === 0 ? 'No exact matches found' : `Discovered Issues (${filteredErrors.length})`}
           </h2>
 
           {filteredErrors.length === 0 ? (
-            <div className="ed-empty-state">
+            <div className="bg-slate-900/50 border border-dashed border-slate-800 rounded-xl p-8 text-center text-slate-400">
               <p>We couldn't identify a known issue from the text provided.</p>
-              <p style={{ marginTop: '0.5rem', fontSize: 'var(--fs-sm)' }}>Try pasting just the specific error code or the exact sentence that indicates failure.</p>
+              <p className="mt-2 text-sm">Try pasting just the specific error code or the exact sentence that indicates failure.</p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            <div className="flex flex-col gap-6">
               {filteredErrors.map((error) => {
                 const config = serviceConfig[error.service] || serviceConfig['SharePoint']
 
                 return (
-                  <div key={error.id} className="ed-card">
+                  <div key={error.id} className="bg-slate-800/40 border border-slate-700/50 rounded-2xl overflow-hidden shadow-lg hover:border-slate-500/50 transition-all duration-200">
                     
                     {/* Card Header */}
-                    <div className="ed-card-header">
-                      <div className={`ed-service-icon ${config.colorClass}`}>
+                    <div className="px-6 py-4 bg-slate-900/60 border-b border-slate-700/50 flex flex-col sm:flex-row sm:align-center gap-4">
+                      <div className={`flex items-center justify-center p-3 rounded-xl border bg-slate-800/50 ${config.colorClass}`}>
                         {config.icon}
                       </div>
-                      <div>
-                        <div className="ed-service-label">{error.service}</div>
-                        <h3 className="ed-error-title">
+                      <div className="flex flex-col justify-center">
+                        <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-0.5">{error.service}</div>
+                        <h3 className="text-lg font-bold text-slate-100 flex flex-wrap items-center gap-2">
                           {error.title} 
-                          <span className="ed-error-code">Code: {error.code}</span>
+                          <span className="text-xs font-normal font-mono bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700 text-slate-300">Code: {error.code}</span>
                         </h3>
                       </div>
                     </div>
 
                     {/* Card Body */}
-                    <div className="ed-card-body">
+                    <div className="p-6 flex flex-col gap-6">
                       
                       {/* Description */}
-                      <div className="ed-section">
-                        <div className="ed-section-icon" style={{ color: '#0ea5e9' }}><Info size={20} /></div>
+                      <div className="flex gap-4">
+                        <div className="mt-1 text-sky-400 shrink-0"><Info size={20} /></div>
                         <div>
-                          <h4 className="ed-section-title">What this means</h4>
-                          <p className="ed-section-text">{error.description}</p>
+                          <h4 className="font-semibold text-slate-200 mb-1">What this means</h4>
+                          <p className="text-slate-300 text-sm leading-relaxed">{error.description}</p>
                         </div>
                       </div>
 
                       {/* Root Cause */}
-                      <div className="ed-section">
-                        <div className="ed-section-icon" style={{ color: '#fbbf24' }}><AlertTriangle size={20} /></div>
+                      <div className="flex gap-4">
+                        <div className="mt-1 text-amber-400 shrink-0"><AlertTriangle size={20} /></div>
                         <div>
-                          <h4 className="ed-section-title">Root Cause</h4>
-                          <p className="ed-section-text">{error.rootCause}</p>
+                          <h4 className="font-semibold text-slate-200 mb-1">Root Cause</h4>
+                          <p className="text-slate-300 text-sm leading-relaxed">{error.rootCause}</p>
                         </div>
                       </div>
 
                       {/* Fixes */}
-                      <div className="ed-section ed-fix-box">
-                        <div className="ed-section-icon" style={{ color: '#10b981' }}><CheckCircle size={20} /></div>
+                      <div className="flex gap-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl p-4 md:-mx-4">
+                        <div className="mt-1 text-emerald-400 shrink-0"><CheckCircle size={20} /></div>
                         <div>
-                          <h4 className="ed-section-title" style={{ color: '#10b981' }}>How to Fix</h4>
-                          <ul className="ed-fix-list">
+                          <h4 className="font-semibold text-emerald-400 mb-2">How to Fix</h4>
+                          <ul className="flex flex-col gap-2">
                             {error.solution.map((step, idx) => (
-                              <li key={idx} className="ed-fix-item">
-                                <span style={{ color: '#10b981', fontWeight: 'bold' }}>•</span>
+                              <li key={idx} className="flex gap-2 text-sm text-slate-300 leading-relaxed">
+                                <span className="text-emerald-500 font-bold">•</span>
                                 <span>{step}</span>
                               </li>
                             ))}
