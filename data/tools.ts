@@ -140,6 +140,19 @@ export const tools = [
             { question: 'Can I export the design?', answer: 'Yes, the canvas automatically generates a professional Markdown document summarizing your architecture, ready to be pasted into GitHub or a proposal.' },
             { question: 'Which services are supported?', answer: 'Currently, you can add nodes for SharePoint, Teams, Power Automate, Power Apps, and Entra ID.' }
         ]
+    },
+    {
+        name: 'SharePoint & Power Platform Error Decoder',
+        slug: 'error-decoder',
+        description:
+            'Paste cryptic Microsoft 365 error codes or logs (like 0x80070005) to get instant human-readable translations, root causes, and fixes.',
+        emoji: '🕵️‍♂️',
+        tags: ['SharePoint', 'Power Automate', 'Troubleshooting', 'Errors'],
+        faqs: [
+            { question: 'What does this tool do?', answer: 'It translates confusing, hexadecimal, or generic error messages thrown by Microsoft 365 services into clear explanations of what went wrong and how to fix it.' },
+            { question: 'Which services are covered?', answer: 'The database currently includes common errors from SharePoint Online, Power Automate, Power Apps, Microsoft Graph API, and Microsoft Entra ID.' },
+            { question: 'Can I paste a full error log?', answer: 'Yes! Just paste the raw text or JSON response. The decoder will scan the text for known error codes and keywords to find a match.' }
+        ]
     }
 ]
 
