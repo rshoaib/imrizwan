@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import ErrorDecoderClient from './ErrorDecoderClient'
+import ErrorDecoderWrapper from './ErrorDecoderWrapper'
 import { tools } from '@/data/tools'
 import Script from 'next/script'
 import ToolFAQ from '@/components/ToolFAQ'
@@ -44,7 +44,7 @@ export default function ErrorDecoderPage() {
       </div>
 
       <div className="reveal">
-        <ErrorDecoderClient />
+        <ErrorDecoderWrapper />
       </div>
 
       <div className="mt-16 reveal">
