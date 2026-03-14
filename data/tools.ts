@@ -153,6 +153,19 @@ export const tools = [
             { question: 'Which services are covered?', answer: 'The database currently includes common errors from SharePoint Online, Power Automate, Power Apps, Microsoft Graph API, and Microsoft Entra ID.' },
             { question: 'Can I paste a full error log?', answer: 'Yes! Just paste the raw text or JSON response. The decoder will scan the text for known error codes and keywords to find a match.' }
         ]
+    },
+    {
+        name: 'Graph API Explorer Lite',
+        slug: 'graph-api-explorer',
+        description:
+            'An interactive, no-auth sandbox to explore popular Microsoft Graph API endpoints. Instantly view required permissions and realistic mock JSON responses.',
+        emoji: '🎮',
+        tags: ['Microsoft Graph', 'API', 'Developer Tools', 'Permissions'],
+        faqs: [
+            { question: 'Do I need to sign in?', answer: 'No! This is a "Lite" mock version designed for quick reference without the hassle of authenticating or setting up an Azure AD app.' },
+            { question: 'Are these real responses?', answer: 'They are realistic mock responses modeled exactly after the official Microsoft Graph API documentation for v1.0.' },
+            { question: 'Why does it separate Delegated and Application permissions?', answer: 'When building M365 apps, you either act on behalf of a user (Delegated) or as a background service (Application). It is crucial to request the correct permission type.' }
+        ]
     }
 ]
 
