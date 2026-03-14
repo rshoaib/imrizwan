@@ -6690,6 +6690,20 @@ pre:hover .copy-btn {
   font-weight: 600;
 }
 
+/* --- Global AdSense Protections --- */
+/* Hide empty AdSense slots and completely collapse their parent wrappers */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}
+
+div:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+div.mb-12:has(ins.adsbygoogle[data-ad-status="unfilled"]),
+div.my-12:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .toc__item--sub {
   padding-left: var(--space-4);
 }
