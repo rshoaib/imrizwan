@@ -47,41 +47,32 @@ export default function GraphExplorerPage() {
     }
 
     return (
-        <div className="section">
+    return (
+        <div className="container">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            {/* Header */}
-            <header className="mb-12 text-center reveal">
-                <h1 className="h1 mb-4 flex items-center justify-center gap-3">
-                    <span className="text-4xl">{tool.emoji}</span> {tool.name}
-                </h1>
-                <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                    {tool.description}
-                </p>
-            </header>
+            
+            <div className="page-title reveal">
+                <h1>{tool.emoji} {tool.name}</h1>
+                <p>{tool.description}</p>
+            </div>
 
-            {/* AD SLOT - Top */}
             <div className="mb-12">
                 <AdSlot type="leaderboard" />
             </div>
 
-            {/* Main Interactive Tool Component */}
-            <main className="mb-16 min-h-[500px]">
+            <div className="reveal">
                 <GraphExplorerClient />
-            </main>
-
-            {/* FAQ Section */}
-            <ToolFAQ slug={tool.slug} />
-
-            {/* AD SLOT - Bottom */}
-            <div className="my-12">
-                <AdSlot type="leaderboard" />
             </div>
 
-            {/* Related Tools */}
-            <RelatedTools currentSlug={tool.slug} />
+            <div className="mt-16 reveal">
+                <ToolFAQ slug={tool.slug} />
+                <AdSlot type="leaderboard" />
+                <RelatedTools currentSlug={tool.slug} />
+            </div>
         </div>
+    )
     )
 }
