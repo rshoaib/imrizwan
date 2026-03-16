@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
                 destination: '/blog/spfx-migrate-gulp-heft-webpack-2026',
                 permanent: true,
             },
+            {
+                source: '/tag/:path*',
+                destination: '/blog',
+                permanent: true,
+            },
         ]
     },
 }

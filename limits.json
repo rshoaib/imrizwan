@@ -1,0 +1,26 @@
+[
+  {
+    "project": "imrizwan",
+    "error": "Cannot read Supabase DB"
+  },
+  {
+    "project": "legalpolicygen",
+    "error": "Cannot read Supabase DB"
+  },
+  {
+    "project": "mycalcfinance",
+    "error": "Cannot read Supabase DB"
+  },
+  {
+    "project": "onlineimageshrinker",
+    "error": "Cannot read Supabase DB"
+  },
+  {
+    "project": "dailysmartcalc-next",
+    "error": "Cannot read Supabase DB"
+  },
+  {
+    "project": "orderviachat",
+    "error": "Cannot read Supabase DB"
+  }
+]

@@ -1,96 +1,261 @@
-## Stop Sending Ugly Emails
 
-By default, the Power Automate **"Create HTML table"** action generates a functional but incredibly ugly table. If you're sending automated daily reports, approval requests, or SharePoint list summaries to executives, an unstyled, borderless table looks unprofessional.
+## The Biggest SPFx Toolchain Change in Years
 
-Fortunately, you can inject custom CSS directly into your flow before sending the email. 
+March 2026 marks a turning point for SharePoint Framework developers. Two major changes are happening simultaneously:
 
-This guide will show you the exact architecture needed to style your tables, and introduce a free tool to generate the CSS instantly without writing code.
+1. **SPFx 1.22** replaced Gulp with **Heft** as the build system
+2. **SPFx 1.23** introduces a preview of the **new SPFx CLI** that replaces the Yeoman generator
 
----
+If you maintain SPFx projects, you need to understand both changes. This guide covers what changed, why it matters, and exactly how to migrate your existing projects.
 
-## 1. The Power Automate Architecture
+## What Changed and Why
 
-To style an HTML table in Power Automate, you need three actions in this specific order:
+### The Problem with the Old Toolchain
 
-1. **Create HTML table**: This action takes your array of data (e.g., from "Get items" in SharePoint) and converts it to raw HTML.
-2. **Compose (for CSS)**: This is where you store your \`<style>\` tags containing your CSS rules.
-3. **Send an email (V2)**: Here, you combine the CSS and the table output.
+The original SPFx toolchain had accumulated years of technical debt:
 
-### Formatting Your Data First
-Before creating your table, ensure your data is clean. You don't want raw timestamps or null values polluting your report. Use a **Select** action to map your SharePoint columns to clean headers, and use [Power Automate Expressions](/blog/power-automate-expressions-cheat-sheet-2026) like \`formatDateTime()\` or \`coalesce()\` to clean up the data.
+| Issue | Impact |
+|-------|--------|
+| Gulp dependency chain | 50+ npm audit warnings in every new project |
+| Yeoman generator coupling | Generator version locked to SPFx version |
+| Outdated build pipeline | Blocked TypeScript 5.x adoption |
+| Custom gulp tasks | Fragile, undocumented extension points |
 
----
+Microsoft addressed all four issues across SPFx 1.22 and 1.23.
 
-## 2. Writing the CSS (The Compose Action)
+### Timeline of Changes
 
-Once your table is created, add a **Compose** action. Rename it to "Compose - CSS". 
+| Version | Release | Change | Status |
+|---------|---------|--------|--------|
+| SPFx 1.21 | September 2025 | Last version with Gulp-only toolchain | Stable |
+| SPFx 1.22 | December 2025 | Heft replaces Gulp (Gulp still available via flag) | Stable |
+| SPFx 1.23 | March 2026 | New SPFx CLI preview, open-source templates | Preview |
+| SPFx 1.24 | June 2026 | SPFx CLI general availability | Planned |
 
-In the inputs, you need to write standard CSS wrapped in \`<style>\` tags. Because Power Automate tables use standard HTML elements (\`<table>\`, \`<th>\`, \`<tr>\`, \`<td>\`), you target those tags directly.
+## Change 1: Gulp to Heft (SPFx 1.22+)
 
-An example of a simple CSS block:
+### What is Heft?
 
-\`\`\`html
-<style>
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    font-family: Arial, sans-serif;
-  }
-  th {
-    background-color: #4f46e5;
-    color: white;
-    padding: 12px;
-    text-align: left;
-  }
-  td {
-    border-bottom: 1px solid #e2e8f0;
-    padding: 10px;
-  }
-</style>
-\`\`\`
+Heft is a build orchestrator from the Rush Stack ecosystem. It replaces Gulp as the task runner but **Webpack still handles bundling** under the hood. Think of it as a modern wrapper around the same compilation pipeline.
 
----
+### What Changed in Your Project
 
-## 3. The Secret Weapon: The HTML Table Styler
+| Before (Gulp) | After (Heft) |
+|---------------|-------------|
+| gulpfile.js | Removed |
+| gulp serve | npm run serve (calls Heft) |
+| gulp bundle --ship | npm run build (calls Heft) |
+| gulp package-solution --ship | npm run package (calls Heft) |
+| Custom gulp tasks in gulpfile.js | Heft plugins or rig extensions |
 
-Manually tweaking hex codes, padding sizes, and border widths inside a tiny Power Automate Compose box is frustrating. You can't see what the table looks like until you run the flow and check your email.
+### New Configuration Files
 
-Instead of guessing, use our free **[Power Automate HTML Table Styler](/tools/html-table-styler)**.
+SPFx 1.22 projects include several new files in the ./config folder:
 
-This visual tool allows you to:
-- Pick premium color themes (Corporate Blue, Midnight Dark, Emerald, etc.)
-- Adjust padding and font sizes instantly
-- Toggle borders and striped rows
-- See a **live preview** of exactly how your table will look in Outlook
+**config/rig.json** — References the shared SPFx build configuration:
 
-Once you're happy with the design, simply click **Copy CSS** and paste it directly into your "Compose - CSS" action.
+    {
+      "$schema": "https://developer.microsoft.com/json-schemas/rig-package/rig.schema.json",
+      "rigPackageName": "@microsoft/spfx-web-build-rig"
+    }
 
----
+**config/sass.json** — Sass plugin configuration:
 
-## 4. Combine and Send
+    {
+      "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft-sass-plugin.schema.json",
+      "extends": "@microsoft/spfx-web-build-rig/profiles/default/config/sass.json"
+    }
 
-The final step is to merge your CSS and your Table in the email body.
+The rig system means most configuration lives in the shared **@microsoft/spfx-web-build-rig** package rather than in your project. This keeps your project clean and makes future upgrades easier.
 
-1. Add a **Send an email (V2)** action.
-2. Click the \`</>\` icon to switch to **HTML View** (this is critical!).
-3. In the body, place your dynamic content in this exact order:
-   - First: The **Outputs** from your "Compose - CSS" action.
-   - Second: Any introductory text (e.g., "Here is the daily report:").
-   - Third: The **Output** from your "Create HTML table" action.
+### Step-by-Step: Migrate an Existing Project to Heft
 
-When the email arrives, Outlook (or Gmail/Teams) will read the hidden \`<style>\` block and apply your beautiful styling to the table!
+Follow these steps to migrate an SPFx 1.21 project to the Heft-based toolchain:
 
-> **Want to do more with SharePoint data?** Read our guide on [Power Automate + SharePoint: 7 Document Workflows That Save Hours](/blog/power-automate-sharepoint-document-workflows-2026) to see how sending styled reports fits into larger enterprise solutions.
+**Step 1: Update SPFx Dependencies**
 
----
+Update your package.json to reference SPFx 1.22 packages. The CLI for Microsoft 365 can generate the exact changes needed:
 
-## FAQs
+    npx @pnp/cli-microsoft365 spfx project upgrade
+      --toVersion 1.22.0 --output md
 
-### Does this work in Outlook and Microsoft Teams?
-Yes! Both Outlook desktop/web and Microsoft Teams support inline \`<style>\` tags appended before HTML tables. The CSS generated by our tool is highly compatible with modern email clients.
+This outputs a markdown report with every dependency change required.
 
-### Why are my table borders not showing?
-Ensure that your CSS targets the \`table\`, \`th\`, and \`td\` elements specifically, and double-check that you switched your Email action to **HTML View (\`</>\`)** before inserting the dynamic content.
+**Step 2: Remove Gulp Dependencies**
 
-### Can I conditionally format rows (e.g., turn a row red if "Status" is "Failed")?
-The base "Create HTML table" action does not support row-level conditional formatting natively. To achieve this, you must write a custom HTML loop using an "Apply to each" action and [Power Automate expressions](/blog/power-automate-expressions-cheat-sheet-2026) to inject \`style="color:red"\` on specific \`<tr>\` tags based on conditions.
+Uninstall the Gulp packages that are no longer needed:
+
+    npm uninstall gulp @microsoft/sp-build-web
+      @microsoft/sp-module-interfaces
+
+**Step 3: Install Heft Dependencies**
+
+    npm install @rushstack/heft @microsoft/spfx-web-build-rig
+      --save-dev
+
+**Step 4: Update npm Scripts**
+
+Replace the gulp commands in your package.json:
+
+    {
+      "scripts": {
+        "build": "heft build --clean",
+        "bundle": "heft build --clean",
+        "serve": "heft build --watch",
+        "package": "heft build --clean
+          && node ./node_modules/@pnp/spfx-controls-react/node_modules/.bin/package-solution"
+      }
+    }
+
+> **Note:** The exact scripts may vary. Check the scripts generated by a fresh SPFx 1.22 project for the most current commands.
+
+**Step 5: Add Configuration Files**
+
+Create the rig.json and sass.json files in your ./config directory as shown above.
+
+**Step 6: Delete gulpfile.js**
+
+Remove the gulpfile.js from your project root. If you had custom gulp tasks, see the "Migrating Custom Gulp Tasks" section below.
+
+**Step 7: Test the Build**
+
+    npm run build
+
+If the build succeeds, your migration is complete. Run `npm run serve` to verify the local development experience works as expected.
+
+### Migrating Custom Gulp Tasks
+
+If you had custom logic in gulpfile.js (such as custom bundling steps or environment variable injection), you have three options:
+
+| Approach | Complexity | Best For |
+|----------|-----------|----------|
+| Heft plugins | Medium | Reusable build steps shared across projects |
+| Pre/post npm scripts | Low | Simple one-off commands |
+| Rig ejection | High | Full control over the entire build pipeline |
+
+**The simplest migration path** for most custom gulp tasks is to convert them to npm scripts:
+
+    {
+      "scripts": {
+        "prebuild": "node ./scripts/inject-env-vars.js",
+        "build": "heft build --clean"
+      }
+    }
+
+For complex scenarios, you can create a custom Heft plugin. This is more involved but provides a cleaner, more maintainable extension point than custom gulp tasks ever did.
+
+## Change 2: New SPFx CLI (SPFx 1.23+)
+
+### What is the New SPFx CLI?
+
+The Yeoman generator (`yo @microsoft/sharepoint`) is being replaced by a standalone **SPFx CLI**. Key differences:
+
+| Feature | Yeoman Generator | New SPFx CLI |
+|---------|-----------------|-------------|
+| Installation | npm install -g yo @microsoft/generator-sharepoint | Standalone CLI (npm package) |
+| Version coupling | Locked to SPFx version | Decoupled from SPFx versions |
+| Templates | Bundled in generator | Open-source on GitHub |
+| Customization | Limited | Company-specific templates supported |
+| Status in 1.23 | Still available | Preview |
+| Status in 1.24 | Deprecated | General Availability |
+
+### Why This Matters
+
+The decoupling is the biggest win. Today, you install a specific version of the Yeoman generator to scaffold a specific version of SPFx. With the new CLI, you install it once and it can scaffold any supported SPFx version.
+
+The open-source templates mean your organization can create standardized project templates with your preferred libraries, folder structure, and configurations baked in.
+
+### Using the New SPFx CLI (Preview)
+
+As of SPFx 1.23, the CLI is in preview. To try it:
+
+    npm install -g @microsoft/spfx-cli@preview
+
+Then create a new project:
+
+    spfx new --solution-name my-webpart --component-type webpart
+      --framework react
+
+> **Important:** The exact commands may evolve before the 1.24 GA release. Check the [official SPFx documentation](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview) for current syntax.
+
+## Decision Matrix: When Should You Migrate?
+
+Not every project needs to migrate immediately. Use this matrix:
+
+| Scenario | Recommendation |
+|----------|---------------|
+| Starting a brand new SPFx project | Use SPFx 1.23 with Heft (skip Gulp entirely) |
+| Active project on SPFx 1.21 | Migrate to 1.22 Heft when you have a sprint for tech debt |
+| Legacy project in maintenance mode | Stay on current version until a feature update is needed |
+| Project with heavy custom gulp tasks | Plan migration carefully — test custom logic conversion first |
+| CI/CD pipelines using gulp commands | Update pipeline scripts when migrating to Heft |
+
+**The key deadline:** Gulp support will eventually be removed. Microsoft has not announced a hard deprecation date, but SPFx 1.22 already defaults to Heft, and the trend is clear. Plan your migration in 2026 rather than being forced into it later.
+
+## CI/CD Pipeline Updates
+
+If your DevOps pipelines use gulp commands, update them when migrating:
+
+**Before (Gulp-based pipeline):**
+
+    - script: gulp bundle --ship
+    - script: gulp package-solution --ship
+
+**After (Heft-based pipeline):**
+
+    - script: npm run build
+    - script: npm run package
+
+Both Azure DevOps and GitHub Actions pipelines need this update. The npm scripts abstract the underlying tool, so future toolchain changes will not require pipeline updates.
+
+## What About the CLI for Microsoft 365?
+
+The [CLI for Microsoft 365](https://pnp.github.io/cli-microsoft365/) remains your best friend for project upgrades. Its `spfx project upgrade` command generates a detailed migration report:
+
+    npx @pnp/cli-microsoft365 spfx project upgrade
+      --toVersion 1.23.0 --output md
+
+This tool does not modify your files automatically. Instead, it produces a step-by-step guide specific to your project, listing every dependency change, configuration update, and potential breaking change.
+
+## What Else Is New in SPFx 1.23
+
+Beyond the CLI preview, SPFx 1.23 includes:
+
+- **Open-source solution templates** — Project scaffolding templates are now on GitHub, enabling community contributions
+- **TypeScript 5.8** — Continued from SPFx 1.22, bringing modern language features like `using` declarations
+- **Clean npm audits** — Zero audit warnings in new projects (a huge win for enterprise compliance)
+- **Navigation Customizers preview** — Override top and side navigation elements (GA in 1.24)
+
+For building web parts with these new tools, see my [SPFx web part complete guide](/blog/spfx-web-part-crud-operations-complete-guide-2026). To leverage SPFx with Microsoft Graph, check out [10 practical Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+
+## Frequently Asked Questions
+
+**Q: Do I have to migrate to Heft immediately?**
+
+No. SPFx 1.22 includes a `--use-gulp` flag for the Yeoman generator that creates projects with the legacy Gulp toolchain. Existing projects on older SPFx versions continue to work without changes. However, new features and security patches will only come to the Heft-based toolchain going forward.
+
+**Q: Will my existing SPFx web parts break?**
+
+No. The toolchain change affects how you build and serve your project, not how it runs in SharePoint. Your deployed .sppkg files work the same regardless of whether they were built with Gulp or Heft.
+
+**Q: Can I use the new SPFx CLI in production today?**
+
+The CLI is in preview with SPFx 1.23. For production projects, continue using the Yeoman generator until the CLI reaches GA with SPFx 1.24 (June 2026). Test the CLI with side projects to familiarize yourself with the new workflow.
+
+**Q: What happened to the local workbench?**
+
+The local workbench (/temp/workbench.html) has been deprecated in favor of **in-page debugging** directly on SharePoint Online. This provides a more accurate testing environment since your web parts run in the real SharePoint context. Use `npm run serve` and navigate to your SharePoint site with `?debugManifestsFile=...` in the URL.
+
+**Q: How do I handle custom gulp tasks for environment-specific builds?**
+
+Convert simple tasks to npm `pre` and `post` scripts. For complex build customizations, create a custom Heft plugin. See the [Heft plugin documentation](https://heft.rushstack.io/) for patterns and examples.
+
+## What to Do Next
+
+1. **Audit your current SPFx projects** — List all projects and their current SPFx version
+2. **Try the Heft toolchain** — Scaffold a new SPFx 1.22+ project and compare the dev experience
+3. **Test the CLI preview** — Install the preview CLI and scaffold a test project
+4. **Update CI/CD pipelines** — Replace gulp commands with npm scripts when you migrate
+5. **Plan your migration timeline** — Use the decision matrix above to prioritize
+
+For more SharePoint development guides, explore my articles on [building Viva Connections ACEs](/blog/viva-connections-adaptive-card-extensions-build-guide-2026), [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026), and [Copilot Studio AI assistants](/blog/copilot-studio-sharepoint-ai-assistants-guide-2026).
