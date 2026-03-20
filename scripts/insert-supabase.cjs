@@ -5,23 +5,21 @@ async function main() {
   try {
     const db = new SupabaseREST();
     
-    // Using the same object as in the codebase
     const content = fs.readFileSync('scripts/post.md', 'utf8');
 
     const newArticle = {
-      slug: 'power-automate-html-table-styling-css',
-      title: 'Power Automate: How to Style HTML Tables with CSS',
-      excerpt: 'Stop sending ugly emails! Learn to apply custom CSS to the Power Automate Create HTML Table action and use our free generator to style data instantly.',
-      image: '/images/blog/power-automate-html-table-styling-css.png',
+      slug: 'spfx-cli-migrate-yeoman-heft-2026',
+      title: 'SPFx CLI: Migrate from Yeoman & Gulp to the New Toolchain (2026)',
+      excerpt: 'Microsoft is retiring the Yeoman generator and Gulp in favour of the new SPFx CLI and Heft build system. This step-by-step guide covers exactly how to migrate existing projects and scaffold new ones in SPFx v1.22+.',
+      image: '/images/blog/spfx-cli-migration-2026.png',
       content: content,
-      date: '2026-03-13',
-      display_date: 'March 13, 2026',
-      read_time: '5 min read',
-      category: 'Power Platform',
-      tags: ['power-automate', 'css', 'html-table', 'workflow', 'styling']
+      date: '2026-03-20',
+      display_date: 'March 20, 2026',
+      read_time: '9 min read',
+      category: 'SPFx',
+      tags: ['spfx', 'sharepoint-framework', 'heft', 'spfx-cli', 'migration', '2026']
     };
 
-    // Safely inserts while avoiding Postgres auto-increment bugs and ES Module crashes
     await db.safeInsert('blog_posts', newArticle, 'slug');
 
   } catch (err) {

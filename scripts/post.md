@@ -1,261 +1,231 @@
+## Why the SPFx Toolchain is Changing in 2026
 
-## The Biggest SPFx Toolchain Change in Years
+If you've scaffolded an SPFx project in the last few years, you know the drill: `yo @microsoft/sharepoint`, Gulp tasks, and a labyrinth of `package.json` scripts. This setup has served the ecosystem well, but Microsoft is moving on.
 
-March 2026 marks a turning point for SharePoint Framework developers. Two major changes are happening simultaneously:
+Starting with **SPFx v1.22** (Stable in 2024, widely adopted through 2025-2026), the framework began a deliberate migration away from the classic Yeoman generator and Gulp build runner toward a modern **SPFx CLI** and the **Heft** build orchestrator.
 
-1. **SPFx 1.22** replaced Gulp with **Heft** as the build system
-2. **SPFx 1.23** introduces a preview of the **new SPFx CLI** that replaces the Yeoman generator
+This isn't just a tooling aesthetic change. For any team with more than one developer, the old pipeline creates real friction: slow cold-start build times, opaque Gulp task chain debugging, and a Yeoman dependency that has been effectively unmaintained. The new pipeline fixes all three.
 
-If you maintain SPFx projects, you need to understand both changes. This guide covers what changed, why it matters, and exactly how to migrate your existing projects.
+This guide walks you through **why** the shift is happening, **what** changes between the two stacks, and the **exact steps** to migrate an existing project.
 
-## What Changed and Why
+---
 
-### The Problem with the Old Toolchain
+## What's Actually Changing: A Side-by-Side Comparison
 
-The original SPFx toolchain had accumulated years of technical debt:
+Understanding what each tool replaced — and why — is the most important step before touching any code.
 
-| Issue | Impact |
-|-------|--------|
-| Gulp dependency chain | 50+ npm audit warnings in every new project |
-| Yeoman generator coupling | Generator version locked to SPFx version |
-| Outdated build pipeline | Blocked TypeScript 5.x adoption |
-| Custom gulp tasks | Fragile, undocumented extension points |
+| Concern | Old Toolchain (≤ v1.21) | New Toolchain (v1.22+) |
+|---|---|---|
+| **Project scaffolding** | Yeoman generator (`yo @microsoft/sharepoint`) | SPFx CLI (`spfx new`) |
+| **Build runner** | Gulp | Heft (by Rush Stack) |
+| **TypeScript compilation** | Gulp-based `ts-loader` chain | Heft's native TypeScript rig |
+| **Bundling** | Webpack via Gulp plugin | Webpack via Heft plugin |
+| **Testing** | `gulp test` (Jest integration) | `heft test` |
+| **Build speed** | ~20-40s typical cold start | ~8-15s typical cold start |
+| **Config format** | Gulp task files (JavaScript) | `heft.json`, `tsconfig.json`, rigs |
+| **CLI decoupling** | Tied to SPFx release cycle | CLI versioned independently |
 
-Microsoft addressed all four issues across SPFx 1.22 and 1.23.
+The two most important properties of Heft: it's **config-driven** (not code-driven like Gulp), and it supports **build rigs** — shared configuration packages that your entire organization can standardize on. This is the critical enterprise feature that the old stack simply couldn't offer.
 
-### Timeline of Changes
+---
 
-| Version | Release | Change | Status |
-|---------|---------|--------|--------|
-| SPFx 1.21 | September 2025 | Last version with Gulp-only toolchain | Stable |
-| SPFx 1.22 | December 2025 | Heft replaces Gulp (Gulp still available via flag) | Stable |
-| SPFx 1.23 | March 2026 | New SPFx CLI preview, open-source templates | Preview |
-| SPFx 1.24 | June 2026 | SPFx CLI general availability | Planned |
+## Step 1: Install the New SPFx CLI
 
-## Change 1: Gulp to Heft (SPFx 1.22+)
+The new CLI is a standalone npm package, separate from the Yeoman generator.
 
-### What is Heft?
+```bash
+npm install -g @microsoft/spfx
+```
 
-Heft is a build orchestrator from the Rush Stack ecosystem. It replaces Gulp as the task runner but **Webpack still handles bundling** under the hood. Think of it as a modern wrapper around the same compilation pipeline.
+Verify the installation:
 
-### What Changed in Your Project
+```bash
+spfx --version
+```
 
-| Before (Gulp) | After (Heft) |
-|---------------|-------------|
-| gulpfile.js | Removed |
-| gulp serve | npm run serve (calls Heft) |
-| gulp bundle --ship | npm run build (calls Heft) |
-| gulp package-solution --ship | npm run package (calls Heft) |
-| Custom gulp tasks in gulpfile.js | Heft plugins or rig extensions |
+> **Note:** The SPFx CLI is versioned independently from the SPFx framework version. You can manage multiple framework versions from a single CLI installation, unlike the old Yeoman generator which was tightly coupled to the version it scaffolded.
 
-### New Configuration Files
+Before continuing, also ensure you meet the Node.js requirements for SPFx v1.22+:
 
-SPFx 1.22 projects include several new files in the ./config folder:
+```bash
+node --version  # Should be 18.x LTS or higher
+```
 
-**config/rig.json** — References the shared SPFx build configuration:
+---
 
+## Step 2: Scaffold a New Project with the SPFx CLI
+
+For new projects, replace your old `yo @microsoft/sharepoint` command:
+
+```bash
+# Old way (Yeoman)
+yo @microsoft/sharepoint
+
+# New way (SPFx CLI)
+spfx new
+```
+
+The `spfx new` command is fully interactive and presents the same options as Yeoman (component type, React vs no framework, etc.), but it's dramatically faster to execute and doesn't require Yeoman or Node generator scaffolding overhead.
+
+Every web part component still requires a unique GUID in its manifest. Use the [GUID Generator tool](/tools/guid-generator) to instantly create cryptographically secure v4 UUIDs for your `manifest.json` files — it also supports bulk generation for multi-component solutions.
+
+---
+
+## Step 3: Migrate an Existing Yeoman Project to Heft
+
+This is the critical section for teams with existing SPFx solutions. The recommended path is using the **CLI for Microsoft 365** (`m365` CLI) to generate a migration report, then applying changes manually.
+
+### 3a. Generate the Upgrade Report
+
+```bash
+# Install CLI for Microsoft 365 if you haven't already
+npm install -g @pnp/cli-microsoft365
+
+# Navigate to your SPFx project root
+cd my-spfx-project
+
+# Generate a migration report to SPFx v1.22
+m365 spfx project upgrade --toVersion 1.22.0 --output md > migration-report.md
+```
+
+Open `migration-report.md`. It lists every file that needs to change, the exact diff to apply, and which packages to add or remove. This is your migration checklist.
+
+### 3b. Key Package Changes
+
+The core package swap from Gulp to Heft involves:
+
+```bash
+# Remove Gulp and SharePoint-specific Gulp tasks
+npm uninstall gulp @microsoft/sp-build-web @microsoft/sp-module-interfaces
+
+# Add Heft and the SPFx Heft plugin
+npm install --save-dev @rushstack/heft @microsoft/spfx-heft-plugins
+```
+
+### 3c. Replace `gulpfile.js` with `heft.json`
+
+Delete (or empty) your `gulpfile.js`. In your project root, create a `heft.json`:
+
+```json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft.schema.json",
+  "heftPlugins": [
     {
-      "$schema": "https://developer.microsoft.com/json-schemas/rig-package/rig.schema.json",
-      "rigPackageName": "@microsoft/spfx-web-build-rig"
+      "package": "@microsoft/spfx-heft-plugins",
+      "pluginName": "spfx-web-part-bundle-plugin"
     }
+  ]
+}
+```
 
-**config/sass.json** — Sass plugin configuration:
+### 3d. Update `package.json` Scripts
 
-    {
-      "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft-sass-plugin.schema.json",
-      "extends": "@microsoft/spfx-web-build-rig/profiles/default/config/sass.json"
-    }
+Replace Gulp script references with Heft equivalents:
 
-The rig system means most configuration lives in the shared **@microsoft/spfx-web-build-rig** package rather than in your project. This keeps your project clean and makes future upgrades easier.
+```json
+{
+  "scripts": {
+    "build": "heft build --clean",
+    "bundle": "heft build --clean && heft run --only bundle -- --production",
+    "test": "heft test --clean",
+    "package-solution": "heft build --clean && heft run --only package-solution -- --production",
+    "start": "heft build --watch"
+  }
+}
+```
 
-### Step-by-Step: Migrate an Existing Project to Heft
+Notice the removal of `gulp serve`. In SPFx v1.22+, local workbench is fully replaced with **in-page debugging** on SharePoint Online. You no longer run a local server — you upload your bundle and debug it live.
 
-Follow these steps to migrate an SPFx 1.21 project to the Heft-based toolchain:
+---
 
-**Step 1: Update SPFx Dependencies**
+## Step 4: Understanding Heft Build Rigs (The Enterprise Feature)
 
-Update your package.json to reference SPFx 1.22 packages. The CLI for Microsoft 365 can generate the exact changes needed:
+Build rigs are the feature that makes Heft genuinely powerful for organizations with multiple SPFx projects.
 
-    npx @pnp/cli-microsoft365 spfx project upgrade
-      --toVersion 1.22.0 --output md
+A **rig** is a shared npm package that exports a common set of Heft configuration files (`tsconfig.json`, `heft.json`, tool configs). You publish it once and every SPFx project references it as a `devDependency`.
 
-This outputs a markdown report with every dependency change required.
+```bash
+# Install your company's SPFx rig (or use the community one)
+npm install --save-dev @microsoft/eslint-config-spfx
+```
 
-**Step 2: Remove Gulp Dependencies**
+Reference the rig in your `config/rig.json`:
 
-Uninstall the Gulp packages that are no longer needed:
+```json
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rig-package/rig.schema.json",
+  "rigPackageName": "@microsoft/eslint-config-spfx"
+}
+```
 
-    npm uninstall gulp @microsoft/sp-build-web
-      @microsoft/sp-module-interfaces
+With a rig in place, updating your TypeScript version, ESLint rules, or Webpack configuration across every SPFx project becomes a single `npm update rig-package` command — not 30 manual PRs.
 
-**Step 3: Install Heft Dependencies**
+---
 
-    npm install @rushstack/heft @microsoft/spfx-web-build-rig
-      --save-dev
+## Step 5: Running the New Build Pipeline
 
-**Step 4: Update npm Scripts**
+The new build commands feel familiar but have cleaner semantics:
 
-Replace the gulp commands in your package.json:
+| Old Gulp Command | New Heft Command |
+|---|---|
+| `gulp build` | `heft build` |
+| `gulp bundle --ship` | `heft build --production` |
+| `gulp package-solution --ship` | `heft run --only package-solution -- --production` |
+| `gulp test` | `heft test` |
+| `gulp serve` | N/A (use SharePoint Online in-page debugging) |
 
-    {
-      "scripts": {
-        "build": "heft build --clean",
-        "bundle": "heft build --clean",
-        "serve": "heft build --watch",
-        "package": "heft build --clean
-          && node ./node_modules/@pnp/spfx-controls-react/node_modules/.bin/package-solution"
-      }
-    }
+If you hit cryptic build errors during migration, use the [SharePoint & Power Platform Error Decoder](/tools/error-decoder) to instantly translate error codes from both the TypeScript compiler and SharePoint packaging pipeline into human-readable explanations.
 
-> **Note:** The exact scripts may vary. Check the scripts generated by a fresh SPFx 1.22 project for the most current commands.
+---
 
-**Step 5: Add Configuration Files**
+## Step 6: Testing Your Migrated Solution
 
-Create the rig.json and sass.json files in your ./config directory as shown above.
+Once your build succeeds, validate the solution in SharePoint Online:
 
-**Step 6: Delete gulpfile.js**
+1. Run `heft build --production` to create the `.sppkg` file
+2. Upload to your **App Catalog** at `/_layouts/15/tenantadmin.aspx`
+3. Enable the **SharePoint Framework client-side in-page debugging toolbar** (available in SPFx v1.22+)
+4. Navigate to any SharePoint page and flip the debug switch from the browser toolbar
 
-Remove the gulpfile.js from your project root. If you had custom gulp tasks, see the "Migrating Custom Gulp Tasks" section below.
+The new in-page debugger is significantly more stable than the local workbench, especially when your web part reads real SharePoint list data. For filtering that data, the [CAML Query Builder](/tools/caml-query-builder) lets you visually construct your list queries — critical when your web part needs nested AND/OR conditions or lookup column filtering.
 
-**Step 7: Test the Build**
+If your web part renders data in a SharePoint list view, also explore the [JSON Column Formatter](/tools/json-column-formatter) to add conditional formatting to the columns your SPFx solution creates — a great pairing for solutions that write metadata back to lists.
 
-    npm run build
-
-If the build succeeds, your migration is complete. Run `npm run serve` to verify the local development experience works as expected.
-
-### Migrating Custom Gulp Tasks
-
-If you had custom logic in gulpfile.js (such as custom bundling steps or environment variable injection), you have three options:
-
-| Approach | Complexity | Best For |
-|----------|-----------|----------|
-| Heft plugins | Medium | Reusable build steps shared across projects |
-| Pre/post npm scripts | Low | Simple one-off commands |
-| Rig ejection | High | Full control over the entire build pipeline |
-
-**The simplest migration path** for most custom gulp tasks is to convert them to npm scripts:
-
-    {
-      "scripts": {
-        "prebuild": "node ./scripts/inject-env-vars.js",
-        "build": "heft build --clean"
-      }
-    }
-
-For complex scenarios, you can create a custom Heft plugin. This is more involved but provides a cleaner, more maintainable extension point than custom gulp tasks ever did.
-
-## Change 2: New SPFx CLI (SPFx 1.23+)
-
-### What is the New SPFx CLI?
-
-The Yeoman generator (`yo @microsoft/sharepoint`) is being replaced by a standalone **SPFx CLI**. Key differences:
-
-| Feature | Yeoman Generator | New SPFx CLI |
-|---------|-----------------|-------------|
-| Installation | npm install -g yo @microsoft/generator-sharepoint | Standalone CLI (npm package) |
-| Version coupling | Locked to SPFx version | Decoupled from SPFx versions |
-| Templates | Bundled in generator | Open-source on GitHub |
-| Customization | Limited | Company-specific templates supported |
-| Status in 1.23 | Still available | Preview |
-| Status in 1.24 | Deprecated | General Availability |
-
-### Why This Matters
-
-The decoupling is the biggest win. Today, you install a specific version of the Yeoman generator to scaffold a specific version of SPFx. With the new CLI, you install it once and it can scaffold any supported SPFx version.
-
-The open-source templates mean your organization can create standardized project templates with your preferred libraries, folder structure, and configurations baked in.
-
-### Using the New SPFx CLI (Preview)
-
-As of SPFx 1.23, the CLI is in preview. To try it:
-
-    npm install -g @microsoft/spfx-cli@preview
-
-Then create a new project:
-
-    spfx new --solution-name my-webpart --component-type webpart
-      --framework react
-
-> **Important:** The exact commands may evolve before the 1.24 GA release. Check the [official SPFx documentation](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview) for current syntax.
-
-## Decision Matrix: When Should You Migrate?
-
-Not every project needs to migrate immediately. Use this matrix:
-
-| Scenario | Recommendation |
-|----------|---------------|
-| Starting a brand new SPFx project | Use SPFx 1.23 with Heft (skip Gulp entirely) |
-| Active project on SPFx 1.21 | Migrate to 1.22 Heft when you have a sprint for tech debt |
-| Legacy project in maintenance mode | Stay on current version until a feature update is needed |
-| Project with heavy custom gulp tasks | Plan migration carefully — test custom logic conversion first |
-| CI/CD pipelines using gulp commands | Update pipeline scripts when migrating to Heft |
-
-**The key deadline:** Gulp support will eventually be removed. Microsoft has not announced a hard deprecation date, but SPFx 1.22 already defaults to Heft, and the trend is clear. Plan your migration in 2026 rather than being forced into it later.
-
-## CI/CD Pipeline Updates
-
-If your DevOps pipelines use gulp commands, update them when migrating:
-
-**Before (Gulp-based pipeline):**
-
-    - script: gulp bundle --ship
-    - script: gulp package-solution --ship
-
-**After (Heft-based pipeline):**
-
-    - script: npm run build
-    - script: npm run package
-
-Both Azure DevOps and GitHub Actions pipelines need this update. The npm scripts abstract the underlying tool, so future toolchain changes will not require pipeline updates.
-
-## What About the CLI for Microsoft 365?
-
-The [CLI for Microsoft 365](https://pnp.github.io/cli-microsoft365/) remains your best friend for project upgrades. Its `spfx project upgrade` command generates a detailed migration report:
-
-    npx @pnp/cli-microsoft365 spfx project upgrade
-      --toVersion 1.23.0 --output md
-
-This tool does not modify your files automatically. Instead, it produces a step-by-step guide specific to your project, listing every dependency change, configuration update, and potential breaking change.
-
-## What Else Is New in SPFx 1.23
-
-Beyond the CLI preview, SPFx 1.23 includes:
-
-- **Open-source solution templates** — Project scaffolding templates are now on GitHub, enabling community contributions
-- **TypeScript 5.8** — Continued from SPFx 1.22, bringing modern language features like `using` declarations
-- **Clean npm audits** — Zero audit warnings in new projects (a huge win for enterprise compliance)
-- **Navigation Customizers preview** — Override top and side navigation elements (GA in 1.24)
-
-For building web parts with these new tools, see my [SPFx web part complete guide](/blog/spfx-web-part-crud-operations-complete-guide-2026). To leverage SPFx with Microsoft Graph, check out [10 practical Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+---
 
 ## Frequently Asked Questions
 
-**Q: Do I have to migrate to Heft immediately?**
+### Do I need to migrate all projects to SPFx v1.22 immediately?
 
-No. SPFx 1.22 includes a `--use-gulp` flag for the Yeoman generator that creates projects with the legacy Gulp toolchain. Existing projects on older SPFx versions continue to work without changes. However, new features and security patches will only come to the Heft-based toolchain going forward.
+No. Microsoft maintains backward compatibility, so existing solutions on SPFx v1.19-v1.21 continue to work in SharePoint Online. However, new features (especially Viva Connections ACE enhancements and in-page debugging) are only available in v1.22+. Start migrating your most actively developed solutions first.
 
-**Q: Will my existing SPFx web parts break?**
+### Can I use the SPFx CLI and Yeoman on the same machine?
 
-No. The toolchain change affects how you build and serve your project, not how it runs in SharePoint. Your deployed .sppkg files work the same regardless of whether they were built with Gulp or Heft.
+Yes. They are entirely separate npm packages. You can scaffold a new project with `spfx new` and still run an older project with Yeoman side-by-side. Just be mindful of the Node.js version requirements — some older Yeoman-scaffolded SPFx projects may struggle with Node 18+.
 
-**Q: Can I use the new SPFx CLI in production today?**
+### What happened to `gulp serve`?
 
-The CLI is in preview with SPFx 1.23. For production projects, continue using the Yeoman generator until the CLI reaches GA with SPFx 1.24 (June 2026). Test the CLI with side projects to familiarize yourself with the new workflow.
+It's been deprecated in favor of SharePoint Online in-page debugging. You build your bundle, upload it to a debug CDN location or the App Catalog, and then activate the debugging toolbar in your browser. This approach is more reliable because it tests against real SharePoint data and permissions — not a sandboxed local environment.
 
-**Q: What happened to the local workbench?**
+### What is a Heft rig and do I need one?
 
-The local workbench (/temp/workbench.html) has been deprecated in favor of **in-page debugging** directly on SharePoint Online. This provides a more accurate testing environment since your web parts run in the real SharePoint context. Use `npm run serve` and navigate to your SharePoint site with `?debugManifestsFile=...` in the URL.
+A rig is optional for individual projects but highly recommended for organizations. If you maintain more than 3 SPFx projects, a rig standardizes your TypeScript, ESLint, and Webpack configuration in one place. A single update propagates across every project when you bump the rig package version.
 
-**Q: How do I handle custom gulp tasks for environment-specific builds?**
+### Does the new SPFx CLI support Yeoman-style custom templates?
 
-Convert simple tasks to npm `pre` and `post` scripts. For complex build customizations, create a custom Heft plugin. See the [Heft plugin documentation](https://heft.rushstack.io/) for patterns and examples.
+Yes. One of the key improvements is that Microsoft is **open-sourcing project templates** via GitHub, allowing organizations to fork the official templates and maintain company-specific scaffolding. This replaces the old approach of maintaining private Yeoman generators.
 
-## What to Do Next
+---
 
-1. **Audit your current SPFx projects** — List all projects and their current SPFx version
-2. **Try the Heft toolchain** — Scaffold a new SPFx 1.22+ project and compare the dev experience
-3. **Test the CLI preview** — Install the preview CLI and scaffold a test project
-4. **Update CI/CD pipelines** — Replace gulp commands with npm scripts when you migrate
-5. **Plan your migration timeline** — Use the decision matrix above to prioritize
+## Conclusion & Next Steps
 
-For more SharePoint development guides, explore my articles on [building Viva Connections ACEs](/blog/viva-connections-adaptive-card-extensions-build-guide-2026), [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026), and [Copilot Studio AI assistants](/blog/copilot-studio-sharepoint-ai-assistants-guide-2026).
+The Yeoman-to-SPFx CLI migration is not just a tooling change — it's a shift toward a more enterprise-grade, maintainable build pipeline. The performance improvements alone (2-3× faster builds) justify the migration effort for most teams.
+
+**Your next steps:**
+
+1. ✅ Install the new SPFx CLI: `npm install -g @microsoft/spfx`
+2. ✅ Generate a migration report for each project: `m365 spfx project upgrade --output md > report.md`
+3. ✅ Apply the report changes, swap Gulp for Heft, and validate your build
+4. ✅ Consider creating a shared Heft rig for your organization's SPFx template
+
+Ready to test your knowledge on SPFx and the full M365 developer stack? Try the [M365 Challenge Mode quiz](/tools/m365-challenge) — a gamified quiz covering SPFx, Power Automate, Graph API, and more, with detailed explanations after every question.
