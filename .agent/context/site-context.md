@@ -61,6 +61,8 @@ description: Brand voice, internal links, and target keywords for imrizwan.com
 13. "SharePoint Agents: Build & Deploy AI Assistants with Copilot Studio (2026)" ✅ Published
 14. "SharePoint List Formatting: Complete JSON Guide with 15 Templates (2026)" ✅ Published
 15. "SPFx Performance Optimization: Bundle Size, Lazy Loading & Best Practices (2026)" ✅ Published
+16. "SharePoint 2013 Workflows to Power Automate Migration Guide (2026)" ✅ Published
+17. "SPFx CLI: Migrate from Yeoman & Gulp to the New Toolchain (2026)" ✅ Published
 
 
 

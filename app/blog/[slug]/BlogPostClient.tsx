@@ -10,7 +10,9 @@ import RelatedTools from '@/components/RelatedTools'
 import ShareButtons from '@/components/ShareButtons'
 import NewsletterCTA from '@/components/NewsletterCTA'
 import ReadingProgress from '@/components/ReadingProgress'
+import ToolCTABanner from '@/components/ToolCTABanner'
 import type { BlogPost } from '@/data/blog'
+
 
 function getCategoryClass(category: string): string {
   return `blog-card__category--${category.toLowerCase().replace(/\s+/g, '-')}`
@@ -69,6 +71,8 @@ export default function BlogPostClient({
       </div>
 
       <CopyCodeButton />
+
+      <ToolCTABanner category={post.category} />
 
       <AdSlot type="leaderboard" />
 
