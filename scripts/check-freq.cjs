@@ -4,7 +4,7 @@ async function main() {
   const db = new SupabaseREST();
   const posts = await db.select('blog_posts', 'slug,title,date');
 
-  const now = new Date('2026-03-20T22:23:40+03:00');
+  const now = new Date();
   const todayStr = now.toISOString().slice(0, 10); // 2026-03-20
 
   // Mon–Sun week
