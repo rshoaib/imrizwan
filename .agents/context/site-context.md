@@ -76,7 +76,7 @@
 ### Pillar 5: AI & Governance (2026 Trends)
 | Cluster | Primary Keyword | Search Intent | Status |
 |---|---|---|---|
-| Governance as Code | "enterprise governance sharepoint ai checklist" | Informational | 🟡 Gap |
+| Governance as Code | "enterprise governance sharepoint ai checklist" | Informational | ✅ Published |
 | AI Builder + SP | "ai builder sharepoint document processing" | Informational | 🟡 Gap |
 | Copilot Governance | "microsoft copilot governance best practices" | Informational | 🟡 Gap |
 
@@ -86,6 +86,7 @@
 
 | # | Title | Primary Tech | Published |
 |---|---|---|---|
+| 17 | Enterprise Governance for SharePoint-Powered AI: Developer's Checklist | AI/Governance | Mar 22, 2026 |
 | 1 | Building a Custom SPFx Web Part: CRUD with React + PnPjs | SPFx | Mar 2026 |
 | 2 | Microsoft Graph API: 10 Practical Examples | Graph API | Mar 2026 |
 | 3 | Viva Connections ACE: Build Your First Adaptive Card | SPFx | Mar 2026 |
@@ -109,8 +110,8 @@
 
 | Priority | Keyword | Why High Priority |
 |---|---|---|
-| 🔴 1 | "enterprise governance sharepoint ai checklist" | 2026 trend — AI governance is hot, no competitors yet |
-| 🔴 2 | "migrate yeoman to new spfx cli" | 2026 trend — CLI modernization affects all SPFx devs |
-| 🔴 3 | "microsoft graph api authentication guide" | Supports existing Graph API article — builds pillar depth |
+| 🔴 1 | "migrate yeoman to new spfx cli" | 2026 trend — CLI modernization affects all SPFx devs |
+| 🔴 2 | "microsoft graph api authentication guide" | Supports existing Graph API article — builds pillar depth |
+| 🔴 3 | "microsoft copilot governance best practices" | AI governance trend — high authority content |
 | 🟠 4 | "power apps sharepoint integration guide" | Fills Power Platform pillar gap |
-| 🟠 5 | "microsoft copilot governance best practices" | AI governance trend — high authority content |
+| 🟠 5 | "ai builder sharepoint document processing" | Builds AI & Governance pillar depth |

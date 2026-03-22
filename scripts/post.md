@@ -1,231 +1,257 @@
-## Why the SPFx Toolchain is Changing in 2026
+## Why Governance Matters More Now Than Ever
 
-If you've scaffolded an SPFx project in the last few years, you know the drill: `yo @microsoft/sharepoint`, Gulp tasks, and a labyrinth of `package.json` scripts. This setup has served the ecosystem well, but Microsoft is moving on.
+If your SharePoint environment is messy today, **Microsoft Copilot will make it messier tomorrow**. Copilot respects your existing permissions model. It does not create new security boundaries — it inherits whatever access a user already has. That means every overshared site, every "Everyone" permission, and every orphaned Team becomes a potential data leak vector the moment you flip Copilot on.
 
-Starting with **SPFx v1.22** (Stable in 2024, widely adopted through 2025-2026), the framework began a deliberate migration away from the classic Yeoman generator and Gulp build runner toward a modern **SPFx CLI** and the **Heft** build orchestrator.
-
-This isn't just a tooling aesthetic change. For any team with more than one developer, the old pipeline creates real friction: slow cold-start build times, opaque Gulp task chain debugging, and a Yeoman dependency that has been effectively unmaintained. The new pipeline fixes all three.
-
-This guide walks you through **why** the shift is happening, **what** changes between the two stacks, and the **exact steps** to migrate an existing project.
+This isn't a CIO-level strategy document. This is a **developer's field guide** — the scripts, commands, and configurations you need to run *before* your tenant goes live with Copilot.
 
 ---
 
-## What's Actually Changing: A Side-by-Side Comparison
+## The Pre-Copilot vs. Post-Copilot Shift
 
-Understanding what each tool replaced — and why — is the most important step before touching any code.
+Most governance guides were written for a world without AI. Here's what changes:
 
-| Concern | Old Toolchain (≤ v1.21) | New Toolchain (v1.22+) |
-|---|---|---|
-| **Project scaffolding** | Yeoman generator (`yo @microsoft/sharepoint`) | SPFx CLI (`spfx new`) |
-| **Build runner** | Gulp | Heft (by Rush Stack) |
-| **TypeScript compilation** | Gulp-based `ts-loader` chain | Heft's native TypeScript rig |
-| **Bundling** | Webpack via Gulp plugin | Webpack via Heft plugin |
-| **Testing** | `gulp test` (Jest integration) | `heft test` |
-| **Build speed** | ~20-40s typical cold start | ~8-15s typical cold start |
-| **Config format** | Gulp task files (JavaScript) | `heft.json`, `tsconfig.json`, rigs |
-| **CLI decoupling** | Tied to SPFx release cycle | CLI versioned independently |
+| Area | Pre-Copilot Governance | Post-Copilot Governance |
+|------|----------------------|------------------------|
+| **Permissions** | "Fix it if someone complains" | Must be proactively audited — Copilot surfaces everything a user can access |
+| **Content Lifecycle** | Archive when storage runs out | Must enforce retention — stale content pollutes Copilot responses |
+| **Sensitivity Labels** | "Nice to have" for compliance | **Mandatory** — Copilot skips unlabeled encrypted files entirely |
+| **Site Ownership** | Informal ("ask Bob") | Must be defined — ownerless sites become unmanaged AI data sources |
+| **External Sharing** | Per-request basis | Must be policy-driven — Copilot can surface externally shared content to internal users |
 
-The two most important properties of Heft: it's **config-driven** (not code-driven like Gulp), and it supports **build rigs** — shared configuration packages that your entire organization can standardize on. This is the critical enterprise feature that the old stack simply couldn't offer.
+**Key takeaway:** Governance is no longer a compliance checkbox. It's the quality control layer for your AI's output.
 
 ---
 
-## Step 1: Install the New SPFx CLI
+## Checklist Part 1: Permissions Audit
 
-The new CLI is a standalone npm package, separate from the Yeoman generator.
+Before Copilot touches your tenant, you need to know **who has access to what**. The biggest risk is oversharing — sites where "Everyone except external users" has read access.
 
-```bash
-npm install -g @microsoft/spfx
-```
+### Script: Find Overshared Sites
 
-Verify the installation:
+Use [PnP PowerShell](/blog/pnp-powershell-sharepoint-scripts) to scan your tenant for sites with broad access:
 
-```bash
-spfx --version
-```
+```powershell
+# Connect to SharePoint Online Admin
+Connect-PnPOnline -Url "https://contoso-admin.sharepoint.com" -Interactive
 
-> **Note:** The SPFx CLI is versioned independently from the SPFx framework version. You can manage multiple framework versions from a single CLI installation, unlike the old Yeoman generator which was tightly coupled to the version it scaffolded.
+# Get all site collections
+$sites = Get-PnPTenantSite -Detailed
 
-Before continuing, also ensure you meet the Node.js requirements for SPFx v1.22+:
+foreach ($site in $sites) {
+    Connect-PnPOnline -Url $site.Url -Interactive
+    $web = Get-PnPWeb -Includes RoleAssignments
 
-```bash
-node --version  # Should be 18.x LTS or higher
-```
-
----
-
-## Step 2: Scaffold a New Project with the SPFx CLI
-
-For new projects, replace your old `yo @microsoft/sharepoint` command:
-
-```bash
-# Old way (Yeoman)
-yo @microsoft/sharepoint
-
-# New way (SPFx CLI)
-spfx new
-```
-
-The `spfx new` command is fully interactive and presents the same options as Yeoman (component type, React vs no framework, etc.), but it's dramatically faster to execute and doesn't require Yeoman or Node generator scaffolding overhead.
-
-Every web part component still requires a unique GUID in its manifest. Use the [GUID Generator tool](/tools/guid-generator) to instantly create cryptographically secure v4 UUIDs for your `manifest.json` files — it also supports bulk generation for multi-component solutions.
-
----
-
-## Step 3: Migrate an Existing Yeoman Project to Heft
-
-This is the critical section for teams with existing SPFx solutions. The recommended path is using the **CLI for Microsoft 365** (`m365` CLI) to generate a migration report, then applying changes manually.
-
-### 3a. Generate the Upgrade Report
-
-```bash
-# Install CLI for Microsoft 365 if you haven't already
-npm install -g @pnp/cli-microsoft365
-
-# Navigate to your SPFx project root
-cd my-spfx-project
-
-# Generate a migration report to SPFx v1.22
-m365 spfx project upgrade --toVersion 1.22.0 --output md > migration-report.md
-```
-
-Open `migration-report.md`. It lists every file that needs to change, the exact diff to apply, and which packages to add or remove. This is your migration checklist.
-
-### 3b. Key Package Changes
-
-The core package swap from Gulp to Heft involves:
-
-```bash
-# Remove Gulp and SharePoint-specific Gulp tasks
-npm uninstall gulp @microsoft/sp-build-web @microsoft/sp-module-interfaces
-
-# Add Heft and the SPFx Heft plugin
-npm install --save-dev @rushstack/heft @microsoft/spfx-heft-plugins
-```
-
-### 3c. Replace `gulpfile.js` with `heft.json`
-
-Delete (or empty) your `gulpfile.js`. In your project root, create a `heft.json`:
-
-```json
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/heft/v0/heft.schema.json",
-  "heftPlugins": [
-    {
-      "package": "@microsoft/spfx-heft-plugins",
-      "pluginName": "spfx-web-part-bundle-plugin"
+    foreach ($ra in $web.RoleAssignments) {
+        $member = $ra.Member
+        if ($member.LoginName -match "everyone" -or 
+            $member.LoginName -match "nt authority") {
+            Write-Warning "[OVERSHARED] $($site.Url) — $($member.Title)"
+        }
     }
-  ]
 }
 ```
 
-### 3d. Update `package.json` Scripts
+### Script: Remove "Everyone" from the People Picker
 
-Replace Gulp script references with Heft equivalents:
+This is the single most impactful change you can make. It prevents users from accidentally sharing with the entire organization:
 
-```json
-{
-  "scripts": {
-    "build": "heft build --clean",
-    "bundle": "heft build --clean && heft run --only bundle -- --production",
-    "test": "heft test --clean",
-    "package-solution": "heft build --clean && heft run --only package-solution -- --production",
-    "start": "heft build --watch"
-  }
+```powershell
+# Disable "Everyone except external users" in People Picker
+Set-PnPTenant -ShowEveryoneExceptExternalUsersClaim $false
+
+# Verify the change
+Get-PnPTenant | Select ShowEveryoneExceptExternalUsersClaim
+```
+
+> **Pro Tip:** After running this, existing permissions are NOT removed. You still need to clean up sites that already have "Everyone" access using the audit script above.
+
+### Implementing Least Privilege
+
+The principle is simple: **users should only access what they need for their role**. In practice, this means:
+
+1. **Use Security Groups**, not individual sharing
+2. **Default to "Members" (Edit)** — avoid giving "Full Control" to non-owners
+3. **Review Sharing Links quarterly** — use the [SharePoint permissions model](/blog/sharepoint-permissions-explained) to understand inheritance
+
+---
+
+## Checklist Part 2: Content Lifecycle Management
+
+Copilot indexes everything a user can see. If your tenant has 5 years of outdated project documents, Copilot will confidently cite them as current information.
+
+### Script: Find Inactive Sites (No Activity in 90+ Days)
+
+```powershell
+$threshold = (Get-Date).AddDays(-90)
+$inactiveSites = @()
+
+$sites = Get-PnPTenantSite -Detailed
+
+foreach ($site in $sites) {
+    if ($site.LastContentModifiedDate -lt $threshold) {
+        $inactiveSites += [PSCustomObject]@{
+            Url             = $site.Url
+            Title           = $site.Title
+            Owner           = $site.Owner
+            LastModified    = $site.LastContentModifiedDate
+            StorageMB       = [math]::Round($site.StorageUsageCurrent, 2)
+        }
+    }
 }
+
+# Export report
+$inactiveSites | 
+    Sort-Object LastModified | 
+    Export-Csv -Path "InactiveSites.csv" -NoTypeInformation
+
+Write-Host "Found $($inactiveSites.Count) inactive sites" -ForegroundColor Yellow
 ```
 
-Notice the removal of `gulp serve`. In SPFx v1.22+, local workbench is fully replaced with **in-page debugging** on SharePoint Online. You no longer run a local server — you upload your bundle and debug it live.
+### Action Plan for Inactive Sites
+
+| Site Age (Inactive) | Recommended Action |
+|---------------------|-------------------|
+| 90–180 days | Email owner → confirm if still needed |
+| 180–365 days | Set to **Read-Only** via SAM policy |
+| 365+ days | **Archive** to cold storage or delete |
+
+### Using SharePoint Advanced Management (SAM)
+
+SAM is included with Copilot licenses and provides enterprise-grade lifecycle controls:
+
+1. **Inactive Site Policy**: Automatically detect and notify owners of dormant sites
+2. **Restricted Access Control (RAC)**: Limit site access to specific security groups only
+3. **Restricted Content Discoverability (RCD)**: Hide site content from Copilot and Microsoft Search results without changing permissions
+
+Configure RAC via PowerShell:
+
+```powershell
+# Restrict a sensitive site to a specific group only
+Set-SPOSite -Identity "https://contoso.sharepoint.com/sites/HR-Confidential" `
+    -RestrictedAccessControl $true `
+    -RestrictedAccessControlGroups "HR-Team@contoso.com"
+```
 
 ---
 
-## Step 4: Understanding Heft Build Rigs (The Enterprise Feature)
+## Checklist Part 3: Sensitivity Labels & Classification
 
-Build rigs are the feature that makes Heft genuinely powerful for organizations with multiple SPFx projects.
+Sensitivity labels are the mechanism that tells Copilot **what it can and cannot do** with a piece of content. Without labels, Copilot treats all content equally — which is dangerous for confidential data.
 
-A **rig** is a shared npm package that exports a common set of Heft configuration files (`tsconfig.json`, `heft.json`, tool configs). You publish it once and every SPFx project references it as a `devDependency`.
+### The Label Hierarchy
 
-```bash
-# Install your company's SPFx rig (or use the community one)
-npm install --save-dev @microsoft/eslint-config-spfx
-```
+Design your labels in tiers. Here's a proven enterprise pattern:
 
-Reference the rig in your `config/rig.json`:
+| Label | Encryption | Copilot Behavior | Use Case |
+|-------|-----------|-------------------|----------|
+| **Public** | None | Full access | Marketing materials, published docs |
+| **Internal** | None | Full access (internal users only) | Project plans, meeting notes |
+| **Confidential** | AES-256 | Access if user has rights + label enabled in SP | HR docs, financial reports |
+| **Highly Confidential** | AES-256 + DLP | **Blocked from Copilot** unless explicitly enabled | M&A documents, legal contracts |
 
-```json
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/rig-package/rig.schema.json",
-  "rigPackageName": "@microsoft/eslint-config-spfx"
+### Enabling Sensitivity Labels for Copilot
+
+By default, Copilot **cannot process encrypted files**. You must explicitly enable this in the Microsoft Purview compliance portal:
+
+1. Navigate to **Microsoft Purview** → **Information Protection** → **Labels**
+2. Edit each label → **Encryption** tab
+3. Enable **"Allow Copilot to process content with this label"**
+4. **Critical**: Only enable this for labels where AI processing is appropriate (Public, Internal, Confidential). Keep "Highly Confidential" blocked.
+
+### Script: Audit Unlabeled Content
+
+```powershell
+# Find files without sensitivity labels in a target site
+Connect-PnPOnline -Url "https://contoso.sharepoint.com/sites/Finance" -Interactive
+
+$items = Get-PnPListItem -List "Documents" -PageSize 500
+
+$unlabeled = $items | Where-Object { 
+    $_["_ComplianceTag"] -eq $null -and
+    $_["FileLeafRef"] -match "\.(docx|xlsx|pptx|pdf)$"
 }
+
+Write-Host "Unlabeled files: $($unlabeled.Count) / $($items.Count) total"
+$unlabeled | Select-Object @{N='File';E={$_["FileLeafRef"]}}, 
+    @{N='Modified';E={$_["Modified"]}} | Format-Table
 ```
 
-With a rig in place, updating your TypeScript version, ESLint rules, or Webpack configuration across every SPFx project becomes a single `npm update rig-package` command — not 30 manual PRs.
+---
+
+## Checklist Part 4: Agent & Copilot Studio Governance
+
+With [SharePoint Agents and Copilot Studio](/blog/sharepoint-agents-copilot-studio), developers can now build custom AI agents grounded in SharePoint content. This creates a new governance surface.
+
+### Key Controls
+
+1. **Restrict agent creation** to approved developers using Copilot Studio DLP policies
+2. **Use `Sites.Selected`** instead of `Sites.Read.All` for Graph API permissions — this scopes agent access to specific SharePoint sites only
+3. **Audit agent activity** via the Microsoft 365 unified audit log:
+
+```powershell
+# Search for Copilot/Agent interactions in audit log
+Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) `
+    -EndDate (Get-Date) `
+    -RecordType "CopilotInteraction" `
+    -ResultSize 100 |
+    Select-Object CreationDate, UserIds, Operations |
+    Format-Table -AutoSize
+```
+
+4. **Define deployment zones**: Personal (user experiments) → Departmental (team-scoped) → Enterprise (org-wide, approved only)
 
 ---
 
-## Step 5: Running the New Build Pipeline
+## Checklist Part 5: Monitoring & Continuous Improvement
 
-The new build commands feel familiar but have cleaner semantics:
+Governance is not a one-time project. It's a continuous loop.
 
-| Old Gulp Command | New Heft Command |
-|---|---|
-| `gulp build` | `heft build` |
-| `gulp bundle --ship` | `heft build --production` |
-| `gulp package-solution --ship` | `heft run --only package-solution -- --production` |
-| `gulp test` | `heft test` |
-| `gulp serve` | N/A (use SharePoint Online in-page debugging) |
+### The Governance Feedback Loop
 
-If you hit cryptic build errors during migration, use the [SharePoint & Power Platform Error Decoder](/tools/error-decoder) to instantly translate error codes from both the TypeScript compiler and SharePoint packaging pipeline into human-readable explanations.
+1. **Weekly**: Review Copilot usage reports in the M365 Admin Center
+2. **Monthly**: Run permission audit scripts → fix oversharing
+3. **Quarterly**: Review inactive sites → archive or delete
+4. **Annually**: Reassess sensitivity label hierarchy → align with new business units
 
----
+### Key Metrics to Track
 
-## Step 6: Testing Your Migrated Solution
-
-Once your build succeeds, validate the solution in SharePoint Online:
-
-1. Run `heft build --production` to create the `.sppkg` file
-2. Upload to your **App Catalog** at `/_layouts/15/tenantadmin.aspx`
-3. Enable the **SharePoint Framework client-side in-page debugging toolbar** (available in SPFx v1.22+)
-4. Navigate to any SharePoint page and flip the debug switch from the browser toolbar
-
-The new in-page debugger is significantly more stable than the local workbench, especially when your web part reads real SharePoint list data. For filtering that data, the [CAML Query Builder](/tools/caml-query-builder) lets you visually construct your list queries — critical when your web part needs nested AND/OR conditions or lookup column filtering.
-
-If your web part renders data in a SharePoint list view, also explore the [JSON Column Formatter](/tools/json-column-formatter) to add conditional formatting to the columns your SPFx solution creates — a great pairing for solutions that write metadata back to lists.
+| Metric | Target | Tool |
+|--------|--------|------|
+| Sites with "Everyone" access | **0** | PnP PowerShell audit script |
+| Unlabeled files in sensitive sites | **< 5%** | Purview Content Explorer |
+| Inactive sites (90+ days) | **< 10%** of total | SAM Inactive Site Policy |
+| Copilot interactions flagged | **< 1%** | Unified Audit Log |
 
 ---
 
-## Frequently Asked Questions
+## Quick-Start Summary
 
-### Do I need to migrate all projects to SPFx v1.22 immediately?
+Here's the prioritized order of operations — tackle these in your first sprint:
 
-No. Microsoft maintains backward compatibility, so existing solutions on SPFx v1.19-v1.21 continue to work in SharePoint Online. However, new features (especially Viva Connections ACE enhancements and in-page debugging) are only available in v1.22+. Start migrating your most actively developed solutions first.
-
-### Can I use the SPFx CLI and Yeoman on the same machine?
-
-Yes. They are entirely separate npm packages. You can scaffold a new project with `spfx new` and still run an older project with Yeoman side-by-side. Just be mindful of the Node.js version requirements — some older Yeoman-scaffolded SPFx projects may struggle with Node 18+.
-
-### What happened to `gulp serve`?
-
-It's been deprecated in favor of SharePoint Online in-page debugging. You build your bundle, upload it to a debug CDN location or the App Catalog, and then activate the debugging toolbar in your browser. This approach is more reliable because it tests against real SharePoint data and permissions — not a sandboxed local environment.
-
-### What is a Heft rig and do I need one?
-
-A rig is optional for individual projects but highly recommended for organizations. If you maintain more than 3 SPFx projects, a rig standardizes your TypeScript, ESLint, and Webpack configuration in one place. A single update propagates across every project when you bump the rig package version.
-
-### Does the new SPFx CLI support Yeoman-style custom templates?
-
-Yes. One of the key improvements is that Microsoft is **open-sourcing project templates** via GitHub, allowing organizations to fork the official templates and maintain company-specific scaffolding. This replaces the old approach of maintaining private Yeoman generators.
+| Priority | Action | Time Estimate |
+|----------|--------|---------------|
+| 🔴 1 | Disable "Everyone" in People Picker | 5 minutes |
+| 🔴 2 | Run overshared sites audit | 30 minutes |
+| 🔴 3 | Enable sensitivity labels for Copilot | 1 hour |
+| 🟠 4 | Configure SAM inactive site policy | 2 hours |
+| 🟠 5 | Scope agent permissions to Sites.Selected | 1 hour |
+| 🟡 6 | Set up quarterly review cadence | 30 minutes |
 
 ---
 
-## Conclusion & Next Steps
+## FAQ
 
-The Yeoman-to-SPFx CLI migration is not just a tooling change — it's a shift toward a more enterprise-grade, maintainable build pipeline. The performance improvements alone (2-3× faster builds) justify the migration effort for most teams.
+### Does Copilot bypass SharePoint permissions?
+**No.** Copilot strictly respects the existing Microsoft 365 permission model. It can only access content that the signed-in user already has access to. The risk is not that Copilot bypasses security — it's that **existing oversharing becomes more visible** because Copilot actively surfaces content users didn't know they could access.
 
-**Your next steps:**
+### Do I need SharePoint Advanced Management (SAM) for Copilot governance?
+SAM is not strictly required, but it's **strongly recommended**. SAM provides Restricted Access Control (RAC), Restricted Content Discoverability (RCD), and inactive site policies that are critical for enterprise-scale governance. SAM licenses are typically included with Microsoft 365 Copilot licenses.
 
-1. ✅ Install the new SPFx CLI: `npm install -g @microsoft/spfx`
-2. ✅ Generate a migration report for each project: `m365 spfx project upgrade --output md > report.md`
-3. ✅ Apply the report changes, swap Gulp for Heft, and validate your build
-4. ✅ Consider creating a shared Heft rig for your organization's SPFx template
+### What happens to files without sensitivity labels when Copilot is enabled?
+Unlabeled files are treated as accessible to anyone with existing permissions. **Encrypted files without Copilot-enabled labels are skipped entirely** — Copilot cannot process them. This means important encrypted content may silently disappear from Copilot results unless you explicitly enable processing.
 
-Ready to test your knowledge on SPFx and the full M365 developer stack? Try the [M365 Challenge Mode quiz](/tools/m365-challenge) — a gamified quiz covering SPFx, Power Automate, Graph API, and more, with detailed explanations after every question.
+### How do I prevent Copilot from surfacing outdated content?
+Implement a content lifecycle policy: use the inactive sites audit script to identify stale content, set retention labels via Microsoft Purview, and configure SAM's Restricted Content Discoverability (RCD) to exclude archived sites from Copilot and Search results.
+
+### Can I control which SharePoint sites Copilot Agents can access?
+Yes. Use **Resource-Specific Consent (RSC)** and the `Sites.Selected` Graph permission instead of `Sites.Read.All`. This scopes each agent to only the SharePoint sites it explicitly needs, following the principle of least privilege.
