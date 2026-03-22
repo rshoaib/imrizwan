@@ -4,7 +4,6 @@ If your SharePoint environment is messy today, **Microsoft Copilot will make it 
 
 This isn't a CIO-level strategy document. This is a **developer's field guide** — the scripts, commands, and configurations you need to run *before* your tenant goes live with Copilot.
 
----
 
 ## The Pre-Copilot vs. Post-Copilot Shift
 
@@ -20,7 +19,6 @@ Most governance guides were written for a world without AI. Here's what changes:
 
 **Key takeaway:** Governance is no longer a compliance checkbox. It's the quality control layer for your AI's output.
 
----
 
 ## Checklist Part 1: Permissions Audit
 
@@ -73,7 +71,6 @@ The principle is simple: **users should only access what they need for their rol
 2. **Default to "Members" (Edit)** — avoid giving "Full Control" to non-owners
 3. **Review Sharing Links quarterly** — use the [SharePoint permissions model](/blog/sharepoint-permissions-explained) to understand inheritance
 
----
 
 ## Checklist Part 2: Content Lifecycle Management
 
@@ -132,7 +129,6 @@ Set-SPOSite -Identity "https://contoso.sharepoint.com/sites/HR-Confidential" `
     -RestrictedAccessControlGroups "HR-Team@contoso.com"
 ```
 
----
 
 ## Checklist Part 3: Sensitivity Labels & Classification
 
@@ -176,7 +172,6 @@ $unlabeled | Select-Object @{N='File';E={$_["FileLeafRef"]}},
     @{N='Modified';E={$_["Modified"]}} | Format-Table
 ```
 
----
 
 ## Checklist Part 4: Agent & Copilot Studio Governance
 
@@ -200,7 +195,6 @@ Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) `
 
 4. **Define deployment zones**: Personal (user experiments) → Departmental (team-scoped) → Enterprise (org-wide, approved only)
 
----
 
 ## Checklist Part 5: Monitoring & Continuous Improvement
 
