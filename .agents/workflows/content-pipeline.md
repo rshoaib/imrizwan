@@ -111,10 +111,19 @@ Before writing ANY content, read the context files for the target site:
 ### Phase 1: Research & Plan (Gemini 3.1 Pro)
 <!-- progress: "🔍 Phase 1/8: Researching keywords & reading context files..." -->
 // turbo
-1. **Read context files** — target keywords for content calendar, brand voice for tone
-2. Research trending keywords for the target site (web search)
-3. Cross-check target keywords for content gaps and priorities
-4. Identify the highest-impact topic (search volume × relevance × ease)
+1. **Read `site-context.md`** — check the **Content Priority Queue** section
+2. **Auto-Research Check** — count how many keywords are in the queue:
+   - ✅ **3+ keywords in queue** → pick the #1 priority keyword and continue to Phase 2
+   - ⚠️ **< 3 keywords in queue** → auto-run `/keyword-research` workflow first:
+     1. Extract 3-5 seed keywords from topic clusters
+     2. Expand via Google Autocomplete + People Also Ask (web search)
+     3. Score each keyword with the 4-Point Scorecard (Intent + Competition + Specificity + Link Value)
+     4. Competition deep-dive on top scorers (check Google page 1)
+     5. Cluster related keywords and update the Priority Queue in `site-context.md`
+     6. Then pick the new #1 priority keyword and continue
+   - 🔴 **Queue is empty** → same as above, but flag to user: "Queue was empty — running keyword research first"
+3. **Read brand voice** from context files for tone and formatting rules
+4. **Pick the #1 keyword** — this becomes the article's primary target
 5. Validate AdSense compliance for ad placement
 
 ### Phase 2: Competitor Scan (Gemini 3.1 Pro)
@@ -132,11 +141,10 @@ Before writing ANY content, read the context files for the target site:
 11. **Read brand voice** — apply tone, sentence length, and formatting rules
 12. Generate blog post draft with SEO-optimized headings
 13. **Read internal links map** — add 3-6 internal links using natural anchor text
-14. Create meta descriptions (under 155 chars) and Open Graph tags
-15. Write structured data (`Article`/`BlogPosting` schema AND `FAQPage` schema)
-16. Create a short, keyword-dense **URL slug** (remove stop words like 'and', 'the', 'what')
-17. End the article with a clear CTA linking to the most relevant tool
-18. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory. Ensure the image reference includes a descriptive, SEO-optimized `alt` tag.
+14. Create meta descriptions and Open Graph tags
+15. Write structured data (JSON-LD FAQPage schema) for FAQ sections
+16. End the article with a clear CTA linking to the most relevant tool
+17. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
 
 ### Phase 4: Quality Check (before code)
 <!-- progress: "✅ Phase 4/8: Running quality checks (readability, links, SEO)..." -->
@@ -152,14 +160,13 @@ Before writing ANY content, read the context files for the target site:
     - No broken URLs (check against internal links map)
     - Descriptive anchor text (never "click here")
 20. **SEO checklist**:
-    - [ ] Title tag includes primary keyword + year AND is under 60 characters
+    - [ ] Title tag includes primary keyword + year
     - [ ] H1 matches title tag
     - [ ] Meta description < 155 chars with keyword + "free"
-    - [ ] FAQ section with 3-5 questions and JSON-LD
+    - [ ] FAQ section with 3-5 questions
     - [ ] CTA at end linking to relevant tool
     - [ ] Article length 800-2000 words
-    - [ ] Hero image generated and referenced with descriptive `alt` text
-    - [ ] URL slug is short and keyword-dense
+    - [ ] Hero image generated and referenced
 
 ### Phase 5: Code Implementation (Claude Opus 4.5)
 <!-- progress: "💻 Phase 5/8: Adding article to codebase..." -->
@@ -179,11 +186,21 @@ Before writing ANY content, read the context files for the target site:
 
 ### Phase 7: Verify & Index (Gemini 3.1 Pro)
 <!-- progress: "🎯 Phase 7/8: Verifying on production & requesting indexing..." -->
-30. Open the article URL in browser and verify rendering
+30. Open the article URL in browser and verify **desktop** rendering
 31. Verify hero image loads correctly
-32. Submit new URL to Google Search Console
-33. Request indexing for the new page
-34. **Update target keywords** — mark topic as ✅ published
+32. **Mobile UX check** — open the article in responsive/mobile view (375px width) and verify:
+    - Text is readable without horizontal scrolling
+    - Tables are scrollable or stacked properly
+    - CTA buttons are tap-friendly (min 44×44px)
+    - No layout shift or overlapping elements
+33. **Core Web Vitals check** — run PageSpeed Insights on the new URL (`https://pagespeed.web.dev/analysis?url=<encoded-url>`) and verify:
+    - 🟢 **Performance** ≥ 80 (mobile)
+    - 🟢 **LCP** < 2.5s
+    - 🟢 **CLS** < 0.1
+    - 🟡 Flag any score < 70 for immediate investigation
+34. Submit new URL to Google Search Console
+35. Request indexing for the new page
+36. **Update target keywords** — mark topic as ✅ published
 
 ---
 
@@ -220,15 +237,6 @@ Focus: [keywords/technical/speed]
 Site: [site-name]
 Type: bug-fix
 Issue: [describe the bug]
-```
-
-### Content Refresh
-```
-/content-pipeline
-Site: [site-name]
-Type: content-refresh
-Target URL: [path/to/old/post]
-Focus: [Add FAQ / Update Data / Improve CTR]
 ```
 
 ---

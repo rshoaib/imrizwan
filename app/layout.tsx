@@ -41,7 +41,7 @@ export const metadata: Metadata = {
       'SPFx webparts, Power Platform solutions, and SharePoint development tips with code and screenshots.',
   },
   verification: {
-    google: 'LTRZgNYI6j6Ak4UtASNmVbKVTUu9125hjMwJ9uKTZ8U',
+    google: 'vFCJmiQt9CxKIRs6l6f-DkldV1Rp8SVnC7WQOMLQFE8',
   },
   other: {
     'theme-color': '#0f172a',
