@@ -1,60 +1,37 @@
 ---
-description: Weekly content publishing schedule — shows which site to publish on each day
+description: Weekly content publishing schedule — shows which sites to publish on each day
+---
+# 📅 2026 Content Publishing Schedule (9 Sites)
+
+This workflow defines the global content publishing schedule across the 9 core utility and portfolio properties. The schedule is designed to produce 27 articles a week, hitting a goal of 3 articles per site per week, by rotating between two site groups.
+
+## The A/B Group Rotation
+
+The 9 sites are split into two groups. We process 1 article for every site in the active group on their designated days.
+
+### 🔵 Group A (Runs Mon, Wed, Fri) - 5 Sites
+1. `legalpolicygen.com`
+2. `mycalcfinance.com`
+3. `buildwithriz.com`
+4. `orderviachat.com`
+5. `imrizwan.com`
+
+### 🟢 Group B (Runs Tue, Thu, Sat) - 4 Sites
+1. `getcertquiz.com`
+2. `dailysmartcalc.com` (Directory: `dailysmartcalc-next`)
+3. `onlineimageshrinker.com`
+4. `tinypdftools.com` (Directory: `pdftoolkit`)
+
+### ⚪ Sunday
+Rest Day / SEO Audits / Keyword Research
+
 ---
 
-# Content Schedule
+## 🤖 Agentic Execution Protocol
 
-> Run this at the start of each day to see what to publish. Then execute: `/content-pipeline` for the scheduled site.
+When the user says `@[/content-schedule]`:
 
-## 📅 Weekly Rotation (Mon–Fri)
-
-| Day | Site | Max Articles | Focus Area |
-|-----|------|-------------|------------|
-| **Monday** | **legalpolicygen.com** | 1 | Legal guides, policy comparisons |
-| **Tuesday** | **mycalcfinance.com** | 1 | Finance calculator guides |
-| **Wednesday** | **buildwithriz.com** | 1 | Freelancer invoicing tips |
-| **Thursday** | **orderviachat.com** | 1 | WhatsApp business guides |
-| **Friday** | **imrizwan.com** | 1 | SharePoint / Power Platform |
-| **Saturday** | *Catch-up or skip* | — | Publish on any site that's behind |
-| **Sunday** | *Rest day* | — | No publishing |
-
-## 🔁 How To Use
-
-1. Open a new chat
-2. Check what day it is
-3. Say: `/content-pipeline` for **[today's site]**
-4. The pipeline handles everything: keyword selection → article → deploy → GSC indexing
-
-## 📊 Weekly Limits (Hard Rules)
-
-- **Max 1 article per site per day**
-- **Max 3 articles per site per week** (Mon–Sun)
-- **5 sites × 3 slots = 15 max articles/week** across the portfolio
-- The rotation above targets **5 articles/week** (1 per weekday) for sustainable quality
-
-## 🎯 Priority Sites
-
-If you only have time for 2–3 articles this week, prioritize in this order:
-
-1. 🔴 **imrizwan.com** — Lowest recent content, needs fresh articles
-2. 🔴 **legalpolicygen.com** — Strong momentum, keep building authority
-3. 🟠 **buildwithriz.com** — Consistent cadence for freelancer niche
-4. 🟡 **mycalcfinance.com** — Large catalog already, can slow pace
-5. 🟡 **orderviachat.com** — SaaS focus, content supports sales
-
-## ⚡ Batch Mode
-
-If you prefer to write multiple articles in one session, say:
-
-> `/content-pipeline` for legalpolicygen.com, then mycalcfinance.com, then buildwithriz.com
-
-The pipeline will run sequentially for each site, respecting daily/weekly limits.
-
-## 🚫 Sites WITHOUT Blog Infrastructure
-
-| Site | Status |
-|------|--------|
-| **dailysmartcalc.com** | ❌ No blog — needs setup before publishing |
-| **onlineimageshrinker.com** | ⚠️ Blog exists but needs verification |
-| **azanapp** | N/A — Mobile app, no blog |
-| **getcertquiz.com** | ⚠️ New site — check if blog is set up |
+1. **Check the Current Day**: Use the current system date to determine if it is a Group A day or a Group B day.
+2. **Review Dashboard Status**: Read the `content_dashboard.md` artifact to cross-reference which sites in today's group still need their article for today.
+3. **Execute Pipeline in Batch**: For each site in today's group, run the `@[/content-pipeline]` protocol sequentially. Find the top priority keyword for that site, write the article, build, deploy, and verify. Do not ask for permission between sites unless you hit a blocker.
+4. **Update Dashboard**: After the batch runs successfully, update the `content_dashboard.md` artifact with the checkmarks for today's completed articles.
