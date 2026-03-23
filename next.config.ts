@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
                 permanent: true,
             },
             {
+                source: '/blog/sharepoint-column-formatting-json',
+                destination: '/blog',
+                permanent: true,
+            },
+            {
+                source: '/me/drive/recent',
+                destination: '/',
+                permanent: true,
+            },
+            {
                 source: '/tag/:path*',
                 destination: '/blog',
                 permanent: true,
