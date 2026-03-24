@@ -44,7 +44,7 @@
 | Viva Connections ACE | "viva connections adaptive card extension" | Informational | ✅ Published |
 | SPFx CSP Guide | "sharepoint online csp enforcement spfx" | Informational | ✅ Published |
 | SPFx Performance | "spfx performance optimization bundle size" | Informational | ✅ Published |
-| SPFx CLI Migration | "migrate yeoman to new spfx cli" | Informational | 🟡 Gap |
+| SPFx CLI Migration | "migrate yeoman to new spfx cli" | Informational | ✅ Published |
 | SPFx v1.23+ Features | "spfx 1.23 new features" | Informational | 🟡 Gap |
 
 ### Pillar 2: Microsoft Graph API
@@ -110,8 +110,8 @@
 
 | Priority | Keyword | Why High Priority |
 |---|---|---|
-| 🔴 1 | "migrate yeoman to new spfx cli" | 2026 trend — CLI modernization affects all SPFx devs |
-| 🔴 2 | "microsoft graph api authentication guide" | Supports existing Graph API article — builds pillar depth |
+| ✅ Published | "migrate yeoman to new spfx cli" | 2026 trend — CLI modernization affects all SPFx devs |
+| 🔴 1 | "microsoft graph api authentication guide" | Supports existing Graph API article — builds pillar depth |
 | 🔴 3 | "microsoft copilot governance best practices" | AI governance trend — high authority content |
 | 🟠 4 | "power apps sharepoint integration guide" | Fills Power Platform pillar gap |
 | 🟠 5 | "ai builder sharepoint document processing" | Builds AI & Governance pillar depth |
