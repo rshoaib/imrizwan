@@ -1,7 +1,19 @@
 import { supabase } from './supabase'
-import { blogPosts as localPosts, type BlogPost } from '@/data/blog'
 
-// -------- types --------
+export interface BlogPost {
+  id: string
+  slug: string
+  title: string
+  excerpt: string
+  content: string
+  date: string
+  displayDate: string
+  readTime: string
+  category: 'SPFx' | 'Power Platform' | 'SharePoint' | 'Microsoft 365'
+  image?: string
+  tags?: string[]
+}
+
 interface DbRow {
     id: number
     slug: string
@@ -32,34 +44,8 @@ function rowToPost(r: DbRow): BlogPost {
     }
 }
 
-// Removed manual module-level cache to allow Next.js ISR to function correctly
-
-// -------- merge logic --------
-// Merges Supabase posts with local posts. Supabase wins on slug conflicts.
-// This ensures articles in EITHER source are always visible.
-function mergePosts(dbPosts: BlogPost[], local: BlogPost[]): BlogPost[] {
-    const slugMap = new Map<string, BlogPost>()
-
-    // Add local posts first
-    for (const p of local) {
-        slugMap.set(p.slug, p)
-    }
-
-    // Supabase posts override local on same slug
-    for (const p of dbPosts) {
-        slugMap.set(p.slug, p)
-    }
-
-    // Sort by date descending
-    return Array.from(slugMap.values()).sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
-}
-
-// -------- public API --------
-
 export async function getAllPosts(): Promise<BlogPost[]> {
-    if (!supabase) return localPosts
+    if (!supabase) return []
 
     try {
         const { data, error } = await supabase
@@ -68,15 +54,14 @@ export async function getAllPosts(): Promise<BlogPost[]> {
             .order('date', { ascending: false })
 
         if (error || !data) {
-            console.warn('[blogService] Supabase fetch failed, using local fallback', error)
-            return localPosts
+            console.warn('[blogService] Supabase fetch failed', error)
+            return []
         }
 
-        const dbPosts = (data as DbRow[]).map(rowToPost)
-        return mergePosts(dbPosts, localPosts)
+        return (data as DbRow[]).map(rowToPost)
     } catch (err) {
-        console.warn('[blogService] Network error, using local fallback', err)
-        return localPosts
+        console.warn('[blogService] Network error', err)
+        return []
     }
 }
 
