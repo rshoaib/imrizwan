@@ -1,42 +1,71 @@
-// Build-time script to generate rss.xml from blog data
-// Note: sitemap.xml is now generated dynamically via app/sitemap.ts
-// Note: rss.xml is now also served dynamically via app/rss.xml/route.ts
-//       This script is kept as a build-time fallback for static hosting scenarios.
+// Build-time script to generate rss.xml from Supabase blog data
+// Note: sitemap.xml & rss.xml are also generated dynamically via app routes.
+// This script is kept as a build-time step to pre-generate the static fallback file.
 // Run: node scripts/generate-feeds.js
 
-const { readFileSync, writeFileSync } = require('fs')
+const { writeFileSync, existsSync, readFileSync } = require('fs')
 const { join } = require('path')
+const path = require('path')
 
 const rootDir = join(__dirname, '..')
 
-// Parse blog posts from the blog.ts source file
-const blogSrc = readFileSync(join(rootDir, 'data/blog.ts'), 'utf-8')
+// Load env vars from .env.local
+const envPath = path.resolve(rootDir, '.env.local')
+let SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+let SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Extract post metadata using regex (avoids TS compilation)
-const posts = []
-const postRegex = /{\s*id:\s*'([^']+)',\s*slug:\s*'([^']+)',\s*title:\s*'([^']+)'.*?excerpt:\s*'([^']+)'.*?date:\s*'([^']+)'.*?displayDate:\s*'([^']+)'.*?category:\s*'([^']+)'/gs
-
-let match
-while ((match = postRegex.exec(blogSrc)) !== null) {
-  posts.push({
-    id: match[1],
-    slug: match[2],
-    title: match[3].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-    excerpt: match[4].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-    date: match[5],
-    displayDate: match[6],
-    category: match[7],
+if ((!SUPABASE_URL || !SUPABASE_ANON_KEY) && existsSync(envPath)) {
+  const envFile = readFileSync(envPath, 'utf-8')
+  envFile.split('\n').forEach(line => {
+    const [key, ...val] = line.split('=')
+    if (!key) return
+    const value = val.join('=').replace(/"/g, '').trim()
+    if (key.trim() === 'NEXT_PUBLIC_SUPABASE_URL') SUPABASE_URL = value
+    if (key.trim() === 'NEXT_PUBLIC_SUPABASE_ANON_KEY') SUPABASE_ANON_KEY = value
   })
 }
 
 const SITE_URL = 'https://imrizwan.com'
 const SITE_NAME = 'ImRizwan'
 
-// --- RSS Feed (build-time fallback) ---
-const rssItems = posts
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  .map(
-    (p) => `    <item>
+async function main() {
+  let posts = []
+
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,excerpt,date,display_date,category&order=date.desc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        posts = (data || []).map(p => ({
+          slug: p.slug,
+          title: (p.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+          excerpt: (p.excerpt || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+          date: p.date,
+          displayDate: p.display_date,
+          category: p.category,
+        }))
+        console.log(`✅ Fetched ${posts.length} posts from Supabase`)
+      } else {
+        console.warn(`⚠️  Supabase returned ${res.status} — generating empty RSS feed`)
+      }
+    } catch (err) {
+      console.warn('⚠️  Could not fetch from Supabase:', err.message)
+    }
+  } else {
+    console.warn('⚠️  Supabase credentials not found — generating empty RSS feed')
+  }
+
+  const rssItems = posts
+    .map(
+      (p) => `    <item>
       <title>${p.title}</title>
       <link>${SITE_URL}/blog/${p.slug}</link>
       <description>${p.excerpt}</description>
@@ -44,10 +73,10 @@ const rssItems = posts
       <guid isPermaLink="true">${SITE_URL}/blog/${p.slug}</guid>
       <category>${p.category}</category>
     </item>`
-  )
-  .join('\n')
+    )
+    .join('\n')
 
-const rss = `<?xml version="1.0" encoding="UTF-8"?>
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${SITE_NAME}</title>
@@ -61,7 +90,14 @@ ${rssItems}
 </rss>
 `
 
-writeFileSync(join(rootDir, 'public/rss.xml'), rss)
-console.log(`✅ Generated rss.xml with ${posts.length} posts (build-time fallback)`)
-console.log(`ℹ️  sitemap.xml is now generated dynamically via app/sitemap.ts`)
-console.log(`ℹ️  rss.xml is also served dynamically via app/rss.xml/route.ts`)
+  writeFileSync(join(rootDir, 'public/rss.xml'), rss)
+  console.log(`✅ Generated rss.xml with ${posts.length} posts`)
+  console.log(`ℹ️  sitemap.xml is generated dynamically via app/sitemap.ts`)
+  console.log(`ℹ️  rss.xml is also served dynamically via app/rss.xml/route.ts`)
+}
+
+main().catch(err => {
+  console.error('Fatal error in generate-feeds.js:', err)
+  // Exit 0 so it doesn't block the build — RSS is served dynamically anyway
+  process.exit(0)
+})
