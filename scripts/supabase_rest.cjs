@@ -72,6 +72,16 @@ class SupabaseREST {
     console.log(`✅ [${table}] Inserted successfully.`);
     return data;
   }
+
+  async update(table, payload, matchField, matchValue) {
+    const res = await fetch(`${this.restUrl}/${table}?${matchField}=eq.${matchValue}`, {
+      method: 'PATCH',
+      headers: this.headers,
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`Update Failed: ${res.status} ${await res.text()}`);
+    console.log(`✅ [${table}] Updated ${matchField}='${matchValue}' successfully.`);
+  }
 }
 
 module.exports = SupabaseREST;
