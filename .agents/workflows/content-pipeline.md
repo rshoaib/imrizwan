@@ -136,15 +136,20 @@ Before writing ANY content, read the context files for the target site:
 
 > **Goal:** Never publish a weaker article than what already ranks. Your article must be equal or better in depth AND offer something unique (usually your tool).
 
-### Phase 3: Content Creation (Gemini 3.1 Pro)
-<!-- progress: "✍️ Phase 3/8: Writing article — [title]..." -->
+### Phase 3: Content Creation & AI Stealth (Gemini 3.1 Pro)
+<!-- progress: "✍️ Phase 3/8: Writing humanized article — [title]..." -->
 11. **Read brand voice** — apply tone, sentence length, and formatting rules
-12. Generate blog post draft with SEO-optimized headings
-13. **Read internal links map** — add 3-6 internal links using natural anchor text
-14. Create meta descriptions and Open Graph tags
-15. Write structured data (JSON-LD FAQPage schema) for FAQ sections
-16. End the article with a clear CTA linking to the most relevant tool
-17. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
+12. **Apply AI Stealth & Humanization (Anti-Detection Rules)**:
+    - **Burstiness & Perplexity**: Vary sentence length drastically (mix punchy 3-word sentences with longer, complex 25-word thoughts). Avoid rhythm predictability.
+    - **Banned AI Transitions**: DO NOT use fluff words like "Furthermore", "In conclusion", "Delve into", "Unlock the power of", "Navigating the landscape", "Crucial", or "Testament to".
+    - **E-E-A-T Signals**: Inject first-person perspective, specific examples, real-world constraints ("When building X..."), and strong opinions. Make it read like a developer or practitioner wrote it.
+    - **Formatting Imperfections**: Use conversational bridges, em-dashes, parentheses for conversational asides, and start occasional sentences with conjunctions (And, But, Because).
+13. Generate blog post draft with SEO-optimized headings, strictly adhering to the stealth rules above.
+14. **Read internal links map** — add 3-6 internal links using natural anchor text
+15. Create meta descriptions and Open Graph tags
+16. Write structured data (JSON-LD FAQPage schema) for FAQ sections
+17. End the article with a clear CTA linking to the most relevant tool
+18. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
 
 ### Phase 4: Quality Check (before code)
 <!-- progress: "✅ Phase 4/8: Running quality checks (readability, links, SEO)..." -->
