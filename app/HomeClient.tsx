@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { BlogPost } from '@/data/blog'
+import type { BlogPost } from '@/lib/blogService'
 import { tools } from '@/data/tools'
 
 /* ── Animated counter hook ── */

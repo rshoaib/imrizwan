@@ -11,7 +11,7 @@ import ShareButtons from '@/components/ShareButtons'
 import NewsletterCTA from '@/components/NewsletterCTA'
 import ReadingProgress from '@/components/ReadingProgress'
 import ToolCTABanner from '@/components/ToolCTABanner'
-import type { BlogPost } from '@/data/blog'
+import type { BlogPost } from '@/lib/blogService'
 
 
 function getCategoryClass(category: string): string {

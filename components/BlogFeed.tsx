@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { BlogPost } from '@/data/blog'
+import type { BlogPost } from '@/lib/blogService'
 
 const POSTS_PER_PAGE = 6
 

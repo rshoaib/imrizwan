@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { BlogPost } from '@/data/blog'
+import type { BlogPost } from '@/lib/blogService'
 
 export default function BlogCard({ post }: { post: BlogPost }) {
   const categoryClass = `blog-card__category--${post.category.toLowerCase().replace(/\s+/g, '-')}`

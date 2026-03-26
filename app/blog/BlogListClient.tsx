@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import BlogFeed from '@/components/BlogFeed'
 import Sidebar from '@/components/Sidebar'
-import type { BlogPost } from '@/data/blog'
+import type { BlogPost } from '@/lib/blogService'
 
 export default function BlogListClient({ initialPosts }: { initialPosts: BlogPost[] }) {
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(initialPosts)
