@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import PowerAutomateExpressionsClient from './PowerAutomateExpressionsClient'
 
 export const metadata: Metadata = {
-  title: 'Power Automate Expressions Reference',
+  title: 'Power Automate Expressions Cheat Sheet (2026) | 40+ Examples',
   description:
-    'Browse, search, and copy 40+ Power Automate expressions with syntax, examples, and usage tips. Free, browser-based reference for Power Platform developers.',
+    'Struggling with Power Automate syntax? Browse, search, and copy 40+ ready-to-use expression examples, formulas, and tips. 100% Free Developer Reference.',
   alternates: { canonical: '/tools/power-automate-expressions' },
 }
 

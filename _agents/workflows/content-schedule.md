@@ -69,42 +69,30 @@ After each site completes (or is skipped), update the scratchpad:
 
 ### Step 4: Continue to Next Site
 Move to the next site immediately. Do NOT ask for permission between sites unless you hit a blocker that requires user input.
-
----
-
-## ⚠️ Skip Rules
-
-- If a site has already published **1 article today** → mark as ⏭️ Skipped and continue
-- If a site has published **3 articles this week** → mark as ⏭️ Skipped and continue
-- If build fails → mark as ❌ Failed, log the error, and continue to next site
-
 ---
 
 ## 📊 Final Summary
 
-After all 9 sites are processed, show a final summary:
+After all 9 sites are processed, show a final summary formatted as a Markdown table exactly like this:
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  📊 Content Schedule — Final Report                                             ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║  ✅ Published: 7 articles                                                       ║
-║  ⏭️ Skipped:   1 (daily limit)                                                  ║
-║  ❌ Failed:    1 (build error)                                                  ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║  #  │ Site                    │ Article Title              │ Total │ Live URL    ║
-║  ───┼─────────────────────────┼────────────────────────────┼───────┼─────────── ║
-║  1  │ legalpolicygen.com      │ Privacy Policy for AI Apps │  32   │ https://…  ║
-║  2  │ mycalcfinance.com       │ 401k vs Roth IRA 2026      │  28   │ https://…  ║
-║  3  │ buildwithriz.com        │ Invoice Tips for 2026      │  19   │ https://…  ║
-║  4  │ orderviachat.com        │ WhatsApp Menu Design       │  14   │ https://…  ║
-║  5  │ imrizwan.com            │ SPFx Column Formatting     │  45   │ https://…  ║
-║  6  │ getcertquiz.com         │ ⏭️ Skipped (daily limit)   │  12   │ —          ║
-║  7  │ dailysmartcalc.com      │ BMI Calculator Guide       │  22   │ https://…  ║
-║  8  │ onlineimageshrinker.com │ ❌ Build failed            │  35   │ —          ║
-║  9  │ tinypdftools.com        │ Merge PDF on iPhone        │  18   │ https://…  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+### 📈 Content Pipeline Final Report
+
+**Summary:**
+- **✅ Published:** 7 articles
+- **⏭️ Skipped:** 1 *(daily limit)*
+- **❌ Failed:** 1 *(build error)*
+
+| # | Site | Status | Article Title | Total | Live URL |
+|---|---|---|---|---|---|
+| 1 | **legalpolicygen.com** | ✅ | Privacy Policy for AI Apps | 32 | [View Article](https://legalpolicygen.com/blog/...) |
+| 2 | **mycalcfinance.com** | ✅ | 401k vs Roth IRA 2026 | 28 | [View Article](https://mycalcfinance.com/blog/...) |
+| 3 | **buildwithriz.com** | ✅ | Invoice Tips for 2026 | 19 | [View Article](https://buildwithriz.com/blog/...) |
+| 4 | **orderviachat.com** | ✅ | WhatsApp Menu Design | 14 | [View Article](https://orderviachat.com/blog/...) |
+| 5 | **imrizwan.com** | ✅ | SPFx Column Formatting | 45 | [View Article](https://imrizwan.com/blog/...) |
+| 6 | **getcertquiz.com** | ⏭️ Skipped | *(daily limit)* | 12 | — |
+| 7 | **dailysmartcalc.com** | ✅ | BMI Calculator Guide | 22 | [View Article](https://dailysmartcalc.com/blog/...) |
+| 8 | **onlineimageshrinker.com** | ❌ Build failed | *(Error logs)* | 35 | — |
+| 9 | **tinypdftools.com** | ✅ | Merge PDF on iPhone | 18 | [View Article](https://tinypdftools.com/blog/...) |
 
 - **Total** = total number of articles on that site as of today (count from data file or database)
 - **Live URL** = the full production URL of the newly published article (clickable)

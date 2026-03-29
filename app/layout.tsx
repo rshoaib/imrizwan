@@ -13,11 +13,11 @@ const ADSENSE_CLIENT = 'ca-pub-3166995085202346'
 export const metadata: Metadata = {
   metadataBase: new URL('https://imrizwan.com'),
   title: {
-    default: 'Rizwan | SharePoint & Power Platform Developer',
+    default: 'Rizwan | Microsoft 365, SharePoint & Power Platform Developer',
     template: '%s | ImRizwan',
   },
   description:
-    'Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips with real code and screenshots.',
+    'Independent Microsoft 365 developer. Browse free SPFx web parts, Power Platform solutions, SharePoint tools, and step-by-step developer guides.',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',

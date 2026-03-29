@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import SiteScriptGeneratorClient from './SiteScriptGeneratorClient'
 
 export const metadata: Metadata = {
-  title: 'Site Script Generator',
-  description: 'Build SharePoint site scripts visually — add provisioning actions and export JSON with PowerShell deployment commands.',
+  title: 'SharePoint Site Script Generator (Free UI Builder 2026)',
+  description: 'Visually build SharePoint site designs and site scripts. Add provisioning actions, live preview JSON, and generate PowerShell scripts for instant deployment.',
   alternates: { canonical: '/tools/site-script-generator' },
 }
 

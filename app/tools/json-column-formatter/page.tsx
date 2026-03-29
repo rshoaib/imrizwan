@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import JsonColumnFormatterClient from './JsonColumnFormatterClient'
 
 export const metadata: Metadata = {
-  title: 'SharePoint JSON Column Formatter: Build & Preview Instantly',
-  description: 'Free online SharePoint JSON column formatting builder. Write, validate, and live-preview column formatting JSON with built-in templates. No login required.',
+  title: 'SharePoint JSON Column Formatter Builder (Free 2026)',
+  description: 'Visually build SharePoint JSON column formatting configurations. Write, validate, and live-preview List formatting schemas instantly in your browser.',
   alternates: { canonical: '/tools/json-column-formatter' },
 }
 

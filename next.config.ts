@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+    // Explicitly enforce no trailing slashes for SEO
+    trailingSlash: false,
+    poweredByHeader: false,
     reactStrictMode: true,
     images: {
         remotePatterns: [
@@ -30,6 +33,21 @@ const nextConfig: NextConfig = {
             {
                 source: '/me/drive/recent',
                 destination: '/',
+                permanent: true,
+            },
+            {
+                source: '/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026',
+                destination: '/blog',
+                permanent: true,
+            },
+            {
+                source: '/blog/power-automate-expressions-cheat-sheet-2026',
+                destination: '/blog',
+                permanent: true,
+            },
+            {
+                source: '/blog/sharepoint-online-csp-enforcement-spfx-developer-guide-2026',
+                destination: '/blog',
                 permanent: true,
             },
             {
