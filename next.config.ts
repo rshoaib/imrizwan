@@ -5,18 +5,6 @@ const nextConfig: NextConfig = {
     trailingSlash: false,
     poweredByHeader: false,
     reactStrictMode: true,
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: '**.supabase.co',
-            },
-            {
-                protocol: 'https',
-                hostname: '**.supabase.in',
-            },
-        ],
-    },
     devIndicators: false,
     async redirects() {
         return [

@@ -3,8 +3,6 @@ import { Suspense } from 'react'
 import { getAllPosts } from '@/lib/blogService'
 import BlogListClient from './BlogListClient'
 
-export const revalidate = 60 // ISR: refresh from Supabase every 60 seconds
-
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
