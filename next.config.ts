@@ -24,21 +24,6 @@ const nextConfig: NextConfig = {
                 permanent: true,
             },
             {
-                source: '/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026',
-                destination: '/blog',
-                permanent: true,
-            },
-            {
-                source: '/blog/power-automate-expressions-cheat-sheet-2026',
-                destination: '/blog',
-                permanent: true,
-            },
-            {
-                source: '/blog/sharepoint-online-csp-enforcement-spfx-developer-guide-2026',
-                destination: '/blog',
-                permanent: true,
-            },
-            {
                 source: '/tag/:path*',
                 destination: '/blog',
                 permanent: true,
