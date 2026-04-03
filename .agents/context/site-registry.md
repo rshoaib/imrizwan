@@ -1,58 +1,73 @@
 ---
 site: imrizwan.com
 git_branch: main
-supabase_ref: jnopupouynhqeqnhxecp
-content_format: html
+content_format: markdown
 ---
 
 # imrizwan Site Registry
 
-## Blog Schema (`blog_posts` table)
+## Blog Content (`content/blog/*.md`)
 
-| Column | Type | Required | Notes |
-|--------|------|----------|-------|
-| `id` | uuid | auto | Primary key |
-| `slug` | text | ✅ | URL slug (kebab-case) |
-| `title` | text | ✅ | Article title |
-| `excerpt` | text | ✅ | Short description |
-| `content` | text | ✅ | **HTML** (rendered via dangerouslySetInnerHTML) |
-| `date` | text | ✅ | ISO date: `2026-03-27` |
-| `display_date` | text | ✅ | Human-readable: `March 27, 2026` |
-| `read_time` | text | ✅ | e.g. `12 min read` |
-| `category` | text | ✅ | e.g. `Microsoft 365`, `Power Platform` |
-| `image` | text | ✅ | Path: `/images/blog/{name}.png` |
-| `tags` | text[] | optional | PostgreSQL text array |
-| `created_at` | timestamptz | auto | |
-| `updated_at` | timestamptz | auto | |
+Blog posts are stored as local markdown files with YAML frontmatter.
+
+### Frontmatter Schema
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `title` | string | ✅ | Article title |
+| `slug` | string | ✅ | URL slug (kebab-case), must match filename |
+| `excerpt` | string | ✅ | Short description |
+| `date` | string | ✅ | ISO date: `2026-03-27` |
+| `displayDate` | string | ✅ | Human-readable: `March 27, 2026` |
+| `readTime` | string | ✅ | e.g. `12 min read` |
+| `category` | string | ✅ | e.g. `Microsoft 365`, `Power Platform`, `SPFx`, `SharePoint` |
+| `image` | string | optional | Path: `/images/blog/{name}.png` |
+| `tags` | string[] | optional | YAML array |
+
+### File Format
+
+```markdown
+---
+title: "Article Title"
+slug: article-slug
+excerpt: "Short description"
+date: "2026-03-27"
+displayDate: "March 27, 2026"
+readTime: "12 min read"
+category: "Microsoft 365"
+image: "/images/blog/article-hero.png"
+tags:
+  - "tag1"
+  - "tag2"
+---
+
+Markdown content here...
+```
 
 ## Image Hosting
 
 - **Strategy**: Local file in `public/images/blog/`
-- **Column**: `image`
 - **Path format**: `/images/blog/{slug}-hero.png`
 - **Component**: `next/image` in `BlogPostClient.tsx`
-- **⚠️ CRITICAL**: Image file MUST be `git add`-ed and pushed to `main`
 
 ## Content Format
 
-- **Type**: HTML (Tailwind prose classes inline in the HTML string)
+- **Type**: Markdown with YAML frontmatter
+- **Parser**: `gray-matter` for frontmatter, custom `renderMarkdown()` for HTML
 - **Renderer**: `dangerouslySetInnerHTML` in `BlogPostClient.tsx`
-- **Tables**: Include inline Tailwind classes in the HTML (`class="w-full border-collapse..."`)
-- **⚠️ IMPORTANT**: `display_date` and `read_time` are SEPARATE from `date` — all three must be set
 
 ## Deployment
 
 - **Git branch**: `main`
 - **Host**: Vercel
-- **Revalidation**: ISR with `revalidate = 3600`
+- **Generation**: Fully static at build time
 - **Push command**: `git push origin main`
 
-## Post-Insert Checklist
+## New Post Checklist
 
-1. ☐ Image file exists in `public/images/blog/`
-2. ☐ Image file is git-tracked (`git status` shows no `??`)
-3. ☐ `image` column matches the file path exactly
-4. ☐ `display_date` is set (e.g. `March 27, 2026`)
-5. ☐ `read_time` is set (e.g. `12 min read`)
-6. ☐ Push to `main` (NOT `master`)
-7. ☐ Wait 90s, verify image URL returns 200
+1. ☐ Create `content/blog/{slug}.md` with frontmatter + content
+2. ☐ Image file exists in `public/images/blog/`
+3. ☐ `image` field matches the file path exactly
+4. ☐ `displayDate` is set (e.g. `March 27, 2026`)
+5. ☐ `readTime` is set (e.g. `12 min read`)
+6. ☐ Push to `main`

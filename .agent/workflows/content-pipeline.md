@@ -73,7 +73,7 @@ Before writing ANY content, read the context files for the target site:
 ### Phase 0: Publishing Frequency Check
 <!-- progress: "📊 Phase 0/8: Checking publishing frequency..." -->
 // turbo
-1. **Identify the site's blog data source** — scan the data file (e.g., `data/blog.ts`, `src/data/articles.js`) or query the database (Supabase `blog_posts` table) to get all articles with their `published_at` / `date` fields.
+1. **Identify the site's blog data source** — scan the data file (e.g., `data/blog.ts`, `src/data/articles.js`) or local markdown files (`content/blog/*.md`) to get all articles with their `published_at` / `date` fields.
 2. **Calculate stats** using today's date and the current Mon–Sun week:
    - 📦 Total articles ever published
    - 📅 Last published date
@@ -111,10 +111,19 @@ Before writing ANY content, read the context files for the target site:
 ### Phase 1: Research & Plan (Gemini 3.1 Pro)
 <!-- progress: "🔍 Phase 1/8: Researching keywords & reading context files..." -->
 // turbo
-1. **Read context files** — target keywords for content calendar, brand voice for tone
-2. Research trending keywords for the target site (web search)
-3. Cross-check target keywords for content gaps and priorities
-4. Identify the highest-impact topic (search volume × relevance × ease)
+1. **Read `site-context.md`** — check the **Content Priority Queue** section
+2. **Auto-Research Check** — count how many keywords are in the queue:
+   - ✅ **3+ keywords in queue** → pick the #1 priority keyword and continue to Phase 2
+   - ⚠️ **< 3 keywords in queue** → auto-run `/keyword-research` workflow first:
+     1. Extract 3-5 seed keywords from topic clusters
+     2. Expand via Google Autocomplete + People Also Ask (web search)
+     3. Score each keyword with the 4-Point Scorecard (Intent + Competition + Specificity + Link Value)
+     4. Competition deep-dive on top scorers (check Google page 1)
+     5. Cluster related keywords and update the Priority Queue in `site-context.md`
+     6. Then pick the new #1 priority keyword and continue
+   - 🔴 **Queue is empty** → same as above, but flag to user: "Queue was empty — running keyword research first"
+3. **Read brand voice** from context files for tone and formatting rules
+4. **Pick the #1 keyword** — this becomes the article's primary target
 5. Validate AdSense compliance for ad placement
 
 ### Phase 2: Competitor Scan (Gemini 3.1 Pro)
@@ -166,9 +175,8 @@ Before writing ANY content, read the context files for the target site:
 
 ### Phase 5: Code Implementation (Claude Opus 4.5)
 <!-- progress: "💻 Phase 5/8: Adding article to codebase..." -->
-21. Add article to site's data file or database (e.g., `articles.js` or Supabase `blog_posts` table)
-22. **⚠️ CRITICAL — Supabase Insert Scripts**: Always use the **service_role key** (NOT the anon key) in seed/insert scripts. The anon key is blocked by RLS on INSERT (returns `401 / 42501`). Look for `"role":"service_role"` in the base64 JWT payload from existing working scripts.
-23. Reference the hero image in the article metadata (if supported)
+21. Add article to site's data file or content directory (e.g., `articles.js` or `content/blog/{slug}.md` with YAML frontmatter)
+22. Reference the hero image in the article metadata (if supported)
 24. Verify icon is imported in BlogList component
 25. Add programmatic SEO pages if applicable
 
@@ -182,11 +190,21 @@ Before writing ANY content, read the context files for the target site:
 
 ### Phase 7: Verify & Index (Gemini 3.1 Pro)
 <!-- progress: "🎯 Phase 7/8: Verifying on production & requesting indexing..." -->
-30. Open the article URL in browser and verify rendering
+30. Open the article URL in browser and verify **desktop** rendering
 31. Verify hero image loads correctly
-32. Submit new URL to Google Search Console
-33. Request indexing for the new page
-34. **Update target keywords** — mark topic as ✅ published
+32. **Mobile UX check** — open the article in responsive/mobile view (375px width) and verify:
+    - Text is readable without horizontal scrolling
+    - Tables are scrollable or stacked properly
+    - CTA buttons are tap-friendly (min 44×44px)
+    - No layout shift or overlapping elements
+33. **Core Web Vitals check** — run PageSpeed Insights on the new URL (`https://pagespeed.web.dev/analysis?url=<encoded-url>`) and verify:
+    - 🟢 **Performance** ≥ 80 (mobile)
+    - 🟢 **LCP** < 2.5s
+    - 🟢 **CLS** < 0.1
+    - 🟡 Flag any score < 70 for immediate investigation
+34. Submit new URL to Google Search Console
+35. Request indexing for the new page
+36. **Update target keywords** — mark topic as ✅ published
 
 ---
 

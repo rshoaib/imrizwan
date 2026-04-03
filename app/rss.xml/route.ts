@@ -6,17 +6,13 @@ const SITE_NAME = 'ImRizwan'
 export async function GET() {
     const posts = await getAllPosts()
 
-    const sortedPosts = [...posts].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
-
     const escapeXml = (str: string) =>
         str
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
 
-    const rssItems = sortedPosts
+    const rssItems = posts
         .map(
             (p) => `    <item>
       <title>${escapeXml(p.title)}</title>
