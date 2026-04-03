@@ -6,7 +6,7 @@ date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "14 min read"
 category: "SharePoint"
-image: "/images/blog/pnp-powershell-scripts-guide.png"
+image: "/images/blog/pnp-powershell-admin-scripts-guide.png"
 tags:
   - "PnP PowerShell"
   - "SharePoint"
