@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Governance for SharePoint-Powered AI: A Developer's Checklist (2026)"
 slug: enterprise-governance-sharepoint-ai-developer-checklist
-excerpt: "Copilot doesn't fix bad governance — it amplifies it. Here's the hands-on developer checklist with PowerShell scripts, SAM configuration, and sensitivity label implementation to make your SharePoint tenant AI-ready."
+excerpt: "Copilot amplifies bad governance. Get the developer checklist with PowerShell scripts and sensitivity labels to make SharePoint AI-ready."
 date: "2026-03-22"
 displayDate: "March 22, 2026"
 readTime: "12 min read"

@@ -1,7 +1,7 @@
 ---
 title: "Microsoft Copilot Governance: 8 Controls Every M365 Admin Needs (2026)"
 slug: microsoft-copilot-governance-best-practices-2026
-excerpt: "Before deploying Microsoft 365 Copilot, implement these 8 governance controls — from SharePoint permission audits to sensitivity labels and usage monitoring."
+excerpt: "Implement these 8 governance controls before deploying M365 Copilot — permission audits, sensitivity labels, and usage monitoring."
 date: "2026-04-01"
 displayDate: "April 2, 2026"
 readTime: "10 min read"

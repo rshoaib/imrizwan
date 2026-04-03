@@ -1,7 +1,7 @@
 ---
 title: "Building a Power Apps Canvas App with SharePoint: A Complete Guide"
 slug: power-apps-canvas-app-sharepoint-complete-guide
-excerpt: "Step-by-step guide to building a fully functional Power Apps canvas app connected to a SharePoint list — from creating your data source to publishing a polished app with search, filters, and forms."
+excerpt: "Build a Power Apps canvas app connected to SharePoint — from data source setup to a polished app with search, filters, and forms."
 date: "2026-03-01"
 displayDate: "March 1, 2026"
 readTime: "10 min read"

@@ -1,7 +1,7 @@
 ---
 title: "Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)"
 slug: copilot-studio-sharepoint-ai-assistants-guide-2026
-excerpt: "Create AI-powered assistants that answer questions from SharePoint documents, search across sites, and automate workflows — all with Microsoft Copilot Studio. No coding required."
+excerpt: "Create AI assistants that answer from SharePoint docs and automate workflows with Microsoft Copilot Studio. No coding required."
 date: "2026-03-05"
 displayDate: "March 5, 2026"
 readTime: "16 min read"

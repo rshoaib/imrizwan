@@ -1,7 +1,7 @@
 ---
 title: "Modern SharePoint Provisioning & Automation in 2026: A Developer's Guide"
 slug: sharepoint-provisioning-automation-guide-2026
-excerpt: "Learn the modern developer approach to SharePoint site provisioning in 2026. Discover how to use PnP PowerShell, Site Scripts, and the REST API to build AI-ready, flat architecture sites."
+excerpt: "Modern SharePoint site provisioning with PnP PowerShell, Site Scripts, and REST API to build AI-ready, flat architecture sites."
 date: "2026-03-25"
 displayDate: "March 25, 2026"
 readTime: "5 min read"
