@@ -1,67 +1,53 @@
-// Build-time script to generate rss.xml from Supabase blog data
+// Build-time script to generate rss.xml from local blog content files
 // Note: sitemap.xml & rss.xml are also generated dynamically via app routes.
 // This script is kept as a build-time step to pre-generate the static fallback file.
 // Run: node scripts/generate-feeds.js
 
-const { writeFileSync, existsSync, readFileSync } = require('fs')
+const { writeFileSync, readdirSync, readFileSync } = require('fs')
 const { join } = require('path')
-const path = require('path')
 
 const rootDir = join(__dirname, '..')
-
-// Load env vars from .env.local
-const envPath = path.resolve(rootDir, '.env.local')
-let SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-let SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if ((!SUPABASE_URL || !SUPABASE_ANON_KEY) && existsSync(envPath)) {
-  const envFile = readFileSync(envPath, 'utf-8')
-  envFile.split('\n').forEach(line => {
-    const [key, ...val] = line.split('=')
-    if (!key) return
-    const value = val.join('=').replace(/"/g, '').trim()
-    if (key.trim() === 'NEXT_PUBLIC_SUPABASE_URL') SUPABASE_URL = value
-    if (key.trim() === 'NEXT_PUBLIC_SUPABASE_ANON_KEY') SUPABASE_ANON_KEY = value
-  })
-}
+const postsDir = join(rootDir, 'content', 'blog')
 
 const SITE_URL = 'https://imrizwan.com'
 const SITE_NAME = 'ImRizwan'
 
-async function main() {
-  let posts = []
+function parseFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/)
+  if (!match) return {}
+  const fm = {}
+  match[1].split('\n').forEach(line => {
+    const idx = line.indexOf(':')
+    if (idx === -1) return
+    const key = line.slice(0, idx).trim()
+    const val = line.slice(idx + 1).trim().replace(/^["']|["']$/g, '')
+    if (key && val) fm[key] = val
+  })
+  return fm
+}
 
-  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,excerpt,date,display_date,category&order=date.desc`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      )
-      if (res.ok) {
-        const data = await res.json()
-        posts = (data || []).map(p => ({
-          slug: p.slug,
-          title: (p.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-          excerpt: (p.excerpt || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-          date: p.date,
-          displayDate: p.display_date,
-          category: p.category,
-        }))
-        console.log(`✅ Fetched ${posts.length} posts from Supabase`)
-      } else {
-        console.warn(`⚠️  Supabase returned ${res.status} — generating empty RSS feed`)
-      }
-    } catch (err) {
-      console.warn('⚠️  Could not fetch from Supabase:', err.message)
+function escapeXml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+async function main() {
+  const files = readdirSync(postsDir).filter(f => f.endsWith('.md'))
+  const posts = files.map(f => {
+    const raw = readFileSync(join(postsDir, f), 'utf-8')
+    const fm = parseFrontmatter(raw)
+    return {
+      slug: f.replace(/\.md$/, ''),
+      title: escapeXml(fm.title),
+      excerpt: escapeXml(fm.excerpt),
+      date: fm.date,
+      category: fm.category || '',
     }
-  } else {
-    console.warn('⚠️  Supabase credentials not found — generating empty RSS feed')
-  }
+  })
+
+  // Sort by date descending
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  console.log(`✅ Read ${posts.length} posts from content/blog/`)
 
   const rssItems = posts
     .map(

@@ -6,8 +6,6 @@ import { extractFaqItems, buildFaqJsonLd } from '@/lib/faqSchema'
 import { renderMarkdown } from '@/lib/markdown'
 import BlogPostClient from './BlogPostClient'
 
-export const revalidate = 60 // ISR: re-fetch from Supabase every 60 seconds
-export const dynamicParams = true // allow new slugs not in generateStaticParams
 
 interface Props {
   params: Promise<{ slug: string }>
