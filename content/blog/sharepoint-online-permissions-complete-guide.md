@@ -1,7 +1,7 @@
 ---
 title: "SharePoint Online Permissions: The Complete Security Guide for 2026"
 slug: sharepoint-online-permissions-complete-guide
-excerpt: "Master SharePoint Online permissions — from built-in permission levels and group-based access to Copilot-era governance, external sharing controls, and PnP PowerShell audit scripts. Includes a free Permission Matrix Generator tool."
+excerpt: "Master SharePoint Online permissions — permission levels, group access, external sharing, and PnP PowerShell audit scripts with a free tool."
 date: "2026-03-04"
 displayDate: "March 4, 2026"
 readTime: "15 min read"

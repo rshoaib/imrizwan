@@ -1,7 +1,7 @@
 ---
 title: "Adaptive Cards for Microsoft 365: Complete Developer Guide (2026)"
 slug: adaptive-cards-m365-developer-guide
-excerpt: "Master Adaptive Cards across Teams, Outlook, and Viva Connections. Covers schema versions, data binding, platform differences, and a free AI-powered card builder."
+excerpt: "Master Adaptive Cards across Teams, Outlook, and Viva Connections. Schema versions, data binding, and a free card builder."
 date: "2026-03-21T09:22:47.227Z"
 displayDate: "March 21, 2026"
 readTime: "10 min read"

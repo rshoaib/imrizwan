@@ -1,7 +1,7 @@
 ---
 title: "Demystifying the Microsoft Graph API: A Complete Guide to OAuth 2.0 and App Permissions"
 slug: microsoft-graph-api-oauth2-guide
-excerpt: "Understanding exactly how to authenticate your custom applications against the Microsoft Graph API is the hardest part of M365 development. Here is a massive breakdown of OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire your first access token securely."
+excerpt: "Learn Microsoft Graph API authentication — OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire access tokens securely."
 date: "2026-03-30"
 displayDate: "March 30, 2026"
 readTime: "12 min read"

@@ -1,7 +1,7 @@
 ---
 title: "The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026"
 slug: migrate-yeoman-to-new-spfx-cli
-excerpt: "Learn why Microsoft deprecated Yeoman and how to migrate your legacy SharePoint Framework (SPFx) projects to the new Vite-based SPFx CLI pipeline for 4x faster builds in less than 15 minutes."
+excerpt: "Migrate legacy SPFx projects from Yeoman to the new Vite-based SPFx CLI pipeline for 4x faster builds in under 15 minutes."
 date: "2026-03-23"
 displayDate: "March 23, 2026"
 readTime: "7 min read"

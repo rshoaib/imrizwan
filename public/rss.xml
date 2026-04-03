@@ -5,12 +5,12 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Apr 2026 04:20:32 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 03 Apr 2026 04:42:26 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Microsoft Copilot Governance: 8 Controls Every M365 Admin Needs (2026)</title>
       <link>https://imrizwan.com/blog/microsoft-copilot-governance-best-practices-2026</link>
-      <description>Before deploying Microsoft 365 Copilot, implement these 8 governance controls — from SharePoint permission audits to sensitivity labels and usage monitoring.</description>
+      <description>Implement these 8 governance controls before deploying M365 Copilot — permission audits, sensitivity labels, and usage monitoring.</description>
       <pubDate>Wed, 01 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-copilot-governance-best-practices-2026</guid>
       <category>Microsoft 365</category>
@@ -18,7 +18,7 @@
     <item>
       <title>Demystifying the Microsoft Graph API: A Complete Guide to OAuth 2.0 and App Permissions</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-oauth2-guide</link>
-      <description>Understanding exactly how to authenticate your custom applications against the Microsoft Graph API is the hardest part of M365 development. Here is a massive breakdown of OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire your first access token securely.</description>
+      <description>Learn Microsoft Graph API authentication — OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire access tokens securely.</description>
       <pubDate>Mon, 30 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-api-oauth2-guide</guid>
       <category>Microsoft 365</category>
@@ -34,7 +34,7 @@
     <item>
       <title>Modern SharePoint Provisioning &amp; Automation in 2026: A Developer's Guide</title>
       <link>https://imrizwan.com/blog/sharepoint-provisioning-automation-guide-2026</link>
-      <description>Learn the modern developer approach to SharePoint site provisioning in 2026. Discover how to use PnP PowerShell, Site Scripts, and the REST API to build AI-ready, flat architecture sites.</description>
+      <description>Modern SharePoint site provisioning with PnP PowerShell, Site Scripts, and REST API to build AI-ready, flat architecture sites.</description>
       <pubDate>Wed, 25 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-provisioning-automation-guide-2026</guid>
       <category>SharePoint</category>
@@ -42,7 +42,7 @@
     <item>
       <title>The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026</title>
       <link>https://imrizwan.com/blog/migrate-yeoman-to-new-spfx-cli</link>
-      <description>Learn why Microsoft deprecated Yeoman and how to migrate your legacy SharePoint Framework (SPFx) projects to the new Vite-based SPFx CLI pipeline for 4x faster builds in less than 15 minutes.</description>
+      <description>Migrate legacy SPFx projects from Yeoman to the new Vite-based SPFx CLI pipeline for 4x faster builds in under 15 minutes.</description>
       <pubDate>Mon, 23 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/migrate-yeoman-to-new-spfx-cli</guid>
       <category>Microsoft 365</category>
@@ -50,7 +50,7 @@
     <item>
       <title>Enterprise Governance for SharePoint-Powered AI: A Developer's Checklist (2026)</title>
       <link>https://imrizwan.com/blog/enterprise-governance-sharepoint-ai-developer-checklist</link>
-      <description>Copilot doesn't fix bad governance — it amplifies it. Here's the hands-on developer checklist with PowerShell scripts, SAM configuration, and sensitivity label implementation to make your SharePoint tenant AI-ready.</description>
+      <description>Copilot amplifies bad governance. Get the developer checklist with PowerShell scripts and sensitivity labels to make SharePoint AI-ready.</description>
       <pubDate>Sun, 22 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/enterprise-governance-sharepoint-ai-developer-checklist</guid>
       <category>Microsoft 365</category>
@@ -58,7 +58,7 @@
     <item>
       <title>Adaptive Cards for Microsoft 365: Complete Developer Guide (2026)</title>
       <link>https://imrizwan.com/blog/adaptive-cards-m365-developer-guide</link>
-      <description>Master Adaptive Cards across Teams, Outlook, and Viva Connections. Covers schema versions, data binding, platform differences, and a free AI-powered card builder.</description>
+      <description>Master Adaptive Cards across Teams, Outlook, and Viva Connections. Schema versions, data binding, and a free card builder.</description>
       <pubDate>Sat, 21 Mar 2026 09:22:47 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/adaptive-cards-m365-developer-guide</guid>
       <category>Microsoft 365</category>
@@ -98,7 +98,7 @@
     <item>
       <title>Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)</title>
       <link>https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</link>
-      <description>Create AI-powered assistants that answer questions from SharePoint documents, search across sites, and automate workflows — all with Microsoft Copilot Studio. No coding required.</description>
+      <description>Create AI assistants that answer from SharePoint docs and automate workflows with Microsoft Copilot Studio. No coding required.</description>
       <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</guid>
       <category>Microsoft 365</category>
@@ -114,7 +114,7 @@
     <item>
       <title>SharePoint Online Permissions: The Complete Security Guide for 2026</title>
       <link>https://imrizwan.com/blog/sharepoint-online-permissions-complete-guide</link>
-      <description>Master SharePoint Online permissions — from built-in permission levels and group-based access to Copilot-era governance, external sharing controls, and PnP PowerShell audit scripts. Includes a free Permission Matrix Generator tool.</description>
+      <description>Master SharePoint Online permissions — permission levels, group access, external sharing, and PnP PowerShell audit scripts with a free tool.</description>
       <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-online-permissions-complete-guide</guid>
       <category>SharePoint</category>
@@ -122,7 +122,7 @@
     <item>
       <title>Power Automate + AI Builder: Intelligent Document Processing Complete Guide</title>
       <link>https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</link>
-      <description>Learn how to build automated document processing pipelines using Power Automate and AI Builder — extract data from invoices, receipts, and forms with prebuilt and custom AI models, no code required.</description>
+      <description>Build document processing pipelines with Power Automate and AI Builder — extract data from invoices, receipts, and forms. No code required.</description>
       <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</guid>
       <category>Power Platform</category>
@@ -146,7 +146,7 @@
     <item>
       <title>Building a Power Apps Canvas App with SharePoint: A Complete Guide</title>
       <link>https://imrizwan.com/blog/power-apps-canvas-app-sharepoint-complete-guide</link>
-      <description>Step-by-step guide to building a fully functional Power Apps canvas app connected to a SharePoint list — from creating your data source to publishing a polished app with search, filters, and forms.</description>
+      <description>Build a Power Apps canvas app connected to SharePoint — from data source setup to a polished app with search, filters, and forms.</description>
       <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-apps-canvas-app-sharepoint-complete-guide</guid>
       <category>Power Platform</category>
