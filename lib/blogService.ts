@@ -45,13 +45,9 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
-  const filePath = path.join(POSTS_DIR, `${slug}.md`)
-  if (!fs.existsSync(filePath)) return undefined
-  return getPostFromFile(`${slug}.md`)
-}
-
-export async function getPostsByCategory(category: string): Promise<BlogPost[]> {
-  const posts = await getAllPosts()
-  if (category === 'All') return posts
-  return posts.filter(p => p.category === category)
+  try {
+    return getPostFromFile(`${slug}.md`)
+  } catch {
+    return undefined
+  }
 }

@@ -6,7 +6,6 @@ import { extractFaqItems, buildFaqJsonLd } from '@/lib/faqSchema'
 import { renderMarkdown } from '@/lib/markdown'
 import BlogPostClient from './BlogPostClient'
 
-
 interface Props {
   params: Promise<{ slug: string }>
 }

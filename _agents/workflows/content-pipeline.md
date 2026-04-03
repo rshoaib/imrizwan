@@ -73,7 +73,7 @@ Before writing ANY content, read the context files for the target site:
 ### Phase 0: Publishing Frequency Check
 <!-- progress: "📊 Phase 0/8: Checking publishing frequency..." -->
 // turbo
-1. **Identify the site's blog data source** — scan the data file (e.g., `data/blog.ts`, `src/data/articles.js`) or query the database (Supabase `blog_posts` table) to get all articles with their `published_at` / `date` fields.
+1. **Identify the site's blog data source** — scan the data file (e.g., `data/blog.ts`, `src/data/articles.js`) or local markdown files (`content/blog/*.md`) to get all articles with their `published_at` / `date` fields.
 2. **Calculate stats** using today's date and the current Mon–Sun week:
    - 📦 Total articles ever published
    - 📅 Last published date
@@ -111,10 +111,19 @@ Before writing ANY content, read the context files for the target site:
 ### Phase 1: Research & Plan (Gemini 3.1 Pro)
 <!-- progress: "🔍 Phase 1/8: Researching keywords & reading context files..." -->
 // turbo
-1. **Read context files** — target keywords for content calendar, brand voice for tone
-2. Research trending keywords for the target site (web search)
-3. Cross-check target keywords for content gaps and priorities
-4. Identify the highest-impact topic (search volume × relevance × ease)
+1. **Read `site-context.md`** — check the **Content Priority Queue** section
+2. **Auto-Research Check** — count how many keywords are in the queue:
+   - ✅ **3+ keywords in queue** → pick the #1 priority keyword and continue to Phase 2
+   - ⚠️ **< 3 keywords in queue** → auto-run `/keyword-research` workflow first:
+     1. Extract 3-5 seed keywords from topic clusters
+     2. Expand via Google Autocomplete + People Also Ask (web search)
+     3. Score each keyword with the 4-Point Scorecard (Intent + Competition + Specificity + Link Value)
+     4. Competition deep-dive on top scorers (check Google page 1)
+     5. Cluster related keywords and update the Priority Queue in `site-context.md`
+     6. Then pick the new #1 priority keyword and continue
+   - 🔴 **Queue is empty** → same as above, but flag to user: "Queue was empty — running keyword research first"
+3. **Read brand voice** from context files for tone and formatting rules
+4. **Pick the #1 keyword** — this becomes the article's primary target
 5. Validate AdSense compliance for ad placement
 
 ### Phase 2: Competitor Scan (Gemini 3.1 Pro)
@@ -127,32 +136,20 @@ Before writing ANY content, read the context files for the target site:
 
 > **Goal:** Never publish a weaker article than what already ranks. Your article must be equal or better in depth AND offer something unique (usually your tool).
 
-### Phase 2.5: Read Site Registry (MANDATORY)
-<!-- progress: "📋 Phase 2.5/8: Reading site-registry.md..." -->
-// turbo
-11. **Read `.agents/context/site-registry.md`** for the target site — this contains:
-    - Exact Supabase column names (each site is different!)
-    - Image column name (`heroImage` vs `image` vs `image_url` vs `cover_image` vs embedded-in-content)
-    - Content format (Markdown vs HTML)
-    - Git deploy branch (`main` vs `master`)
-    - Post-insert checklist
-12. **Extract and note** these critical values that differ per site:
-    - `git_branch` — MUST use this for `git push` (NOT assumed)
-    - Image column — MUST use the exact column name from registry
-    - Content format — determines whether to write Markdown or HTML
-    - Any site-specific quirks (e.g. `display_date` on imrizwan, `is_published` on orderviachat, no image column on legalpolicygen)
-
-> **⚠️ NEVER SKIP THIS PHASE.** Every image-not-showing and wrong-branch bug has been caused by skipping this step.
-
-### Phase 3: Content Creation (Gemini 3.1 Pro)
-<!-- progress: "✍️ Phase 3/8: Writing article — [title]..." -->
+### Phase 3: Content Creation & AI Stealth (Gemini 3.1 Pro)
+<!-- progress: "✍️ Phase 3/8: Writing humanized article — [title]..." -->
 11. **Read brand voice** — apply tone, sentence length, and formatting rules
-12. Generate blog post draft with SEO-optimized headings
-13. **Read internal links map** — add 3-6 internal links using natural anchor text
-14. Create meta descriptions and Open Graph tags
-15. Write structured data (JSON-LD FAQPage schema) for FAQ sections
-16. End the article with a clear CTA linking to the most relevant tool
-17. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
+12. **Apply AI Stealth & Humanization (Anti-Detection Rules)**:
+    - **Burstiness & Perplexity**: Vary sentence length drastically (mix punchy 3-word sentences with longer, complex 25-word thoughts). Avoid rhythm predictability.
+    - **Banned AI Transitions**: DO NOT use fluff words like "Furthermore", "In conclusion", "Delve into", "Unlock the power of", "Navigating the landscape", "Crucial", or "Testament to".
+    - **E-E-A-T Signals**: Inject first-person perspective, specific examples, real-world constraints ("When building X..."), and strong opinions. Make it read like a developer or practitioner wrote it.
+    - **Formatting Imperfections**: Use conversational bridges, em-dashes, parentheses for conversational asides, and start occasional sentences with conjunctions (And, But, Because).
+13. Generate blog post draft with SEO-optimized headings, strictly adhering to the stealth rules above.
+14. **Read internal links map** — add 3-6 internal links using natural anchor text
+15. Create meta descriptions and Open Graph tags
+16. Write structured data (JSON-LD FAQPage schema) for FAQ sections
+17. End the article with a clear CTA linking to the most relevant tool
+18. **Generate a hero image** using the `generate_image` tool — a custom illustration that matches the article topic. Save to the site's `/public/images/blog/` directory.
 
 ### Phase 4: Quality Check (before code)
 <!-- progress: "✅ Phase 4/8: Running quality checks (readability, links, SEO)..." -->
@@ -178,40 +175,36 @@ Before writing ANY content, read the context files for the target site:
 
 ### Phase 5: Code Implementation (Claude Opus 4.5)
 <!-- progress: "💻 Phase 5/8: Adding article to codebase..." -->
-21. **Read site-registry.md** to confirm exact column names before writing the insert script
-22. Add article to Supabase `blog_posts` table using the **exact columns from the registry**
-23. **⚠️ CRITICAL — Supabase Insert Scripts**: Always use the **service_role key** (NOT the anon key). The anon key is blocked by RLS on INSERT (returns `401 / 42501`).
-24. Set the image column using the **exact column name from registry** (e.g. `heroImage`, `image`, `image_url`, `cover_image`, or embed in content HTML)
-25. Set ALL required metadata fields from registry (e.g. `display_date`, `read_time`, `is_published`)
-26. Verify icon is imported in BlogList component
+21. Add article to site's data file or content directory (e.g., `articles.js` or `content/blog/{slug}.md` with YAML frontmatter)
+22. Reference the hero image in the article metadata (if supported)
+24. Verify icon is imported in BlogList component
+25. Add programmatic SEO pages if applicable
 
 ### Phase 6: Build & Deployment (Claude Opus 4.5)
 <!-- progress: "🚀 Phase 6/8: Building & deploying to production..." -->
 // turbo-all
 26. `npm run build` — Verify production build
 27. `git add -A` — Stage all changes
-28. **Verify image is tracked**: Run `git status --short` and confirm the hero image shows as `A` (added) NOT `??` (untracked)
-29. `git commit -m "content: descriptive message"` — Commit
-30. `git push origin {branch}` — Push to production using the **exact branch from site-registry.md** (NOT hardcoded `master`!)
+28. `git commit -m "content: descriptive message"` — Commit
+29. `git push origin master` — Push to production
 
-### Phase 7: Post-Deploy Validation
-<!-- progress: "🔍 Phase 7/8: Validating deployment — images, tables, metadata..." -->
-31. **Wait 90 seconds** for Vercel deploy to complete
-32. **Verify hero image URL** returns HTTP 200 (not 404):
-    - Run: `Invoke-WebRequest -Uri "https://{domain}/images/blog/{file}.png" -Method Head`
-    - If 404: check `git status`, verify branch, re-push if needed
-33. **Open article in browser** and verify:
-    - Hero image renders (not broken icon)
-    - Tables are styled with borders/headers (not plain text)
-    - Date/author/read time display correctly
-    - Internal links work
-34. **If ANY check fails** — fix the issue before proceeding to GSC
-
-### Phase 8: GSC Indexing (Gemini 3.1 Pro)
-<!-- progress: "🎯 Phase 8/8: Submitting to Google Search Console..." -->
-35. Submit new URL to Google Search Console
-36. Request indexing for the new page
-37. **Update target keywords** — mark topic as ✅ published
+### Phase 7: Verify & Index (Gemini 3.1 Pro)
+<!-- progress: "🎯 Phase 7/8: Verifying on production & requesting indexing..." -->
+30. Open the article URL in browser and verify **desktop** rendering
+31. Verify hero image loads correctly
+32. **Mobile UX check** — open the article in responsive/mobile view (375px width) and verify:
+    - Text is readable without horizontal scrolling
+    - Tables are scrollable or stacked properly
+    - CTA buttons are tap-friendly (min 44×44px)
+    - No layout shift or overlapping elements
+33. **Core Web Vitals check** — run PageSpeed Insights on the new URL (`https://pagespeed.web.dev/analysis?url=<encoded-url>`) and verify:
+    - 🟢 **Performance** ≥ 80 (mobile)
+    - 🟢 **LCP** < 2.5s
+    - 🟢 **CLS** < 0.1
+    - 🟡 Flag any score < 70 for immediate investigation
+34. Submit new URL to Google Search Console
+35. Request indexing for the new page
+36. **Update target keywords** — mark topic as ✅ published
 
 ---
 

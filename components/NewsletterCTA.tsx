@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
 
 export default function NewsletterCTA() {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'duplicate'>('idle')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -13,27 +12,19 @@ export default function NewsletterCTA() {
 
     setStatus('loading')
 
-    if (!supabase) {
-      setStatus('error')
-      return
-    }
-
     try {
-      const { error } = await supabase
-        .from('newsletter_subscribers')
-        .insert({ email: email.trim().toLowerCase() })
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      })
 
-      if (error) {
-        if (error.code === '23505') {
-          setStatus('duplicate')
-        } else {
-          setStatus('error')
-        }
-        return
+      if (res.ok) {
+        setStatus('success')
+        setEmail('')
+      } else {
+        setStatus('error')
       }
-
-      setStatus('success')
-      setEmail('')
     } catch {
       setStatus('error')
     }
@@ -75,11 +66,6 @@ export default function NewsletterCTA() {
           </form>
         )}
 
-        {status === 'duplicate' && (
-          <p className="newsletter__msg newsletter__msg--info">
-            You're already subscribed! 🎉
-          </p>
-        )}
         {status === 'error' && (
           <p className="newsletter__msg newsletter__msg--error">
             Something went wrong. Please try again.

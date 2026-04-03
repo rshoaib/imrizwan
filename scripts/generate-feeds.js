@@ -5,6 +5,7 @@
 
 const { writeFileSync, readdirSync, readFileSync } = require('fs')
 const { join } = require('path')
+const matter = require('gray-matter')
 
 const rootDir = join(__dirname, '..')
 const postsDir = join(rootDir, 'content', 'blog')
@@ -12,39 +13,24 @@ const postsDir = join(rootDir, 'content', 'blog')
 const SITE_URL = 'https://imrizwan.com'
 const SITE_NAME = 'ImRizwan'
 
-function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/)
-  if (!match) return {}
-  const fm = {}
-  match[1].split('\n').forEach(line => {
-    const idx = line.indexOf(':')
-    if (idx === -1) return
-    const key = line.slice(0, idx).trim()
-    const val = line.slice(idx + 1).trim().replace(/^["']|["']$/g, '')
-    if (key && val) fm[key] = val
-  })
-  return fm
-}
-
 function escapeXml(str) {
   return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-async function main() {
+function main() {
   const files = readdirSync(postsDir).filter(f => f.endsWith('.md'))
   const posts = files.map(f => {
     const raw = readFileSync(join(postsDir, f), 'utf-8')
-    const fm = parseFrontmatter(raw)
+    const { data } = matter(raw)
     return {
       slug: f.replace(/\.md$/, ''),
-      title: escapeXml(fm.title),
-      excerpt: escapeXml(fm.excerpt),
-      date: fm.date,
-      category: fm.category || '',
+      title: escapeXml(data.title),
+      excerpt: escapeXml(data.excerpt),
+      date: data.date,
+      category: data.category || '',
     }
   })
 
-  // Sort by date descending
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   console.log(`✅ Read ${posts.length} posts from content/blog/`)
@@ -82,8 +68,9 @@ ${rssItems}
   console.log(`ℹ️  rss.xml is also served dynamically via app/rss.xml/route.ts`)
 }
 
-main().catch(err => {
+try {
+  main()
+} catch (err) {
   console.error('Fatal error in generate-feeds.js:', err)
-  // Exit 0 so it doesn't block the build — RSS is served dynamically anyway
   process.exit(0)
-})
+}

@@ -45,6 +45,6 @@ The simplest way for small businesses to accept orders on WhatsApp. Create a fre
 
 ## Technical Details
 - Built with React + TypeScript + Vite
-- Blog content served from Supabase
+- Blog content served from local markdown files
 - Deployed on Vercel
 - Available at: https://imrizwan.com
