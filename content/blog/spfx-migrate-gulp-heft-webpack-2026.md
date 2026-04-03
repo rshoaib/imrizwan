@@ -1,5 +1,5 @@
 ---
-title: "SPFx Migration Guide: Gulp to Heft & Webpack (2026 Guide)"
+title: "Migrate SPFx from Gulp to Heft & Webpack — Step-by-Step (2026)"
 slug: spfx-migrate-gulp-heft-webpack-2026
 excerpt: "Speed up your SharePoint Framework (SPFx) builds by 300%. The definitive 2026 migration guide from legacy Gulp to Microsoft Heft."
 date: "2026-03-13"
