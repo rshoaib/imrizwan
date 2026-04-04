@@ -30,6 +30,7 @@ export default function Footer() {
           <div className="footer__col">
             <p className="footer__col-title">Projects</p>
             <div className="footer__col-links">
+              <a href="https://tinypdftools.com" target="_blank" rel="noopener noreferrer" className="footer__link">PDF Tools</a>
               <a href="https://dailysmartcalc.com" target="_blank" rel="noopener noreferrer" className="footer__link">SmartCalc</a>
               <a href="https://mycalcfinance.com" target="_blank" rel="noopener noreferrer" className="footer__link">Finance Calculators</a>
               <a href="https://onlineimageshrinker.com" target="_blank" rel="noopener noreferrer" className="footer__link">Image Shrinker</a>
