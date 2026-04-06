@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'M365 Challenge Mode | Interactive Developer Quiz | ImRizwan',
     description: 'Test your Microsoft 365, SharePoint, and Power Platform knowledge with this gamified developer quiz. Review detailed explanations after you finish!',
     keywords: 'Microsoft 365 quiz, SharePoint quiz, Power Platform questions, SPFx challenge, developer quiz',
+    alternates: { canonical: '/tools/m365-challenge' },
     openGraph: {
         title: 'M365 Challenge Mode | Developer Quiz',
         description: 'Test your Microsoft 365, SharePoint, and Power Platform knowledge with this gamified developer quiz.',

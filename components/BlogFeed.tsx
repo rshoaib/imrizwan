@@ -127,7 +127,7 @@ export default function BlogFeed({
                 {post.tags && post.tags.length > 0 && (
                   <div className="blog-feed__tags">
                     {post.tags.slice(0, 3).map((tag) => (
-                      <Link href={`/blog?tag=${tag}`} key={tag} className="blog-feed__tag">
+                      <Link href={`/blog?tag=${tag}`} key={tag} className="blog-feed__tag" rel="nofollow">
                         #{tag}
                       </Link>
                     ))}

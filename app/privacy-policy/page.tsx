@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Privacy Policy - Mentalism Mastery',
   description: 'Privacy Policy for Mentalism Mastery mobile application by OVC Tech.',
+  alternates: { canonical: '/privacy-policy' },
 }
 
 export default function PrivacyPolicyPage() {

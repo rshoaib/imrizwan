@@ -48,7 +48,7 @@ export default function BlogPostClient({
         {post.tags && post.tags.length > 0 && (
           <div className="post__tags">
             {post.tags.map((tag) => (
-              <Link href={`/blog?tag=${tag}`} key={tag} className="tag-pill">
+              <Link href={`/blog?tag=${tag}`} key={tag} className="tag-pill" rel="nofollow">
                 #{tag}
               </Link>
             ))}

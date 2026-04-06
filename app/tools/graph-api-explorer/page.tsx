@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Microsoft Graph API Explorer Lite | Mock Sandbox | ImRizwan',
     description: 'An interactive, no-auth sandbox to explore popular Microsoft Graph API endpoints. View required M365 permissions and mock JSON responses.',
     keywords: 'Microsoft Graph API, Graph Explorer, Sandbox, Microsoft 365, M365 developer, SharePoint API, Office 365 API, Entra ID API',
+    alternates: { canonical: '/tools/graph-api-explorer' },
     openGraph: {
         title: 'Graph API Explorer Lite - Quick Reference',
         description: 'Explore common Microsoft Graph endpoints, view required application/delegated permissions, and see realistic mock JSON responses.',
