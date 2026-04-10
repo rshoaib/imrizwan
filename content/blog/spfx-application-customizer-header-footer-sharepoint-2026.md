@@ -16,6 +16,7 @@ tags:
   - "SharePoint Online"
 ---
 
+
 ## The Problem SharePoint Add-in Retirement Created
 
 On April 2, 2026, Microsoft officially retired SharePoint Add-ins. Every SharePoint Add-in stopped working across all tenants — no extensions, no exceptions. ([Microsoft Learn](https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/retirement-announcement-for-add-ins))
@@ -23,8 +24,6 @@ On April 2, 2026, Microsoft officially retired SharePoint Add-ins. Every SharePo
 If your organization had a custom branded header or footer deployed via an Add-in, it stopped rendering that day. The only supported replacement is a **SharePoint Framework Application Customizer extension** — and if you have not migrated yet, this guide will walk you through building one from scratch in 2026.
 
 Even if you were never on Add-ins, Application Customizers are the right tool whenever you need something to appear on every page across your SharePoint tenant: a cookie consent banner, a global navigation bar, an emergency announcement strip, or a branded footer with links and contact information.
-
----
 
 ## Key Takeaways
 
@@ -34,8 +33,6 @@ Even if you were never on Add-ins, Application Customizers are the right tool wh
 - The **April 2026 SharePoint Add-in retirement** deadline means any organization still relying on Add-in-based branding needs to migrate now.
 - In SPFx 1.22+, new extension projects use the **Heft build system** instead of Gulp. The scaffolding and build commands changed.
 - **Field Customizers** are being retired on June 30, 2026 — but Application Customizers and Command Sets are unaffected and fully supported.
-
----
 
 ## What Is an SPFx Application Customizer?
 
@@ -57,8 +54,6 @@ The two available placeholders are:
 
 You get a `<div>` node to render whatever HTML you want into both placeholders. React, plain HTML, or a third-party framework — all valid.
 
----
-
 ## SPFx Application Customizer in Practice: What Organizations Build
 
 Tens of millions of users interact with custom SPFx solutions on a daily basis in Microsoft 365. ([Microsoft 365 Developer Blog](https://devblogs.microsoft.com/microsoft365dev/sharepoint-framework-spfx-roadmap-update-march-2026/)) Application Customizers are among the most commonly deployed extension types because the use cases are universal:
@@ -77,8 +72,6 @@ Tens of millions of users interact with custom SPFx solutions on a daily basis i
 - Accessibility statement link
 
 Any of these would previously have been deployed as a SharePoint Add-in or a JavaScript injection via a user custom action. Both approaches are now retired. Application Customizer is the supported path forward.
-
----
 
 ## Prerequisites
 
@@ -110,8 +103,6 @@ npm install -g @microsoft/generator-sharepoint@1.23.0
 ```
 
 If you have already migrated to the new SPFx CLI preview (introduced in SPFx 1.23), you can use that instead. See the [Yeoman to SPFx CLI migration guide](/blog/migrate-yeoman-to-new-spfx-cli) for the new workflow.
-
----
 
 ## Scaffold the Application Customizer
 
@@ -153,8 +144,6 @@ contoso-header-footer/
 ```
 
 The `rig.json` file is new in the Heft-based toolchain — it points to `@microsoft/spfx-web-build-rig` and replaces the old `gulpfile.js`.
-
----
 
 ## Writing the Application Customizer
 
@@ -248,8 +237,6 @@ export default class ContosoHeaderFooterApplicationCustomizer
 
 SharePoint renders placeholders lazily. On some pages, `PlaceholderName.Top` or `PlaceholderName.Bottom` may not be available when `onInit` first runs — they become available later during the page load cycle. Subscribing to `changedEvent` ensures your callback fires again whenever the placeholder provider's state changes, so your header/footer always renders even on complex page layouts.
 
----
-
 ## Passing Properties from the Tenant Wide Extensions List
 
 Notice the interface `IContosoHeaderFooterApplicationCustomizerProperties`. Properties declared here can be passed as JSON via the `ClientSideComponentProperties` column in the Tenant Wide Extensions list. This allows site collection administrators to customize the header message per site without changing the code.
@@ -264,8 +251,6 @@ Example JSON you would put in `ClientSideComponentProperties`:
 ```
 
 This pattern keeps your extension generic while allowing per-tenant or per-site configuration. The same compiled `.sppkg` runs everywhere; only the properties differ.
-
----
 
 ## Styling Without Violating SharePoint's CSP
 
@@ -286,8 +271,6 @@ this._headerPlaceholder.domElement.innerHTML = `
 ```
 
 SPFx compiles SCSS modules into hashed class names at build time and injects a `<link>` tag into the page — which is CSP-compliant. Never inject a `<style>` block directly into `domElement.innerHTML`.
-
----
 
 ## Build and Package
 
@@ -316,8 +299,6 @@ gulp package-solution --ship
 ```
 
 This generates a `.sppkg` file in `sharepoint/solution/`. The separation between the build step (now Heft) and the packaging step (still a Gulp task for now) is temporary — SPFx 1.24 will complete the migration. See the [Heft migration guide](/blog/spfx-migrate-gulp-heft-webpack-2026) for full details.
-
----
 
 ## Deploying to SharePoint Online
 
@@ -369,8 +350,6 @@ Open `config/package-solution.json` and confirm this flag is set:
 
 Setting `skipFeatureDeployment: true` is what enables tenant-wide deployment. Without it, site owners would need to manually install the app on each site.
 
----
-
 ## Tenant Wide Extensions List: Controlling Scope
 
 After deployment, your Application Customizer appears in the **Tenant Wide Extensions** list at your App Catalog URL:
@@ -392,8 +371,6 @@ Each list item represents one active extension registration. The key columns are
 | **ClientSideComponentProperties** | JSON properties passed to your customizer |
 
 **Targeting specific site templates** is useful when you want different headers for communication sites versus team sites. Set `TenantWideExtensionWebTemplate` to `SITEPAGEPUBLISHING#0` for communication sites only, or `GROUP#0` for Microsoft 365 group-connected team sites only.
-
----
 
 ## Debugging the Application Customizer
 
@@ -439,8 +416,6 @@ private _renderPlaceholders(): void {
 }
 ```
 
----
-
 ## Connecting to Graph API Data
 
 One of the most powerful Application Customizer patterns is showing the current user's information in the header. Since you have access to `this.context.msGraphClientFactory`, you can call the Microsoft Graph API directly from your customizer — the same way you would in an SPFx web part.
@@ -464,8 +439,6 @@ Refer to the [Graph API in SPFx user profiles guide](/blog/microsoft-graph-api-s
 
 For advanced scenarios like reading SharePoint list data for dynamic navigation, also see [PnP JS in SPFx](/blog/spfx-pnp-js-sharepoint-data) for a cleaner data-access layer.
 
----
-
 ## Upgrading Existing Add-in-Based Headers
 
 If you are migrating from a retired SharePoint Add-in, the pattern is:
@@ -476,8 +449,6 @@ If you are migrating from a retired SharePoint Add-in, the pattern is:
 4. Deploy via the App Catalog and retire the old custom action
 
 The key difference from user custom actions (which injected `<script>` tags directly into the page) is that your customizer code runs inside the SPFx bundle, which is loaded and executed by the SPFx runtime in a sandboxed context. This is more secure and compliant with SharePoint's CSP enforcement.
-
----
 
 ## FAQ: SPFx Application Customizer
 
@@ -500,8 +471,6 @@ No. SPFx extensions — including Application Customizers — only work on **mod
 **Will the Field Customizer retirement on June 30, 2026 affect Application Customizers?**
 
 No. The retirement announced by Microsoft affects only **Field Customizers** — the extension type used to render custom column values in list views. Application Customizers, Command Set extensions, and Form Customizers are explicitly excluded from this retirement and remain fully supported. ([Voitanos — Field Customizer Retirement](https://www.voitanos.io/blog/sharepoint-framework-field-customizer-retirement/))
-
----
 
 ## What Comes Next for SPFx Extensions
 
