@@ -1,10 +1,11 @@
 ---
-title: "Power Automate + AI Builder: Intelligent Document Processing Complete Guide"
+title: "Power Automate + AI Builder: Document Processing Guide"
 slug: power-automate-ai-builder-intelligent-document-processing
-excerpt: "Build document processing pipelines with Power Automate and AI Builder — extract data from invoices, receipts, and forms. No code required."
+excerpt: "Extract data from invoices, receipts, and forms with Power Automate and AI Builder — no code required."
 date: "2026-03-03"
 displayDate: "March 3, 2026"
 readTime: "12 min read"
+image: "/images/blog/power-automate-sharepoint-workflows.png"
 category: "Power Platform"
 tags:
   - "power-automate"

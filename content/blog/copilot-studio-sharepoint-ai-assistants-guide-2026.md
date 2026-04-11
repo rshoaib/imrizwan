@@ -1,5 +1,5 @@
 ---
-title: "Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)"
+title: "Copilot Studio + SharePoint: Build 3 AI Assistants"
 slug: copilot-studio-sharepoint-ai-assistants-guide-2026
 excerpt: "Create AI assistants that answer from SharePoint docs and automate workflows with Microsoft Copilot Studio. No coding required."
 date: "2026-03-05"

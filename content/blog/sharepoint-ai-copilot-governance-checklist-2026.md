@@ -20,7 +20,7 @@ tags:
 
 Microsoft Copilot Studio and SharePoint Embedded have completely democratized AI development in the enterprise. In 2026, citizen developers can deploy Retrieval-Augmented Generation (RAG) applications connected directly to your SharePoint tenant in minutes. 
 
-While this rapid innovation is incredible for productivity, it is a nightmare for enterprise data governance. If your organization lacks a strict "Governance as Code" strategy, you are highly vulnerable to AI oversharing, shadow data ingestion, and compliance breaches.
+While this rapid innovation is incredible for productivity, it is a nightmare for enterprise data governance. If your organization lacks a strict "Governance as Code" strategy, you are highly vulnerable to AI oversharing, shadow data ingestion, and compliance breaches. For a broader look at governance beyond SharePoint, see our [Microsoft Copilot Governance Best Practices](/blog/microsoft-copilot-governance-best-practices-2026) guide.
 
 In this guide, I will walk you through the essential developer checklist for securing SharePoint-powered AI assistants, enforcing API limits, and architecting a governed M365 environment.
 
@@ -38,7 +38,7 @@ You must move to a model where AI agents are granted access exclusively to the s
 - [ ] Audit all Azure AD App Registrations associated with AI tools (Copilot Studio, custom LangChain apps).
 - [ ] Revoke `Sites.Read.All` and `Files.Read.All` Application permissions.
 - [ ] Implement `Sites.Selected` permissions.
-- [ ] Use PnP PowerShell to grant explicit `read` access to the required site collections.
+- [ ] Use [PnP PowerShell](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) to grant explicit `read` access to the required site collections.
 
 ```powershell
 # Example: Granting an AI App access to a specific Knowledge Base site
@@ -112,4 +112,9 @@ Before you deploy your next AI project, take a spin through the **[M365 Challeng
 ## Summary
 
 The rush to implement AI must be balanced with strict, automated governance. By eliminating Application-level Read.All permissions, architecting Safe Ingestion Zones, respecting Purview labels, and routing through Azure APIM, you can deliver the massive productivity benefits of Copilot and custom LLMs without compromising your enterprise data security.
+
+### You Might Also Like
+
+- [Enterprise Governance Checklist for SharePoint and AI Developers](/blog/enterprise-governance-sharepoint-ai-developer-checklist) — A developer-focused companion covering code-level governance patterns and CI/CD enforcement.
+- [SharePoint Online Permissions Complete Guide](/blog/sharepoint-online-permissions-complete-guide) — Deep dive into the permission model that underpins everything discussed in this article.
 

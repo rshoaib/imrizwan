@@ -1,5 +1,5 @@
 ---
-title: "25 PnP PowerShell Scripts Every SharePoint Admin Needs (2026)"
+title: "25 PnP PowerShell Scripts Every SharePoint Admin Needs"
 slug: pnp-powershell-sharepoint-online-scripts-admin-guide-2026
 excerpt: "Copy-paste PnP PowerShell scripts for SharePoint Online — bulk permissions, site provisioning, and reporting."
 date: "2026-04-03"

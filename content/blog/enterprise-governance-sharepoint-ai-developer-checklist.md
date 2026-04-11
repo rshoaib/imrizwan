@@ -1,5 +1,5 @@
 ---
-title: "Enterprise Governance for SharePoint-Powered AI: A Developer's Checklist (2026)"
+title: "Enterprise Governance for SharePoint-Powered AI: Checklist"
 slug: enterprise-governance-sharepoint-ai-developer-checklist
 excerpt: "Copilot amplifies bad governance. Get the developer checklist with PowerShell scripts and sensitivity labels to make SharePoint AI-ready."
 date: "2026-03-22"

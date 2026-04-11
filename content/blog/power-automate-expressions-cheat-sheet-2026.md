@@ -1,5 +1,5 @@
 ---
-title: "Power Automate Expressions Cheat Sheet: 50+ Functions with Examples (2026)"
+title: "Power Automate Expressions Cheat Sheet: 50+ Functions"
 slug: power-automate-expressions-cheat-sheet-2026
 excerpt: "Quick-reference Power Automate expressions cheat sheet — string, date, array, and logic functions with real examples."
 date: "2026-04-03"

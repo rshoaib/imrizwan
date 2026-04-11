@@ -1,5 +1,5 @@
 ---
-title: "Demystifying the Microsoft Graph API: A Complete Guide to OAuth 2.0 and App Permissions"
+title: "Microsoft Graph API: OAuth 2.0 and App Permissions Guide"
 slug: microsoft-graph-api-oauth2-guide
 excerpt: "Learn Microsoft Graph API authentication — OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire access tokens securely."
 date: "2026-03-30"
@@ -21,7 +21,7 @@ If you are building applications that interact with Exchange Online emails, Shar
 
 However, the number one roadblock developers face isn't mastering the REST endpoints—it is getting through the front door. Microsoft's authentication mechanisms are notoriously complex, heavily relying on the OAuth 2.0 protocol and robust Entra ID (formerly Azure AD) App Registrations.
 
-In this guide, we are going to demystify Graph API authentication, focusing specifically on how to obtain your first bearer token whether you are writing a background daemon service or an interactive single-page application.
+In this guide, we are going to demystify Graph API authentication, focusing specifically on how to obtain your first bearer token whether you are writing a background daemon service or an interactive single-page application. If you are brand new to Graph, start with our [Getting Started with Microsoft Graph API](/blog/microsoft-graph-api-getting-started) overview first.
 
 ## Step 1: Entra ID App Registration
 
@@ -41,7 +41,7 @@ This is where 80% of developers get confused. Microsoft Graph requires explicit 
 
 ### Delegated Permissions (On Behalf of a User)
 Use Delegated permissions when your application has a signed-in user. For example, a React SPA where an employee logs in and views *their own* calendar. The application acts strictly on behalf of the signed-in user and cannot access data the user themselves cannot access.
-*   **Best for:** Web apps, mobile apps, SPAs, SPFx web parts.
+*   **Best for:** Web apps, mobile apps, SPAs, SPFx web parts. For a hands-on example, see how to [consume Graph API data inside an SPFx web part](/blog/microsoft-graph-api-spfx-user-profiles-teams).
 *   **Flow:** Authorization Code Flow, Implicit Grant (deprecated), or On-Behalf-Of Flow.
 
 ### Application Permissions (Daemon / Background Services)
@@ -123,4 +123,9 @@ async function fetchUsers(token) {
 ## Conclusion
 
 The Microsoft Graph API is incredibly powerful, but unlocking it requires a solid understanding of Microsoft Entra ID and OAuth 2.0 flows. By strictly separating your understanding of Delegated vs. Application permissions and leveraging the correct credential flows, you can stop fighting `401` errors and start building robust M365 integrations.
+
+### Related Reading
+
+- [Microsoft Graph API Authentication Guide](/blog/microsoft-graph-api-authentication-guide) — A broader look at authentication patterns beyond OAuth 2.0, including certificate-based auth and managed identities.
+- [Building a Copilot Declarative Agent with Teams Toolkit](/blog/building-copilot-declarative-agents-teams-toolkit) — Once you have authentication mastered, learn how to build AI agents that leverage Graph API data.
 

@@ -5,6 +5,7 @@ excerpt: "Create a custom AI chatbot that securely answers questions based exact
 date: "2026-03-04"
 displayDate: "March 4, 2026"
 readTime: "16 min read"
+image: "/images/blog/copilot-studio-sharepoint-guide.png"
 category: "Microsoft 365"
 tags:
   - "copilot-studio"

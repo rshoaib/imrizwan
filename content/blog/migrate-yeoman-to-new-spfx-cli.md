@@ -1,5 +1,5 @@
 ---
-title: "The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026"
+title: "Migrate from Yeoman to the New SPFx CLI"
 slug: migrate-yeoman-to-new-spfx-cli
 excerpt: "Migrate legacy SPFx projects from Yeoman to the new Vite-based SPFx CLI pipeline for 4x faster builds in under 15 minutes."
 date: "2026-03-23"

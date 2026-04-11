@@ -1,10 +1,11 @@
 ---
 title: "Building Viva Connections Adaptive Card Extensions (ACEs)"
 slug: building-viva-connections-adaptive-card-extensions-spfx
-excerpt: "Create interactive dashboard widgets for Microsoft Viva Connections using SPFx and adaptive cards without writing a dedicated API."
+excerpt: "Build interactive Viva Connections dashboard widgets with SPFx adaptive cards — no dedicated API needed."
 date: "2026-03-02"
 displayDate: "March 2, 2026"
 readTime: "14 min read"
+image: "/images/blog/viva-connections-ace-guide.png"
 category: "SPFx"
 tags:
   - "spfx"

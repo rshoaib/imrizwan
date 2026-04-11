@@ -1,7 +1,7 @@
 ---
 title: "Power Automate: How to Style HTML Tables with CSS"
 slug: power-automate-html-table-styling-css
-excerpt: "Stop sending ugly emails! Learn to apply custom CSS to the Power Automate Create HTML Table action and use our free generator to style data instantly."
+excerpt: "Style Power Automate HTML tables with custom CSS. Free generator included to create polished email tables instantly."
 date: "2026-03-13"
 displayDate: "March 13, 2026"
 readTime: "5 min read"

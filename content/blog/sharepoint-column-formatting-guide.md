@@ -5,6 +5,7 @@ excerpt: "Transform plain columns into status badges and progress bars using JSO
 date: "2026-02-14"
 displayDate: "February 14, 2026"
 readTime: "7 min read"
+image: "/images/blog/sharepoint-list-formatting-json-guide.png"
 category: "SharePoint"
 tags:
   - "sharepoint"

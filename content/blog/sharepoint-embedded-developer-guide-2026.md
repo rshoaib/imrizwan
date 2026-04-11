@@ -1,7 +1,7 @@
 ---
-title: "SharePoint Embedded Developer Guide 2026: Build Document Apps on Microsoft 365"
+title: "SharePoint Embedded: Build Document Apps on Microsoft 365"
 slug: sharepoint-embedded-developer-guide-2026
-excerpt: "A practical 2026 guide to SharePoint Embedded — create containers, read and write files via Microsoft Graph, integrate Power Automate, migrate content, and connect AI agents."
+excerpt: "2026 guide to SharePoint Embedded — create containers, manage files via Graph, and connect Power Automate and AI agents."
 date: "2026-04-11"
 displayDate: "April 11, 2026"
 readTime: "15 min read"

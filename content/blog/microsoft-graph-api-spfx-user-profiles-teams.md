@@ -5,6 +5,7 @@ excerpt: "Learn how to securely authenticate and fetch Microsoft 365 user profil
 date: "2026-03-01"
 displayDate: "March 1, 2026"
 readTime: "12 min read"
+image: "/images/blog/microsoft-graph-api-examples.png"
 category: "SPFx"
 tags:
   - "spfx"

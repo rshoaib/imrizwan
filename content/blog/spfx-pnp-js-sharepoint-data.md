@@ -1,10 +1,11 @@
 ---
-title: "Using PnP JS in SPFx: The Easiest Way to Read SharePoint Data"
+title: "PnP JS in SPFx: The Easiest Way to Read SharePoint Data"
 slug: spfx-pnp-js-sharepoint-data
 excerpt: "PnP JS simplifies SharePoint REST API calls. Query lists, add items, and batch requests with clean TypeScript."
 date: "2026-02-10"
 displayDate: "February 10, 2026"
 readTime: "7 min read"
+image: "/images/blog/sharepoint-rest-api-cheatsheet.png"
 category: "SPFx"
 tags:
   - "spfx"

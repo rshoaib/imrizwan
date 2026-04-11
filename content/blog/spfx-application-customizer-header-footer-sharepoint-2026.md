@@ -1,7 +1,7 @@
 ---
-title: "SPFx Application Customizer: Build Global Headers and Footers for SharePoint Online (2026)"
+title: "SPFx Application Customizer: Build Global Headers & Footers"
 slug: spfx-application-customizer-header-footer-sharepoint-2026
-excerpt: "Add a branded global header and footer to every modern SharePoint page using an SPFx Application Customizer extension — with tenant-wide deployment via PnP PowerShell."
+excerpt: "Build a global header and footer for SharePoint with an SPFx Application Customizer — includes tenant-wide deployment."
 date: "2026-04-10"
 displayDate: "April 10, 2026"
 readTime: "14 min read"

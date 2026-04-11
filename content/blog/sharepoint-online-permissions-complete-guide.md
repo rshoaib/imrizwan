@@ -1,10 +1,11 @@
 ---
-title: "SharePoint Online Permissions: The Complete Security Guide for 2026"
+title: "SharePoint Online Permissions: Security Guide"
 slug: sharepoint-online-permissions-complete-guide
 excerpt: "Master SharePoint Online permissions — permission levels, group access, external sharing, and PnP PowerShell audit scripts with a free tool."
 date: "2026-03-04"
 displayDate: "March 4, 2026"
 readTime: "15 min read"
+image: "/images/blog/sharepoint-permissions-guide.png"
 category: "SharePoint"
 tags:
   - "sharepoint"

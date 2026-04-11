@@ -10,9 +10,9 @@ export default async function NotFound() {
   return (
     <div className="container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '5rem', fontWeight: 800, lineHeight: 1 }} className="gradient-text">
+        <div style={{ fontSize: '5rem', fontWeight: 800, lineHeight: 1 }} className="gradient-text" aria-hidden="true">
           404
-        </h1>
+        </div>
         <h2 style={{ fontSize: '1.5rem', marginTop: '0.5rem', color: 'var(--text-primary)' }}>
           Page Not Found
         </h2>

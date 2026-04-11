@@ -1,5 +1,5 @@
 ---
-title: "Modern SharePoint Provisioning & Automation in 2026: A Developer's Guide"
+title: "Modern SharePoint Provisioning & Automation Guide"
 slug: sharepoint-provisioning-automation-guide-2026
 excerpt: "Modern SharePoint site provisioning with PnP PowerShell, Site Scripts, and REST API to build AI-ready, flat architecture sites."
 date: "2026-03-25"

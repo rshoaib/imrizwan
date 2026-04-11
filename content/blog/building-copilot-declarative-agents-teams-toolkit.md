@@ -1,5 +1,5 @@
 ---
-title: "Build Declarative Agents for Microsoft 365 Copilot with Teams Toolkit (2026)"
+title: "Build Declarative Agents for M365 Copilot with Teams Toolkit"
 slug: building-copilot-declarative-agents-teams-toolkit
 excerpt: "Step-by-step guide to building declarative agents for M365 Copilot using Teams Toolkit, API plugins, and Graph connectors."
 date: "2026-04-03"
