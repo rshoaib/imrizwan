@@ -1,7 +1,7 @@
 ---
 title: "Power Automate: How to Style HTML Tables with CSS"
 slug: power-automate-html-table-styling-css
-excerpt: "Style Power Automate HTML tables with custom CSS. Free generator included to create polished email tables instantly."
+excerpt: "Style Power Automate HTML tables with custom CSS for professional-looking emails. Free generator included to create polished email tables without writing code."
 date: "2026-03-13"
 displayDate: "March 13, 2026"
 readTime: "5 min read"
@@ -44,6 +44,8 @@ Once your table is created, add a **Compose** action. Rename it to "Compose - CS
 
 In the inputs, you need to write standard CSS wrapped in `<style>` tags. Because Power Automate tables use standard HTML elements (`<table>`, `<th>`, `<tr>`, `<td>`), you target those tags directly.
 
+### Basic Professional Table Styling
+
 An example of a simple CSS block:
 
 ```html
@@ -51,19 +53,81 @@ An example of a simple CSS block:
   table {
     border-collapse: collapse;
     width: 100%;
-    font-family: Arial, sans-serif;
+    font-family: Calibri, Arial, sans-serif;
+    max-width: 600px;
   }
   th {
     background-color: #4f46e5;
     color: white;
     padding: 12px;
     text-align: left;
+    font-weight: bold;
+    border: 1px solid #3730a3;
   }
   td {
     border-bottom: 1px solid #e2e8f0;
     padding: 10px;
+    border-left: 1px solid #e2e8f0;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
   }
 </style>
+```
+
+### Responsive & Email-Safe CSS Patterns
+
+Email clients (especially Outlook) have limited CSS support. Here's a responsive pattern that works reliably across all email clients:
+
+```html
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Calibri, Segoe UI, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  th {
+    background-color: #1f2937;
+    color: #ffffff;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #111827;
+    font-weight: bold;
+  }
+  td {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+  }
+  tr:nth-child(odd) td {
+    background-color: #ffffff;
+  }
+  tr:nth-child(even) td {
+    background-color: #f3f4f6;
+  }
+  /* Outlook compatibility */
+  mso-table-lspace: 0pt;
+  mso-table-rspace: 0pt;
+</style>
+```
+
+### Conditional Row Coloring by Status
+
+To highlight specific rows based on their content (e.g., red for "Failed", green for "Approved"), you need to use Power Automate expressions to inject inline styles:
+
+```html
+<style>
+  .status-failed td { background-color: #fee2e2; }
+  .status-approved td { background-color: #dcfce7; }
+  .status-pending td { background-color: #fef3c7; }
+</style>
+```
+
+Then in your "Apply to each" loop that generates the table rows, conditionally assign the class:
+
+```
+<tr class="@{if(equals(item()['Status'], 'Failed'), 'status-failed', 'status-approved')}">
 ```
 
 ---
@@ -97,7 +161,7 @@ The final step is to merge your CSS and your Table in the email body.
 
 When the email arrives, Outlook (or Gmail/Teams) will read the hidden `<style>` block and apply your beautiful styling to the table!
 
-> **Want to do more with SharePoint data?** Read our guide on [Power Automate + SharePoint: 7 Document Workflows That Save Hours](/blog/power-automate-sharepoint-document-workflows-2026) to see how sending styled reports fits into larger enterprise solutions.
+> **Want to do more with SharePoint data?** Read our guide on [Power Automate + SharePoint: 7 Document Workflows That Save Hours](/blog/power-automate-document-approval) to see how sending styled reports fits into larger enterprise solutions.
 
 ---
 
@@ -110,5 +174,25 @@ Yes! Both Outlook desktop/web and Microsoft Teams support inline `<style>` tags 
 Ensure that your CSS targets the `table`, `th`, and `td` elements specifically, and double-check that you switched your Email action to **HTML View (`</>`)** before inserting the dynamic content.
 
 ### Can I conditionally format rows (e.g., turn a row red if "Status" is "Failed")?
-The base "Create HTML table" action does not support row-level conditional formatting natively. To achieve this, you must write a custom HTML loop using an "Apply to each" action and [Power Automate expressions](/blog/power-automate-expressions-cheat-sheet-2026) to inject `style="color:red"` on specific `<tr>` tags based on conditions.
+The base "Create HTML table" action does not support row-level conditional formatting natively. To achieve this, you must write a custom HTML loop using an "Apply to each" action and [Power Automate expressions](/blog/power-automate-expressions-cheat-sheet-2026) to inject `style="color:red"` on specific `<tr>` tags based on conditions. We showed an example above using CSS classes.
+
+### What if Outlook doesn't render my colors or borders?
+Outlook has notoriously limited CSS support. Stick to these Outlook-safe properties: `background-color`, `color`, `padding`, `border` (single pixel values only), `text-align`, `font-weight`, and `font-size`. Avoid: `border-radius`, `box-shadow`, `gradient`, `transform`, and `flexbox`. Test in both Outlook desktop and web versions.
+
+### Can I create multi-row headers or merged cells?
+Merged cells in HTML tables (`colspan`, `rowspan`) work in web browsers, but Outlook often breaks them. For robust email design, avoid merged cells entirely and instead use creative CSS or separate rows to achieve a similar visual effect.
+
+### How do I embed images or links in styled tables?
+You can embed `<img>` tags and `<a>` tags inside your table cells. However, in Outlook, images must be absolute URLs (not data URLs), and you need to set explicit width/height. Example:
+
+```html
+<td>
+  <img src="https://yourcdn.blob.core.windows.net/images/logo.png" 
+       width="100" height="40" alt="Logo" 
+       style="display:block;" />
+</td>
+<td>
+  <a href="https://yoursite.sharepoint.com" style="color:#0563c1;text-decoration:none;">View Report</a>
+</td>
+```
 

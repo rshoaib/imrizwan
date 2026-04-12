@@ -1,7 +1,7 @@
 ---
 title: "Power Automate + AI Builder: Document Processing Guide"
 slug: power-automate-ai-builder-intelligent-document-processing
-excerpt: "Extract data from invoices, receipts, and forms with Power Automate and AI Builder — no code required."
+excerpt: "Extract and process data from invoices, receipts, and forms automatically using Power Automate and AI Builder. No coding or model training required."
 date: "2026-03-03"
 displayDate: "March 3, 2026"
 readTime: "12 min read"
@@ -85,11 +85,18 @@ Add a Condition to route uncertain results for human review with a threshold of 
 
 ## Step 3: Train a Custom AI Model (Optional)
 
-For custom forms, insurance claims, or government applications:
+For custom forms, insurance claims, or government applications, custom models give you granular control:
 
 1. Go to make.powerapps.com → AI Builder → Explore
 2. Click Document processing → Create custom model
-3. Define fields, upload 5+ sample documents, tag fields, and train
+3. Define fields you want to extract (e.g., "Claim Amount", "Claimant Name", "Date of Incident")
+4. Upload 5+ representative sample documents
+5. Manually tag each field in the samples so the model learns patterns
+6. Train the model (typically takes 5-10 minutes)
+7. Test with a new document to validate accuracy
+8. Publish to make available in Power Automate
+
+The more varied your training samples, the better the model generalizes to new documents. A model trained only on scanned invoices will perform poorly on digital PDFs.
 
 ## Step 4: Production-Ready Patterns
 
@@ -118,9 +125,35 @@ AI Builder uses a credit-based consumption model. Prebuilt and custom models cos
 
 - Start with prebuilt models first
 - Use PDF format when possible
-- Set confidence thresholds per field
+- Set confidence thresholds per field (typically 0.8–0.95 depending on risk tolerance)
 - Build a feedback loop for accuracy tracking
 - Test with edge cases (multi-page, rotated, low-quality)
+- Monitor AI Builder credit consumption in production (prebuilt: ~1 credit per page; custom: similar)
+
+## FAQ: Confidence Scores & Production Deployment
+
+### What's a confidence score and how do I use it?
+AI Builder returns a confidence score (0–1) for each extracted field. A score of 0.95 means the model is 95% confident in the extraction. In your flow, check the confidence: if it's below your threshold (e.g., 0.85), flag the document for human review instead of auto-processing.
+
+Example condition in Power Automate:
+```
+if(greater(outputs('Extract information from invoices')['body/vendorName/confidence'], 0.85),
+  'Process automatically',
+  'Route for manual review'
+)
+```
+
+### How many documents do I need to train a custom model?
+Minimum: 5 samples. Recommended: 20–50 for good accuracy. The more varied (different layouts, quality levels, languages), the better the model generalizes.
+
+### What happens if AI Builder can't extract a field?
+The field will be returned as `null` or empty. Always wrap downstream actions in conditions that check for null values using `coalesce()` to provide sensible defaults.
+
+### Can I retrain a model after it's published?
+Yes. Upload new samples, re-tag, and retrain. Publish a new version. Power Automate always uses the latest published version by default.
+
+### How do I monitor production accuracy?
+Log every extraction result and the actual correct value to a SharePoint list. Periodically audit: compare AI-extracted values to ground truth. If accuracy drops below your threshold, trigger retraining.
 
 ## What's Next for AI Builder in 2026
 

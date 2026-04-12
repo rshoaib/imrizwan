@@ -1,7 +1,7 @@
 ---
 title: "Copilot Studio + SharePoint: Build 3 AI Assistants"
 slug: copilot-studio-sharepoint-ai-assistants-guide-2026
-excerpt: "Create AI assistants that answer from SharePoint docs and automate workflows with Microsoft Copilot Studio. No coding required."
+excerpt: "Build three AI assistants with Copilot Studio that answer questions directly from SharePoint document libraries. No coding required."
 date: "2026-03-05"
 displayDate: "March 5, 2026"
 readTime: "16 min read"
@@ -194,7 +194,7 @@ First, create a flow that the agent can call. This example creates a support tic
 
 7. Save and test the flow
 
-For more Power Automate patterns, see my [SharePoint document workflows guide](/blog/power-automate-sharepoint-document-workflows-2026).
+For more Power Automate patterns, see my [SharePoint document workflows guide](/blog/power-automate-document-approval).
 
 ### Step 2: Add the Action to Your Agent
 
@@ -314,5 +314,7 @@ You have seen how to build 3 types of agents — from a simple FAQ bot to a work
 - **Project manager bot** that searches project documentation and updates task lists
 - **Compliance checker** that answers regulatory questions from your legal library
 
-For more Microsoft 365 development, check out my guides on [building SPFx web parts](/blog/spfx-web-part-crud-operations-complete-guide-2026), [Microsoft Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026), and [Power Automate workflows](/blog/power-automate-sharepoint-document-workflows-2026). To extend your agents to Viva Connections dashboards, see my [Adaptive Card Extensions guide](/blog/viva-connections-adaptive-card-extensions-build-guide-2026).
+For more Microsoft 365 development, check out my guides on [building SPFx web parts](/blog/spfx-pnp-js-sharepoint-data), [Microsoft Graph API examples](/blog/microsoft-graph-api-getting-started), and [Power Automate workflows](/blog/power-automate-document-approval). To extend your agents to Viva Connections dashboards, see my [Adaptive Card Extensions guide](/blog/building-viva-connections-adaptive-card-extensions-spfx).
+
+Before deploying to production, review the [Enterprise Governance Checklist for SharePoint and AI](/blog/enterprise-governance-sharepoint-ai-developer-checklist) to ensure your AI assistants meet compliance requirements and follow best practices for data classification and access control.
 

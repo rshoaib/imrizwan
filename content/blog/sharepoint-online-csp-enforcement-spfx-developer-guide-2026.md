@@ -1,7 +1,7 @@
 ---
 title: "SharePoint Online CSP Enforcement: SPFx Developer Guide"
 slug: sharepoint-online-csp-enforcement-spfx-developer-guide-2026
-excerpt: "Fix SPFx web parts broken by SharePoint Content Security Policy enforcement — inline scripts, eval, and style violations."
+excerpt: "Fix SPFx web parts broken by Content Security Policy enforcement: resolve inline scripts, eval calls, and style violations with practical solutions."
 date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "10 min read"

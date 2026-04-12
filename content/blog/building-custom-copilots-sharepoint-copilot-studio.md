@@ -1,7 +1,7 @@
 ---
-title: "Train Microsoft Copilot Studio on SharePoint Document Libraries"
+title: "Build Custom Copilots for SharePoint"
 slug: building-custom-copilots-sharepoint-copilot-studio
-excerpt: "Create a custom AI chatbot that securely answers questions based exactly on your private SharePoint documents and PDFs."
+excerpt: "Step-by-step guide to building AI copilots with Copilot Studio grounded in SharePoint. Answers questions only from your org's documents securely."
 date: "2026-03-04"
 displayDate: "March 4, 2026"
 readTime: "16 min read"
@@ -128,7 +128,7 @@ Authentication ensures your copilot respects SharePoint permissions and accesses
 
 ### Set Up Azure App Registration
 
-1. Go to [portal.azure.com](https://portal.azure.com) → **Azure Active Directory** → **App registrations**
+1. Go to [portal.azure.com](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations**
 2. Click **New registration**
 3. Configure:
 
@@ -169,7 +169,7 @@ Back in Copilot Studio:
 3. Enter your App Registration details:
    - **Client ID:** (from step 4)
    - **Client Secret:** (from the secret you created)
-   - **Tenant ID:** (your Azure AD tenant ID)
+   - **Tenant ID:** (your Microsoft Entra ID tenant ID)
 
 ## Step 4: Build Custom Topics and Actions
 

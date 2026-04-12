@@ -1,5 +1,5 @@
 ---
-title: "SPFx and Fluent UI v9: Build Modern Web Parts with React Components v9"
+title: "SPFx and Fluent UI v9: Modern Web Parts with React"
 slug: spfx-fluent-ui-v9-web-parts-migration-guide-2026
 excerpt: "Learn how to use Fluent UI v9 (React Components) in SPFx web parts — from installation to theming, with practical migration tips from v8."
 date: "2026-04-12T10:00:00.000Z"

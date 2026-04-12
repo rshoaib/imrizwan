@@ -1,7 +1,7 @@
 ---
 title: "SharePoint Online Permissions: Security Guide"
 slug: sharepoint-online-permissions-complete-guide
-excerpt: "Master SharePoint Online permissions — permission levels, group access, external sharing, and PnP PowerShell audit scripts with a free tool."
+excerpt: "Master SharePoint permissions by understanding permission levels, groups, external sharing controls, and PnP PowerShell audit scripts for governance."
 date: "2026-03-04"
 displayDate: "March 4, 2026"
 readTime: "15 min read"
@@ -150,7 +150,7 @@ When John leaves, you remove him from the **group** once, and his access is revo
 
 ### SharePoint Groups vs. Entra ID (Azure AD) Groups
 
-| Feature | SharePoint Groups | Entra ID (Azure AD) Groups |
+| Feature | SharePoint Groups | Microsoft Entra ID Groups |
 |---------|------------------|---------------------------|
 | **Scope** | One site collection | Entire tenant |
 | **Management** | Site owners | IT admins / Entra portal |
@@ -158,7 +158,7 @@ When John leaves, you remove him from the **group** once, and his access is revo
 | **Dynamic membership** | No | Yes (with Entra ID P1) |
 | **Nested groups** | No | Yes |
 
-**Recommendation:** Use **Entra ID security groups** for organization-wide access patterns (e.g., "All Marketing Staff"), and **SharePoint groups** for site-specific roles (e.g., "Project Alpha Owners").
+**Recommendation:** Use **Microsoft Entra ID security groups** for organization-wide access patterns (e.g., "All Marketing Staff"), and **SharePoint groups** for site-specific roles (e.g., "Project Alpha Owners").
 
 ## External Sharing: Secure Collaboration
 
@@ -235,7 +235,7 @@ Export the results to CSV, cross-reference with your permission matrix, and iden
 1. **"Just give everyone Edit access"** — The fastest way to lose control of your content
 2. **Breaking inheritance on every folder** — Creates an unmanageable permission tree
 3. **Using "Full Control" as the default** — Violates least privilege and puts your site at risk
-4. **Forgetting to remove ex-employees** — Use automated lifecycle policies with Entra ID
+4. **Forgetting to remove ex-employees** — Use automated lifecycle policies with Microsoft Entra ID
 5. **Sharing entire sites with external users** — Share specific libraries or folders instead
 6. **Not documenting permission decisions** — You'll forget why you made them in 6 months
 7. **Ignoring the "Access Requests" queue** — Users will find workarounds (like sharing externally) if they can't get access through proper channels

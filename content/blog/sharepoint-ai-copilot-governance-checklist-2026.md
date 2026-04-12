@@ -29,13 +29,13 @@ In this guide, I will walk you through the essential developer checklist for sec
 When an AI agent connects to SharePoint via the Microsoft Graph API, it typically uses one of two authentication models: **Delegated** (running as the user) or **Application** (running as a service).
 
 ### The Danger of Application Permissions
-Historically, many developers registered Azure AD apps with `Sites.Read.All` Application permissions because it was easier than configuring granular access. In the era of AI, this is catastrophic. An AI assistant with `Sites.Read.All` can ingest Every. Single. Document. in your tenant, including confidential HR files and unreleased financial reports, and summarize them for any user who asks.
+Historically, many developers registered Microsoft Entra ID apps with `Sites.Read.All` Application permissions because it was easier than configuring granular access. In the era of AI, this is catastrophic. An AI assistant with `Sites.Read.All` can ingest Every. Single. Document. in your tenant, including confidential HR files and unreleased financial reports, and summarize them for any user who asks.
 
 ### The Fix: Resource-Specific Consent (RSC) & Sites.Selected
 You must move to a model where AI agents are granted access exclusively to the specific SharePoint sites they need. 
 
 **Implementation Checklist:**
-- [ ] Audit all Azure AD App Registrations associated with AI tools (Copilot Studio, custom LangChain apps).
+- [ ] Audit all Microsoft Entra ID App Registrations associated with AI tools (Copilot Studio, custom LangChain apps).
 - [ ] Revoke `Sites.Read.All` and `Files.Read.All` Application permissions.
 - [ ] Implement `Sites.Selected` permissions.
 - [ ] Use [PnP PowerShell](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) to grant explicit `read` access to the required site collections.

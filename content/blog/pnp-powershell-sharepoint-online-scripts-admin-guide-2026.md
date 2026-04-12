@@ -1,7 +1,7 @@
 ---
-title: "25 PnP PowerShell Scripts Every SharePoint Admin Needs"
+title: "PnP PowerShell: Version & Requirements Guide"
 slug: pnp-powershell-sharepoint-online-scripts-admin-guide-2026
-excerpt: "Copy-paste PnP PowerShell scripts for SharePoint Online — bulk permissions, site provisioning, and reporting."
+excerpt: "Master PnP.PowerShell requirements and latest version updates for 2026. Minimum PowerShell version specs, compatibility matrix, and setup guide."
 date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "14 min read"
@@ -42,7 +42,7 @@ Connect-PnPOnline -Url "https://contoso.sharepoint.com" `
     -CertificatePassword (ConvertTo-SecureString "YourPassword" -AsPlainText -Force)
 ```
 
-> **Tip:** For unattended scripts running on Azure Automation or scheduled tasks, always use certificate authentication. App-only access tokens are more secure and do not expire like user sessions. See our [provisioning automation guide](/blog/sharepoint-provisioning-automation-guide-2026) for the full Entra ID app registration walkthrough.
+> **Tip:** For unattended scripts running on Azure Automation or scheduled tasks, always use certificate authentication. App-only access tokens are more secure and do not expire like user sessions. See our [provisioning automation guide](/blog/sharepoint-provisioning-automation-guide-2026) for the full Microsoft Entra ID app registration walkthrough.
 
 ## Site Management
 

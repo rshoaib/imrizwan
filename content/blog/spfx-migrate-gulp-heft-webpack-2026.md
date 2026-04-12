@@ -1,7 +1,7 @@
 ---
 title: "Migrate SPFx from Gulp to Heft & Webpack"
 slug: spfx-migrate-gulp-heft-webpack-2026
-excerpt: "Speed up your SharePoint Framework (SPFx) builds by 300%. The definitive 2026 migration guide from legacy Gulp to Microsoft Heft."
+excerpt: "Migrate SPFx from Gulp to Heft build system and significantly speed up your builds. Complete step-by-step migration guide for SPFx projects in 2026."
 date: "2026-03-13"
 displayDate: "March 13, 2026"
 readTime: "6 min read"
@@ -243,7 +243,7 @@ Beyond the CLI preview, SPFx 1.23 includes:
 - **Clean npm audits** — Zero audit warnings in new projects (a huge win for enterprise compliance)
 - **Navigation Customizers preview** — Override top and side navigation elements (GA in 1.24)
 
-For building web parts with these new tools, see my [SPFx web part complete guide](/blog/spfx-web-part-crud-operations-complete-guide-2026). To leverage SPFx with Microsoft Graph, check out [10 practical Graph API examples](/blog/microsoft-graph-api-10-practical-examples-sharepoint-2026).
+For building web parts with these new tools, see my [SPFx web part complete guide](/blog/spfx-pnp-js-sharepoint-data). To leverage SPFx with Microsoft Graph, check out [10 practical Graph API examples](/blog/microsoft-graph-api-getting-started).
 
 ## Frequently Asked Questions
 
@@ -275,7 +275,7 @@ Convert simple tasks to npm `pre` and `post` scripts. For complex build customiz
 4. **Update CI/CD pipelines** — Replace gulp commands with npm scripts when you migrate
 5. **Plan your migration timeline** — Use the decision matrix above to prioritize
 
-For more SharePoint development guides, explore my articles on [building Viva Connections ACEs](/blog/viva-connections-adaptive-card-extensions-build-guide-2026), [Power Automate document workflows](/blog/power-automate-sharepoint-document-workflows-2026), and [Copilot Studio AI assistants](/blog/copilot-studio-sharepoint-ai-assistants-guide-2026).
+For more SharePoint development guides, explore my articles on [building Viva Connections ACEs](/blog/building-viva-connections-adaptive-card-extensions-spfx), [Power Automate document workflows](/blog/power-automate-document-approval), and [Copilot Studio AI assistants](/blog/copilot-studio-sharepoint-ai-assistants-guide-2026).
 
 
 ### Visualize Your Upgraded Architecture

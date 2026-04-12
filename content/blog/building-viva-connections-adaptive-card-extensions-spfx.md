@@ -1,7 +1,7 @@
 ---
 title: "Building Viva Connections Adaptive Card Extensions (ACEs)"
 slug: building-viva-connections-adaptive-card-extensions-spfx
-excerpt: "Build interactive Viva Connections dashboard widgets with SPFx adaptive cards — no dedicated API needed."
+excerpt: "Build interactive Viva Connections dashboard widgets with SPFx adaptive cards. Deploy real-time card extensions without a dedicated API."
 date: "2026-03-02"
 displayDate: "March 2, 2026"
 readTime: "14 min read"
@@ -47,22 +47,28 @@ Real-world ACE use cases that are trending right now:
 Set up your environment before starting:
 
 - **SPFx 1.19+** (ACE improvements require at minimum 1.18; 1.21+ recommended for latest ACE features)
-- **Node.js 18.x LTS** — use `nvm` to manage versions
-- **Yeoman + SPFx generator** (or the new `@microsoft/spfx-cli` for SPFx 1.23+)
+- **Node.js 20.x LTS** — use `nvm` to manage versions
+- **SPFx CLI** (`@microsoft/spfx-cli`) for SPFx 1.22+ (or Yeoman for legacy projects)
 - **Microsoft 365 developer tenant** with Viva Connections enabled
 - **Viva Connections license** — included in Microsoft 365 E3/E5, or available as standalone
 
 Verify your environment:
 
 ```bash
-node --version   # Should be 18.x
-npm --version    # Should be 9.x or higher
+node --version   # Should be 20.x
+npm --version    # Should be 10.x or higher
 yo --version     # Should be installed globally
 ```
 
 ## Step 1: Scaffold Your First ACE
 
-Create a new project using the SPFx generator:
+Create a new project using the SPFx CLI (recommended for SPFx 1.22+):
+
+```bash
+spfx new
+```
+
+Alternatively, for legacy projects, you can use Yeoman:
 
 ```bash
 yo @microsoft/sharepoint
@@ -156,6 +162,14 @@ You can design Adaptive Cards at [adaptivecards.io/designer](https://adaptivecar
 
 ## Step 5: Test in the Workbench
 
+For SPFx 1.22+, use Heft for development and in-page debugging:
+
+```bash
+heft build --watch
+```
+
+For legacy projects, use gulp:
+
 ```bash
 gulp serve
 ```
@@ -185,7 +199,13 @@ export class LeaveBalancePropertyPane {
 
 ## Step 7: Deploy to Viva Connections
 
-Build and package:
+Build and package. For SPFx 1.22+, use Heft equivalents:
+
+```bash
+heft build -p
+```
+
+For legacy projects, use gulp:
 
 ```bash
 gulp bundle --ship

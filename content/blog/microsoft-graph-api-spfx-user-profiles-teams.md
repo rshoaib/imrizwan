@@ -92,7 +92,7 @@ private async getGraphClient(): Promise<MSGraphClientV3> {
 }
 ```
 
-That's it. No OAuth configuration, no client secrets, no token management. SPFx handles the entire authentication flow for you using the current user's Azure AD session.
+That's it. No OAuth configuration, no client secrets, no token management. SPFx handles the entire authentication flow for you using the current user's Microsoft Entra ID session.
 
 ## Step 3: Fetch the Current User's Profile
 
@@ -174,21 +174,150 @@ private async searchSites(query: string): Promise<SiteResult[]> {
 }
 ```
 
+## Step 5.5: Check User Presence and Team Membership Queries
+
+Beyond basic team listings, you can query detailed team membership and user presence (online status):
+
+```typescript
+// Get user's presence status (online, away, busy, offline, etc.)
+private async getUserPresence(): Promise<string> {
+  const client = await this.getGraphClient();
+  const response = await client
+    .api('/me/presence')
+    .get();
+  return response.availability; // e.g., "Available", "Away"
+}
+
+// Get all members of a specific Team with detailed info
+private async getTeamMembers(teamId: string): Promise<TeamMember[]> {
+  const client = await this.getGraphClient();
+  const response = await client
+    .api(`/teams/${teamId}/members`)
+    .select('id,displayName,email,roles')
+    .get();
+  return response.value;
+}
+```
+
+Presence information is particularly useful for "online status indicators" in collaborative SPFx components.
+
 ## Step 6: Put It All Together in React
 
-Here's how to wire everything up in a React component using `useEffect` and `Promise.all` for parallel data loading.
+Here's how to wire everything up in a React component using `useEffect` and `Promise.all` for parallel data loading:
+
+```typescript
+import React, { useEffect, useState } from 'react';
+
+interface ComponentProps {
+  context: any; // Your SPFx web part context
+}
+
+const GraphDataComponent: React.FC<ComponentProps> = ({ context }) => {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadGraphData();
+  }, []);
+
+  const loadGraphData = async () => {
+    try {
+      const client = await context.msGraphClientFactory.getClient('3');
+      
+      // Load multiple requests in parallel
+      const [profile, teamsData] = await Promise.all([
+        client.api('/me').select('displayName,mail,jobTitle').get(),
+        client.api('/me/joinedTeams').select('id,displayName').get()
+      ]);
+
+      setUserProfile(profile);
+      setTeams(teamsData.value);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h2>{userProfile?.displayName}</h2>
+      <p>{userProfile?.jobTitle}</p>
+      <h3>Teams</h3>
+      <ul>
+        {teams.map(t => <li key={t.id}>{t.displayName}</li>)}
+      </ul>
+    </div>
+  );
+};
+```
 
 ## Error Handling Patterns
 
-Graph API calls can fail for many reasons. Use a `safeGraphCall` wrapper that catches 403 (permission denied), 404 (not found), and 429 (throttling) errors with appropriate fallbacks.
+Graph API calls can fail for many reasons. Use a `safeGraphCall` wrapper that catches 403 (permission denied), 404 (not found), and 429 (throttling) errors with appropriate fallbacks:
+
+```typescript
+private async safeGraphCall<T>(
+  apiCall: () => Promise<T>,
+  fallback: T
+): Promise<T> {
+  try {
+    return await apiCall();
+  } catch (error: any) {
+    if (error.status === 403) {
+      console.warn('Permission denied. Check admin consent.');
+    } else if (error.status === 429) {
+      console.warn('Throttled. Retry after delay.');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return this.safeGraphCall(apiCall, fallback);
+    }
+    return fallback;
+  }
+}
+```
 
 ## Batching Multiple Requests
 
-Use the `/$batch` endpoint to combine up to 20 Graph calls into a single request — significantly faster than sequential calls.
+Use the `/$batch` endpoint to combine up to 20 Graph calls into a single request — significantly faster than sequential calls:
+
+```typescript
+private async batchGraphCalls(): Promise<any[]> {
+  const client = await this.getGraphClient();
+  const requests = [
+    { id: '1', method: 'GET', url: '/me' },
+    { id: '2', method: 'GET', url: '/me/joinedTeams' },
+    { id: '3', method: 'GET', url: '/me/presence' }
+  ];
+
+  const response = await client
+    .api('/$batch')
+    .post({ requests });
+  return response.responses;
+}
+```
 
 ## PnP JS Alternative
 
 If you prefer a more developer-friendly wrapper, **PnP JS** provides a Graph client with chainable, typed methods and handles batching, caching, and error handling for you.
+
+## FAQ
+
+### What's the difference between `User.Read` and `User.ReadBasic.All`?
+`User.Read` is for reading the current signed-in user only. `User.ReadBasic.All` lets you read any user's basic profile (name, photo, job title) but not sensitive fields like email or phone.
+
+### Why am I getting 403 errors even with correct scopes?
+Admin consent hasn't been granted. A tenant administrator must approve your API permissions in the SharePoint Admin Center → API access page.
+
+### How do I cache Graph responses to avoid repeated calls?
+Store the response in React state with a timestamp. Before calling Graph again, check if the cached data is still fresh (e.g., less than 5 minutes old).
+
+### Can I batch more than 20 requests?
+No. The `/$batch` endpoint has a hard limit of 20 requests. For more, split into multiple batches or use sequential calls with throttling safeguards.
 
 ## Common Mistakes
 

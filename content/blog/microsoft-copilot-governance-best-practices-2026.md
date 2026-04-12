@@ -1,7 +1,7 @@
 ---
 title: "Microsoft Copilot Governance: 8 Controls Every Admin Needs"
 slug: microsoft-copilot-governance-best-practices-2026
-excerpt: "Implement these 8 governance controls before deploying M365 Copilot — permission audits, sensitivity labels, and usage monitoring."
+excerpt: "8 essential governance controls for M365 Copilot deployments: permission audits, sensitivity labels, content classification, and usage monitoring."
 date: "2026-04-01"
 displayDate: "April 2, 2026"
 readTime: "10 min read"
@@ -173,6 +173,6 @@ No. Microsoft 365 Copilot only indexes content in SharePoint Online (cloud). On-
 
 Microsoft Copilot is a powerful productivity tool — but it's only as safe as your governance framework. Before deploying, audit permissions, classify documents, restrict sensitive sites, and monitor usage. The organizations that get governance right will get the most value from Copilot. The ones that skip it will get a data leak.
 
-Start with the 8-point checklist above. If you need help with the technical implementation, check out our guides on [PnP PowerShell administration](/blog/pnp-powershell-25-scripts-every-admin-needs) and [SharePoint permissions](/blog/sharepoint-permissions-explained-guide).
+Start with the 8-point checklist above. If you need help with the technical implementation, check out our guides on [PnP PowerShell administration](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) and [SharePoint permissions](/blog/sharepoint-online-permissions-complete-guide). For hands-on guidance building the Copilot agents these governance controls apply to, see our [Building Custom Copilots for SharePoint with Copilot Studio](/blog/building-custom-copilots-sharepoint-copilot-studio) guide.
 
 *This article reflects Microsoft 365 Copilot capabilities as of Q1 2026. Features and admin controls may change with future updates.*

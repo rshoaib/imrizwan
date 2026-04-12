@@ -1,7 +1,7 @@
 ---
-title: "Microsoft Graph API Authentication Explained (OAuth 2.0)"
+title: "Master Graph API Authentication"
 slug: microsoft-graph-api-authentication-guide
-excerpt: "Confused by App Registrations and Bearer tokens? A zero-to-hero guide on securely authenticating with the Microsoft Graph API."
+excerpt: "Complete Microsoft Graph API authentication guide. App registration, OAuth flows, permissions, and MSAL setup with working code examples."
 date: "2026-03-27"
 displayDate: "March 29, 2026"
 readTime: "12 min read"
@@ -9,7 +9,7 @@ category: "Graph API"
 image: "/images/blog/graph-api-auth-hero.png"
 tags:
   - "Graph API"
-  - "Azure AD"
+  - "Entra ID"
   - "MSAL"
   - "Microsoft 365"
   - "Authentication"
@@ -27,7 +27,7 @@ This guide walks you through every auth pattern you'll need in 2026, with workin
 
 ## Step 1: Register Your Application in Azure AD
 
-Every Graph API call requires a registered application in Azure Active Directory (now Microsoft Entra ID).
+Every Graph API call requires a registered application in Microsoft Entra ID.
 
 ### How to Register
 
@@ -35,7 +35,7 @@ Every Graph API call requires a registered application in Azure Active Directory
 2. Set a **display name** (e.g., "Graph API Demo App").
 3. Choose a **supported account type**:
    - **Single tenant** — Only your organization (most common for enterprise apps).
-   - **Multitenant** — Any Azure AD organization.
+   - **Multitenant** — Any Microsoft Entra ID organization.
    - **Personal accounts** — Include Microsoft accounts (Outlook.com, Xbox).
 4. Set a **redirect URI** (for web apps: `http://localhost:3000/auth/callback`; for SPAs: `http://localhost:3000`).
 5. Click **Register**.
@@ -107,7 +107,7 @@ Team.ReadBasic.All     — Read Teams info
 
 ## Step 4: Authenticate with MSAL.js (Browser Apps)
 
-MSAL.js v2 ([@azure/msal-browser](https://github.com/AzureAD/microsoft-authentication-library-for-js)) is the recommended library for single-page applications.
+MSAL.js v3 ([@azure/msal-browser](https://github.com/AzureAD/microsoft-authentication-library-for-js)) is the recommended library for single-page applications.
 
 ### Installation
 
@@ -307,9 +307,9 @@ For browser apps (SPAs), you don't need either — MSAL.js uses the Authorizatio
 
 Access tokens are valid for **60-90 minutes** by default. MSAL handles token caching and automatic refresh via refresh tokens (which last up to 90 days). Always use `acquireTokenSilent` first to leverage cached tokens.
 
-### Can I use Graph API without Azure AD?
+### Can I use Graph API without Microsoft Entra ID?
 
-No. Microsoft Graph API exclusively uses Azure AD (Microsoft Entra ID) for authentication. There is no API key or basic auth option. Every call requires a valid OAuth 2.0 bearer token.
+No. Microsoft Graph API exclusively uses Microsoft Entra ID for authentication. There is no API key or basic auth option. Every call requires a valid OAuth 2.0 bearer token.
 
 ### How do I test Graph API calls without building an app?
 
@@ -317,6 +317,6 @@ Use the [Microsoft Graph Explorer](https://developer.microsoft.com/en-us/graph/g
 
 ---
 
-*For more practical Graph API examples, check out our [Microsoft Graph API: 10 Practical Examples](/blog/microsoft-graph-api-sharepoint-examples) guide. Need help with SPFx authentication specifically? See our [SPFx CRUD tutorial](/blog/building-spfx-hello-world-webpart) for the full setup.*
+*For more practical Graph API examples, check out our [Microsoft Graph API: 10 Practical Examples](/blog/microsoft-graph-api-spfx-user-profiles-teams) guide. Need help with SPFx authentication specifically? See our [SPFx CRUD tutorial](/blog/building-spfx-hello-world-webpart) for the full setup.*
 
-*This guide covers authentication patterns current as of March 2026 (MSAL.js v2.x, Microsoft Entra ID). Always reference the [official Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth/) for the latest updates.*
+*This guide covers authentication patterns current as of March 2026 (MSAL.js v3.x, Microsoft Entra ID). Always reference the [official Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth/) for the latest updates.*

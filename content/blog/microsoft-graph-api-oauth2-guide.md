@@ -10,7 +10,7 @@ image: "/images/blog/graph-api-hero.png"
 tags:
   - "graph-api"
   - "oauth2"
-  - "azure-ad"
+  - "entra-id"
   - "m365"
   - "authentication"
 ---
@@ -19,7 +19,7 @@ tags:
 
 If you are building applications that interact with Exchange Online emails, SharePoint document libraries, Teams messages, or Entra ID user profiles, you are using the Microsoft Graph API. It is the single unified endpoint (`https://graph.microsoft.com`) that exposes the entire Microsoft cloud ecosystem.
 
-However, the number one roadblock developers face isn't mastering the REST endpoints—it is getting through the front door. Microsoft's authentication mechanisms are notoriously complex, heavily relying on the OAuth 2.0 protocol and robust Entra ID (formerly Azure AD) App Registrations.
+However, the number one roadblock developers face isn't mastering the REST endpoints—it is getting through the front door. Microsoft's authentication mechanisms are notoriously complex, heavily relying on the OAuth 2.0 protocol and robust Microsoft Entra ID App Registrations.
 
 In this guide, we are going to demystify Graph API authentication, focusing specifically on how to obtain your first bearer token whether you are writing a background daemon service or an interactive single-page application. If you are brand new to Graph, start with our [Getting Started with Microsoft Graph API](/blog/microsoft-graph-api-getting-started) overview first.
 

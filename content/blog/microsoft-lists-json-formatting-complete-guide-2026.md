@@ -18,7 +18,7 @@ tags:
 
 ## Why Does Microsoft Lists Formatting Matter in 2026?
 
-With over 200 million monthly active SharePoint Online users ([MedhaCloud](https://medhacloud.com/blog/microsoft-365-statistics-2026), 2026), Microsoft Lists has become the default structured-data tool across enterprises. Yet most lists still look like plain spreadsheets — rows of text with no visual cues. JSON formatting fixes that without a single line of deployed code.
+With over 200 million monthly active SharePoint Online users, Microsoft Lists has become the default structured-data tool across enterprises. Yet most lists still look like plain spreadsheets — rows of text with no visual cues. JSON formatting fixes that without a single line of deployed code.
 
 You don't need SPFx. You don't need Power Apps. You paste JSON into a formatting panel, hit save, and your list transforms into something your team actually wants to use — color-coded status badges, progress bars, conditional icons, and card-based views.
 
@@ -628,7 +628,7 @@ Copilot integration with Microsoft Lists reached General Availability in January
 
 ## What Are the Most Common Formatting Mistakes?
 
-With 446 million paid Microsoft 365 seats globally ([MedhaCloud](https://medhacloud.com/blog/microsoft-365-statistics-2026), 2026), a lot of people are writing formatting JSON — and making the same mistakes. After working with Lists formatting across multiple enterprise tenants, these are the issues I see most often. Each one has a quick fix. Sound familiar?
+With 446 million paid Microsoft 365 seats globally, a lot of people are writing formatting JSON — and making the same mistakes. After working with Lists formatting across multiple enterprise tenants, these are the issues I see most often. Each one has a quick fix. Sound familiar?
 
 ### Mistake 1: Using Display Names Instead of Internal Names
 
@@ -674,7 +674,7 @@ No. Formatting is purely visual — it changes how data renders, not the data it
 
 ### Does formatting work in Microsoft Teams?
 
-Yes. When you embed a Microsoft List as a tab in Teams, column and view formatting render correctly. With 446 million paid Microsoft 365 seats ([MedhaCloud](https://medhacloud.com/blog/microsoft-365-statistics-2026), 2026), Teams is where most users interact with lists. Form formatting also works from within Teams. The formatting JSON lives with the list, not the host app, so it follows the list wherever it appears.
+Yes. When you embed a Microsoft List as a tab in Teams, column and view formatting render correctly. Teams is where most users interact with lists. Form formatting also works from within Teams. The formatting JSON lives with the list, not the host app, so it follows the list wherever it appears.
 
 ### How many columns can I format in a single list?
 

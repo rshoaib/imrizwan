@@ -1,7 +1,7 @@
 ---
-title: "Power Automate Expressions Cheat Sheet: 50+ Functions"
+title: "Power Automate Expressions Reference"
 slug: power-automate-expressions-cheat-sheet-2026
-excerpt: "Quick-reference Power Automate expressions cheat sheet — string, date, array, and logic functions with real examples."
+excerpt: "Essential Power Automate expressions cheat sheet with 50+ functions, quick reference guide, and copy-paste formulas for string, date, and logic operations."
 date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "12 min read"
@@ -220,7 +220,7 @@ A few things that trip up new users:
 - **Nested quotes**: Use single quotes inside expressions. Double quotes break the parser.
 - **Testing expressions**: Use a Compose action to test any expression -- the output shows exactly what it returns.
 
-For styled HTML output in your flow emails, check out [Power Automate HTML Table Styling with CSS](/blog/power-automate-html-table-styling-css). You can also try our interactive [Power Automate Expressions Tool](/tools/power-automate-expressions) to test functions directly in the browser.
+For styled HTML output in your flow emails, check out [Power Automate HTML Table Styling with CSS](/blog/power-automate-html-table-styling-css). You can also try our interactive [Power Automate Expressions Tool](/tools/power-automate-expressions) to test functions directly in the browser. These same expression patterns are equally powerful in Power Apps canvas formulas — see our guide on [Power Apps canvas apps and SharePoint integration](/blog/power-apps-canvas-app-sharepoint-complete-guide) for examples of expressions in action.
 
 ---
 

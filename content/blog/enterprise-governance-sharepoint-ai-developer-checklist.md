@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Governance for SharePoint-Powered AI: Checklist"
 slug: enterprise-governance-sharepoint-ai-developer-checklist
-excerpt: "Copilot amplifies bad governance. Get the developer checklist with PowerShell scripts and sensitivity labels to make SharePoint AI-ready."
+excerpt: "Developer checklist for AI-ready SharePoint environments: PowerShell scripts, sensitivity labels, permissions audits, and pre-Copilot governance."
 date: "2026-03-22"
 displayDate: "March 22, 2026"
 readTime: "12 min read"
@@ -44,7 +44,7 @@ Before Copilot touches your tenant, you need to know **who has access to what**.
 
 ### Script: Find Overshared Sites
 
-Use [PnP PowerShell](/blog/pnp-powershell-sharepoint-scripts) to scan your tenant for sites with broad access:
+Use [PnP PowerShell](/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026) to scan your tenant for sites with broad access:
 
 ```powershell
 # Connect to SharePoint Online Admin
@@ -87,7 +87,7 @@ The principle is simple: **users should only access what they need for their rol
 
 1. **Use Security Groups**, not individual sharing
 2. **Default to "Members" (Edit)** — avoid giving "Full Control" to non-owners
-3. **Review Sharing Links quarterly** — use the [SharePoint permissions model](/blog/sharepoint-permissions-explained) to understand inheritance
+3. **Review Sharing Links quarterly** — use the [SharePoint permissions model](/blog/sharepoint-online-permissions-complete-guide) to understand inheritance
 
 
 ## Checklist Part 2: Content Lifecycle Management
@@ -193,7 +193,7 @@ $unlabeled | Select-Object @{N='File';E={$_["FileLeafRef"]}},
 
 ## Checklist Part 4: Agent & Copilot Studio Governance
 
-With [SharePoint Agents and Copilot Studio](/blog/sharepoint-agents-copilot-studio), developers can now build custom AI agents grounded in SharePoint content. This creates a new governance surface.
+With [SharePoint Agents and Copilot Studio](/blog/building-custom-copilots-sharepoint-copilot-studio), developers can now build custom AI agents grounded in SharePoint content. This creates a new governance surface.
 
 ### Key Controls
 

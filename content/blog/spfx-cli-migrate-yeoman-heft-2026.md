@@ -66,7 +66,7 @@ spfx --version
 Before continuing, also ensure you meet the Node.js requirements for SPFx v1.22+:
 
 ```bash
-node --version  # Should be 18.x LTS or higher
+node --version  # Should be 20.x LTS or higher
 ```
 
 ---

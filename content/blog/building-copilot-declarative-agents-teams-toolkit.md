@@ -1,7 +1,7 @@
 ---
-title: "Build Declarative Agents for M365 Copilot with Teams Toolkit"
+title: "Build M365 Copilot Declarative Agents"
 slug: building-copilot-declarative-agents-teams-toolkit
-excerpt: "Step-by-step guide to building declarative agents for M365 Copilot using Teams Toolkit, API plugins, and Graph connectors."
+excerpt: "Step-by-step guide to building custom declarative agents for Microsoft 365 Copilot. Learn Teams Toolkit, plugins, and deployment in 30 minutes."
 date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "14 min read"
@@ -285,7 +285,7 @@ Then reference the plugin in your `declarativeAgent.json`:
 
 For API plugins that require auth, register your API in the Teams Developer Portal under **Tools > OAuth client registration**. The `OAuthPluginVault` type stores the OAuth configuration securely and handles token exchange with Copilot's auth layer.
 
-For APIs behind Azure AD, use the `OAuthPluginVault` type with these settings:
+For APIs behind Microsoft Entra ID, use the `OAuthPluginVault` type with these settings:
 
 - **Authorization URL**: `https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/authorize`
 - **Token URL**: `https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token`

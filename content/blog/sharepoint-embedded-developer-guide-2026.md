@@ -21,7 +21,7 @@ Building document management into your application used to mean one of two bad c
 
 SharePoint Embedded solves both problems. It gives your application direct access to SharePoint's storage, permissions, and compliance engine through Microsoft Graph — without creating traditional SharePoint sites or requiring end-users to have SharePoint licenses.
 
-The enterprise content management market reached **USD 69.72 billion in 2025 and is projected to hit USD 145.51 billion by 2030**, growing at a 15.85% CAGR ([Fortune Business Insights](https://www.fortunebusinessinsights.com/industry-reports/enterprise-content-management-ecm-market-101660)). ISVs who embed document management now are building on infrastructure that already scales to **200 million+ SharePoint Online users** ([Medha Cloud, March 2026](https://medhacloud.com/blog/microsoft-365-statistics-2026)) — rather than maintaining their own.
+The enterprise content management market reached **USD 69.72 billion in 2025 and is projected to hit USD 145.51 billion by 2030**, growing at a 15.85% CAGR ([Fortune Business Insights](https://www.fortunebusinessinsights.com/industry-reports/enterprise-content-management-ecm-market-101660)). ISVs who embed document management now are building on infrastructure that already scales to **200 million+ SharePoint Online users** — rather than maintaining their own.
 
 > **Key Takeaways:**
 > - SharePoint Embedded reached general availability in May 2024 and has shipped 12+ API improvements through early 2026.

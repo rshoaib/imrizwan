@@ -1,5 +1,5 @@
 ---
-title: "Adaptive Cards for Microsoft 365: Complete Developer Guide (2026)"
+title: "Adaptive Cards: Developer Guide (2026)"
 slug: adaptive-cards-m365-developer-guide
 excerpt: "Master Adaptive Cards across Teams, Outlook, and Viva Connections. Schema versions, data binding, and a free card builder."
 date: "2026-03-21T09:22:47.227Z"
@@ -141,7 +141,7 @@ ACEs are perfect for:
 - Quick-entry forms (expense reports, time tracking)
 - Deep links to Teams apps or SharePoint pages
 
-For a full walkthrough, see our article on [building your first Viva Connections ACE](/blog/viva-connections-ace-adaptive-card-extension).
+For a full walkthrough, see our article on [building your first Viva Connections ACE](/blog/building-viva-connections-adaptive-card-extensions-spfx).
 
 ---
 
@@ -304,7 +304,7 @@ const card = template.expand({ $root: orderData });
 // Send 'card' to Teams via Bot Framework or Graph API
 ```
 
-This pattern is incredibly powerful for SharePoint-driven scenarios. Fetch list items via the [REST API](/tools/rest-api-builder), then render each item as a templated Adaptive Card in Teams.
+This pattern is incredibly powerful for SharePoint-driven scenarios. Fetch list items via the [REST API](/tools/rest-api-builder), then render each item as a templated Adaptive Card in Teams. You can also use Adaptive Cards to display user profiles and organizational data retrieved from Microsoft Graph — see our [Microsoft Graph API guide with user profile examples](/blog/microsoft-graph-api-spfx-user-profiles-teams) to learn how to fetch and display this data in card templates.
 
 ---
 
