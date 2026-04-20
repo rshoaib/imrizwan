@@ -6,7 +6,38 @@ import RelatedTools from '@/components/RelatedTools'
 import AdSlot from '@/components/AdSlot'
 import ToolFAQ from '@/components/ToolFAQ'
 
-const TEMPLATES: Record<string, any> = {
+type CardBlock = {
+  type: string
+  text?: string
+  weight?: string
+  size?: string
+  isSubtle?: boolean
+  wrap?: boolean
+  id?: string
+  placeholder?: string
+  isMultiline?: boolean
+}
+
+type CardAction = {
+  type: string
+  title: string
+}
+
+type AdaptiveCardPayload = {
+  type?: string
+  $schema?: string
+  version?: string
+  body?: CardBlock[]
+  actions?: CardAction[]
+  templateType?: string
+  data?: {
+    primaryText?: string
+    description?: string
+    title?: string
+  }
+}
+
+const TEMPLATES: Record<string, AdaptiveCardPayload> = {
   ac_basic: {
     type: "AdaptiveCard",
     $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -63,7 +94,7 @@ const TEMPLATES: Record<string, any> = {
 
 export default function AdaptiveCardGeneratorClient() {
   const [jsonInput, setJsonInput] = useState(() => JSON.stringify(TEMPLATES.ace_primary, null, 2))
-  const [parsedCard, setParsedCard] = useState<any>(TEMPLATES.ace_primary)
+  const [parsedCard, setParsedCard] = useState<AdaptiveCardPayload>(TEMPLATES.ace_primary)
   const [errorMsg, setErrorMsg] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -72,7 +103,7 @@ export default function AdaptiveCardGeneratorClient() {
       const parsed = JSON.parse(jsonInput)
       setParsedCard(parsed)
       setErrorMsg('')
-    } catch (e) {
+    } catch {
       setErrorMsg('Invalid JSON format.')
     }
   }, [jsonInput])
@@ -203,7 +234,7 @@ export default function AdaptiveCardGeneratorClient() {
                       </div>
                     ) : (
                        <div style={{ padding: '1.25rem' }}>
-                         {parsedCard.body?.map((block: any, i: number) => {
+                         {parsedCard.body?.map((block, i) => {
                            if (block.type === 'TextBlock') {
                              return <div key={i} style={{
                                fontSize: block.size === 'Large' ? '20px' : '15px',
@@ -221,7 +252,7 @@ export default function AdaptiveCardGeneratorClient() {
                          })}
                          {parsedCard.actions && (
                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                             {parsedCard.actions.map((act: any, i: number) => (
+                             {parsedCard.actions.map((act, i) => (
                                <button key={i} style={{ flex: 1, padding: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, color: 'var(--accent)' }}>
                                  {act.title}
                                </button>

@@ -44,7 +44,7 @@ export default function ArchitectureCanvasPage() {
       </div>
 
       <div className="reveal">
-        <ArchitectureCanvasClient tool={tool} />
+        <ArchitectureCanvasClient />
       </div>
 
       <div className="mt-16 reveal">

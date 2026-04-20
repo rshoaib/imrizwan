@@ -30,3 +30,9 @@ out
 
 .vercel
 .env*.local
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Claude Code / Cowork session state
+.claude/

@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# ImRizwan — Developer Blog & Tools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal site for [imrizwan.com](https://imrizwan.com) — a developer blog covering SPFx, Power Platform, SharePoint, and Microsoft 365, plus a set of free browser-based developer tools.
 
-Currently, two official plugins are available:
+Built with **Next.js 16** (App Router), **React 19**, and **TypeScript**. Blog content lives in `content/blog/` as markdown files with frontmatter.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Development
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # start dev server on http://localhost:3000
+npm run build    # generates rss.xml, then production build
+npm start        # serve the production build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+app/             Next.js App Router — pages, layouts, API routes, sitemap, rss
+components/      Reusable React components (Header, Footer, BlogFeed, etc.)
+content/blog/    Blog posts as markdown (frontmatter: title, date, excerpt, category, tags, image)
+data/            Static data used by tools (errors, graph endpoints, quiz, tool registry)
+lib/             Server utilities (blog service, markdown renderer, FAQ schema extractor)
+public/          Static assets — images, og-image, rss.xml, sitemap.xml, robots.txt, llms.txt
+scripts/         Build-time scripts — generate-feeds.js (RSS), validate-seo.js
+types/           Global TS declarations (gtag, adsbygoogle, dataLayer on Window)
+```
+
+## Adding a blog post
+
+Create a new markdown file in `content/blog/<slug>.md` with frontmatter:
+
+```yaml
+---
+title: Your post title
+excerpt: One-sentence summary used in meta description and cards.
+date: 2026-01-15
+displayDate: January 15, 2026
+readTime: 8 min read
+category: SPFx          # SPFx | Power Platform | SharePoint | Microsoft 365
+image: /images/blog/your-hero.png
+tags: [spfx, typescript]
+---
+
+## Your content in markdown...
+```
+
+The sitemap, RSS feed, related posts, and blog listing pick it up automatically.
+
+## Environment variables
+
+None are required for the blog to work — content is local. Optional:
+
+- `NEXT_PUBLIC_EMAILJS_SERVICE_ID`, `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`, `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` — wire the contact form to EmailJS. Without these, the contact form falls back to `mailto:`.
+
+## Deployment
+
+Deployed on Vercel. `.github/workflows/ci.yml` runs SEO validation, type-checking, and a production build on every push to `main`.

@@ -91,7 +91,7 @@ export default function BlogFeed({
 
       {visibleRest.length > 0 && (
         <div className="blog-feed__list">
-          {visibleRest.map((post, index) => (
+          {visibleRest.map((post) => (
             <article key={post.slug} suppressHydrationWarning className="blog-feed__card reveal">
               <Link href={`/blog/${post.slug}`} className="blog-feed__card-image-link">
                 {post.image ? (

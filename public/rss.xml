@@ -5,50 +5,98 @@
     <link>https://imrizwan.com</link>
     <description>Developer blog by Rizwan — SPFx webparts, Power Platform solutions, SharePoint development tips.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Apr 2026 05:01:18 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 20 Apr 2026 16:21:47 GMT</lastBuildDate>
     <atom:link href="https://imrizwan.com/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>Build Declarative Agents for Microsoft 365 Copilot with Teams Toolkit (2026)</title>
+      <title>Building Custom Connectors in Power Platform: Connect Any REST API (2026)</title>
+      <link>https://imrizwan.com/blog/power-platform-custom-connectors-rest-api-guide-2026</link>
+      <description>Step-by-step guide to building custom connectors in Power Platform. Connect any REST API to Power Apps and Power Automate with authentication, actions, and real-world examples.</description>
+      <pubDate>Fri, 17 Apr 2026 08:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/power-platform-custom-connectors-rest-api-guide-2026</guid>
+      <category>Power Platform</category>
+    </item>
+    <item>
+      <title>Microsoft Graph Toolkit: Build M365-Powered Web Apps with Zero Backend Code (2026)</title>
+      <link>https://imrizwan.com/blog/microsoft-graph-toolkit-web-apps-guide-2026</link>
+      <description>Learn how to use Microsoft Graph Toolkit components to display people, files, calendars, and tasks from Microsoft 365 in any web app — with full code examples and authentication setup.</description>
+      <pubDate>Mon, 13 Apr 2026 08:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-toolkit-web-apps-guide-2026</guid>
+      <category>Microsoft 365</category>
+    </item>
+    <item>
+      <title>SPFx and Fluent UI v9: Modern Web Parts with React</title>
+      <link>https://imrizwan.com/blog/spfx-fluent-ui-v9-web-parts-migration-guide-2026</link>
+      <description>Learn how to use Fluent UI v9 (React Components) in SPFx web parts — from installation to theming, with practical migration tips from v8.</description>
+      <pubDate>Sun, 12 Apr 2026 10:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/spfx-fluent-ui-v9-web-parts-migration-guide-2026</guid>
+      <category>SPFx</category>
+    </item>
+    <item>
+      <title>SharePoint Embedded: Build Document Apps on Microsoft 365</title>
+      <link>https://imrizwan.com/blog/sharepoint-embedded-developer-guide-2026</link>
+      <description>2026 guide to SharePoint Embedded — create containers, manage files via Graph, and connect Power Automate and AI agents.</description>
+      <pubDate>Sat, 11 Apr 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-embedded-developer-guide-2026</guid>
+      <category>SharePoint</category>
+    </item>
+    <item>
+      <title>SPFx Application Customizer: Build Global Headers &amp; Footers</title>
+      <link>https://imrizwan.com/blog/spfx-application-customizer-header-footer-sharepoint-2026</link>
+      <description>Build a global header and footer for SharePoint with an SPFx Application Customizer extension. Complete guide includes tenant-wide deployment instructions.</description>
+      <pubDate>Fri, 10 Apr 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/spfx-application-customizer-header-footer-sharepoint-2026</guid>
+      <category>SPFx</category>
+    </item>
+    <item>
+      <title>Microsoft Lists JSON Formatting: Complete Guide (2026)</title>
+      <link>https://imrizwan.com/blog/microsoft-lists-json-formatting-complete-guide-2026</link>
+      <description>Master column, view, and form formatting in Microsoft Lists with copy-paste JSON examples. 2,100+ PnP community samples included.</description>
+      <pubDate>Tue, 07 Apr 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-lists-json-formatting-complete-guide-2026</guid>
+      <category>SharePoint</category>
+    </item>
+    <item>
+      <title>Build M365 Copilot Declarative Agents</title>
       <link>https://imrizwan.com/blog/building-copilot-declarative-agents-teams-toolkit</link>
-      <description>Step-by-step guide to building declarative agents for M365 Copilot using Teams Toolkit, API plugins, and Graph connectors.</description>
+      <description>Step-by-step guide to building custom declarative agents for Microsoft 365 Copilot. Learn Teams Toolkit, plugins, and deployment in 30 minutes.</description>
       <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/building-copilot-declarative-agents-teams-toolkit</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>25 PnP PowerShell Scripts Every SharePoint Admin Needs (2026)</title>
+      <title>PnP PowerShell: Version &amp; Requirements Guide</title>
       <link>https://imrizwan.com/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026</link>
-      <description>Copy-paste PnP PowerShell scripts for SharePoint Online — bulk permissions, site provisioning, and reporting.</description>
+      <description>Master PnP.PowerShell requirements and latest version updates for 2026. Minimum PowerShell version specs, compatibility matrix, and setup guide.</description>
       <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/pnp-powershell-sharepoint-online-scripts-admin-guide-2026</guid>
       <category>SharePoint</category>
     </item>
     <item>
-      <title>Power Automate Expressions Cheat Sheet: 50+ Functions with Examples (2026)</title>
+      <title>Power Automate Expressions Reference</title>
       <link>https://imrizwan.com/blog/power-automate-expressions-cheat-sheet-2026</link>
-      <description>Quick-reference Power Automate expressions cheat sheet — string, date, array, and logic functions with real examples.</description>
+      <description>Essential Power Automate expressions cheat sheet with 50+ functions, quick reference guide, and copy-paste formulas for string, date, and logic operations.</description>
       <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-expressions-cheat-sheet-2026</guid>
       <category>Power Platform</category>
     </item>
     <item>
-      <title>SharePoint Online CSP Enforcement: What SPFx Developers Need to Know (2026)</title>
+      <title>SharePoint Online CSP Enforcement: SPFx Developer Guide</title>
       <link>https://imrizwan.com/blog/sharepoint-online-csp-enforcement-spfx-developer-guide-2026</link>
-      <description>Fix SPFx web parts broken by SharePoint Content Security Policy enforcement — inline scripts, eval, and style violations.</description>
+      <description>Fix SPFx web parts broken by Content Security Policy enforcement: resolve inline scripts, eval calls, and style violations with practical solutions.</description>
       <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-online-csp-enforcement-spfx-developer-guide-2026</guid>
       <category>SPFx</category>
     </item>
     <item>
-      <title>Microsoft Copilot Governance: 8 Controls Every M365 Admin Needs (2026)</title>
+      <title>Microsoft Copilot Governance: 8 Controls Every Admin Needs</title>
       <link>https://imrizwan.com/blog/microsoft-copilot-governance-best-practices-2026</link>
-      <description>Implement these 8 governance controls before deploying M365 Copilot — permission audits, sensitivity labels, and usage monitoring.</description>
+      <description>8 essential governance controls for M365 Copilot deployments: permission audits, sensitivity labels, content classification, and usage monitoring.</description>
       <pubDate>Wed, 01 Apr 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-copilot-governance-best-practices-2026</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Demystifying the Microsoft Graph API: A Complete Guide to OAuth 2.0 and App Permissions</title>
+      <title>Microsoft Graph API: OAuth 2.0 and App Permissions Guide</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-oauth2-guide</link>
       <description>Learn Microsoft Graph API authentication — OAuth 2.0 flows, Delegated vs. Application permissions, and how to acquire access tokens securely.</description>
       <pubDate>Mon, 30 Mar 2026 00:00:00 GMT</pubDate>
@@ -56,23 +104,23 @@
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Microsoft Graph API Authentication Explained (OAuth 2.0)</title>
+      <title>Master Graph API Authentication</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-authentication-guide</link>
-      <description>Confused by App Registrations and Bearer tokens? A zero-to-hero guide on securely authenticating with the Microsoft Graph API.</description>
+      <description>Complete Microsoft Graph API authentication guide. App registration, OAuth flows, permissions, and MSAL setup with working code examples.</description>
       <pubDate>Fri, 27 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-api-authentication-guide</guid>
       <category>Graph API</category>
     </item>
     <item>
-      <title>Modern SharePoint Provisioning &amp; Automation in 2026: A Developer's Guide</title>
+      <title>SharePoint Site Scripts &amp; Provisioning</title>
       <link>https://imrizwan.com/blog/sharepoint-provisioning-automation-guide-2026</link>
-      <description>Modern SharePoint site provisioning with PnP PowerShell, Site Scripts, and REST API to build AI-ready, flat architecture sites.</description>
+      <description>Essential guide to SharePoint site scripts, provisioning automation, and site design setup for modern flat-architecture sites with PnP PowerShell.</description>
       <pubDate>Wed, 25 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-provisioning-automation-guide-2026</guid>
       <category>SharePoint</category>
     </item>
     <item>
-      <title>The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026</title>
+      <title>Migrate from Yeoman to the New SPFx CLI</title>
       <link>https://imrizwan.com/blog/migrate-yeoman-to-new-spfx-cli</link>
       <description>Migrate legacy SPFx projects from Yeoman to the new Vite-based SPFx CLI pipeline for 4x faster builds in under 15 minutes.</description>
       <pubDate>Mon, 23 Mar 2026 00:00:00 GMT</pubDate>
@@ -80,15 +128,15 @@
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Enterprise Governance for SharePoint-Powered AI: A Developer's Checklist (2026)</title>
+      <title>Enterprise Governance for SharePoint-Powered AI: Checklist</title>
       <link>https://imrizwan.com/blog/enterprise-governance-sharepoint-ai-developer-checklist</link>
-      <description>Copilot amplifies bad governance. Get the developer checklist with PowerShell scripts and sensitivity labels to make SharePoint AI-ready.</description>
+      <description>Developer checklist for AI-ready SharePoint environments: PowerShell scripts, sensitivity labels, permissions audits, and pre-Copilot governance.</description>
       <pubDate>Sun, 22 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/enterprise-governance-sharepoint-ai-developer-checklist</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Adaptive Cards for Microsoft 365: Complete Developer Guide (2026)</title>
+      <title>Adaptive Cards: Developer Guide (2026)</title>
       <link>https://imrizwan.com/blog/adaptive-cards-m365-developer-guide</link>
       <description>Master Adaptive Cards across Teams, Outlook, and Viva Connections. Schema versions, data binding, and a free card builder.</description>
       <pubDate>Sat, 21 Mar 2026 09:22:47 GMT</pubDate>
@@ -114,47 +162,47 @@
     <item>
       <title>Power Automate: How to Style HTML Tables with CSS</title>
       <link>https://imrizwan.com/blog/power-automate-html-table-styling-css</link>
-      <description>Stop sending ugly emails! Learn to apply custom CSS to the Power Automate Create HTML Table action and use our free generator to style data instantly.</description>
+      <description>Style Power Automate HTML tables with custom CSS for professional-looking emails. Free generator included to create polished email tables without writing code.</description>
       <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-html-table-styling-css</guid>
       <category>Power Platform</category>
     </item>
     <item>
-      <title>Migrate SPFx from Gulp to Heft &amp; Webpack — Step-by-Step (2026)</title>
+      <title>Migrate SPFx from Gulp to Heft &amp; Webpack</title>
       <link>https://imrizwan.com/blog/spfx-migrate-gulp-heft-webpack-2026</link>
-      <description>Speed up your SharePoint Framework (SPFx) builds by 300%. The definitive 2026 migration guide from legacy Gulp to Microsoft Heft.</description>
+      <description>Migrate SPFx from Gulp to Heft build system and significantly speed up your builds. Complete step-by-step migration guide for SPFx projects in 2026.</description>
       <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/spfx-migrate-gulp-heft-webpack-2026</guid>
       <category>SPFx</category>
     </item>
     <item>
-      <title>Copilot Studio + SharePoint: Build 3 AI Assistants for Your Organization (2026)</title>
+      <title>Copilot Studio + SharePoint: Build 3 AI Assistants</title>
       <link>https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</link>
-      <description>Create AI assistants that answer from SharePoint docs and automate workflows with Microsoft Copilot Studio. No coding required.</description>
+      <description>Build three AI assistants with Copilot Studio that answer questions directly from SharePoint document libraries. No coding required.</description>
       <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/copilot-studio-sharepoint-ai-assistants-guide-2026</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Train Microsoft Copilot Studio on SharePoint Document Libraries</title>
+      <title>Build Custom Copilots for SharePoint</title>
       <link>https://imrizwan.com/blog/building-custom-copilots-sharepoint-copilot-studio</link>
-      <description>Create a custom AI chatbot that securely answers questions based exactly on your private SharePoint documents and PDFs.</description>
+      <description>Step-by-step guide to building AI copilots with Copilot Studio grounded in SharePoint. Answers questions only from your org's documents securely.</description>
       <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/building-custom-copilots-sharepoint-copilot-studio</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>SharePoint Online Permissions: The Complete Security Guide for 2026</title>
+      <title>SharePoint Online Permissions: Security Guide</title>
       <link>https://imrizwan.com/blog/sharepoint-online-permissions-complete-guide</link>
-      <description>Master SharePoint Online permissions — permission levels, group access, external sharing, and PnP PowerShell audit scripts with a free tool.</description>
+      <description>Master SharePoint permissions by understanding permission levels, groups, external sharing controls, and PnP PowerShell audit scripts for governance.</description>
       <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-online-permissions-complete-guide</guid>
       <category>SharePoint</category>
     </item>
     <item>
-      <title>Power Automate + AI Builder: Intelligent Document Processing Complete Guide</title>
+      <title>Power Automate + AI Builder: Document Processing Guide</title>
       <link>https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</link>
-      <description>Build document processing pipelines with Power Automate and AI Builder — extract data from invoices, receipts, and forms. No code required.</description>
+      <description>Extract and process data from invoices, receipts, and forms automatically using Power Automate and AI Builder. No coding or model training required.</description>
       <pubDate>Tue, 03 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-ai-builder-intelligent-document-processing</guid>
       <category>Power Platform</category>
@@ -162,7 +210,7 @@
     <item>
       <title>Building Viva Connections Adaptive Card Extensions (ACEs)</title>
       <link>https://imrizwan.com/blog/building-viva-connections-adaptive-card-extensions-spfx</link>
-      <description>Create interactive dashboard widgets for Microsoft Viva Connections using SPFx and adaptive cards without writing a dedicated API.</description>
+      <description>Build interactive Viva Connections dashboard widgets with SPFx adaptive cards. Deploy real-time card extensions without a dedicated API.</description>
       <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/building-viva-connections-adaptive-card-extensions-spfx</guid>
       <category>SPFx</category>
@@ -176,49 +224,49 @@
       <category>SPFx</category>
     </item>
     <item>
-      <title>Building a Power Apps Canvas App with SharePoint: A Complete Guide</title>
+      <title>Power Apps Canvas App with SharePoint: Practical Guide</title>
       <link>https://imrizwan.com/blog/power-apps-canvas-app-sharepoint-complete-guide</link>
-      <description>Build a Power Apps canvas app connected to SharePoint — from data source setup to a polished app with search, filters, and forms.</description>
+      <description>Build Power Apps canvas apps connected to SharePoint: data setup, interactive forms, advanced filters, and search functionality.</description>
       <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-apps-canvas-app-sharepoint-complete-guide</guid>
       <category>Power Platform</category>
     </item>
     <item>
-      <title>Building Your First SPFx Web Part: A Complete Hello World Guide</title>
+      <title>Build Your First SPFx Web Part: Hello World Guide (2026)</title>
       <link>https://imrizwan.com/blog/building-spfx-hello-world-webpart</link>
-      <description>Step-by-step guide to creating and deploying your first SharePoint Framework web part with React.</description>
+      <description>Create and deploy your first SharePoint Framework web part using the modern SPFx CLI with Heft. Works in SharePoint, Teams, and Viva.</description>
       <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/building-spfx-hello-world-webpart</guid>
       <category>SPFx</category>
     </item>
     <item>
-      <title>Building a Document Approval Workflow with Power Automate</title>
+      <title>Power Automate: Approval Workflow (2026)</title>
       <link>https://imrizwan.com/blog/power-automate-document-approval</link>
-      <description>Automate document approvals in SharePoint — trigger on upload, approve, and notify via Teams.</description>
+      <description>Build a complete document approval workflow triggered on SharePoint uploads, with approval actions, conditional branching, and Teams notifications.</description>
       <pubDate>Mon, 16 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/power-automate-document-approval</guid>
       <category>Power Platform</category>
     </item>
     <item>
-      <title>SharePoint Column Formatting: No-Code Visual Customization</title>
+      <title>SharePoint Column Formatting: A Practical JSON Guide (2026)</title>
       <link>https://imrizwan.com/blog/sharepoint-column-formatting-guide</link>
-      <description>Transform plain columns into status badges and progress bars using JSON — no SPFx required.</description>
+      <description>Master JSON-based column formatting to build status badges, progress bars, and interactive visuals without code. Apply instant, tenant-scoped customizations.</description>
       <pubDate>Sat, 14 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/sharepoint-column-formatting-guide</guid>
       <category>SharePoint</category>
     </item>
     <item>
-      <title>Getting Started with Microsoft Graph API</title>
+      <title>Getting Started with Microsoft Graph API in 2026</title>
       <link>https://imrizwan.com/blog/microsoft-graph-api-getting-started</link>
-      <description>Microsoft Graph is the unified API for M365 data. Learn authentication and first API calls.</description>
+      <description>Master Microsoft Graph: the unified API for M365 data. Learn authentication, make your first call, explore endpoints, and integrate with Power Automate.</description>
       <pubDate>Thu, 12 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/microsoft-graph-api-getting-started</guid>
       <category>Microsoft 365</category>
     </item>
     <item>
-      <title>Using PnP JS in SPFx: The Easiest Way to Read SharePoint Data</title>
+      <title>PnP JS in SPFx: Read and Write SharePoint Data (2026)</title>
       <link>https://imrizwan.com/blog/spfx-pnp-js-sharepoint-data</link>
-      <description>PnP JS simplifies SharePoint REST API calls. Query lists, add items, and batch requests with clean TypeScript.</description>
+      <description>Master PnP JS for CRUD operations, filtering, batching, and error handling in SharePoint. Write cleaner TypeScript with fluent APIs instead of raw REST.</description>
       <pubDate>Tue, 10 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="true">https://imrizwan.com/blog/spfx-pnp-js-sharepoint-data</guid>
       <category>SPFx</category>

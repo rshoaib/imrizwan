@@ -62,8 +62,8 @@ tr:nth-child(odd) td {
   }, [headerBgColor, headerTextColor, rowStripeColor, borderColor, fontFamily, tableWidth, paddingCell, textAlign, headerFontWeight])
 
   const handleCopy = async () => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'copy_clicked', { tool_name: 'html_table_styler' })
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'copy_clicked', { tool_name: 'html_table_styler' })
     }
     try {
       await navigator.clipboard.writeText(generatedCss)

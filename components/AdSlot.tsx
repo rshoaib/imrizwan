@@ -16,7 +16,7 @@ export default function AdSlot({ type = 'leaderboard', slot }: { type?: 'leaderb
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') {
       try {
-        ;((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
+        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch (err) {
         console.error('AdSense push error:', err)
       }

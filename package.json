@@ -5,12 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/generate-feeds.js && next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "@xyflow/react": "^12.10.1",
-    "dotenv": "^17.3.1",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.577.0",
     "next": "^16.1.6",
