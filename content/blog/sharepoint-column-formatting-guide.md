@@ -214,5 +214,6 @@ Click the column header → Column settings → Format this column → Clear for
 
 ## Related Resources
 
-- [Microsoft Lists JSON Formatting Complete Guide (2026)](/blog/microsoft-lists-json-formatting-complete-guide-2026.md)
+- [Microsoft Lists JSON Formatting Complete Guide (2026)](/blog/microsoft-lists-json-formatting-complete-guide-2026)
 - [Power Apps Canvas App & SharePoint: Complete Guide](/blog/power-apps-canvas-app-sharepoint-complete-guide)
+   
