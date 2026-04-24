@@ -17,7 +17,7 @@ tags:
   - "2026"
 ---
 
-# The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026
+## The Yeoman Era is Over: Migrating to the New SPFx CLI in 2026
 
 If you've been building SharePoint Framework (SPFx) solutions for the last few years, you have muscle memory for `@microsoft/generator-sharepoint`. Typing `yo @microsoft/sharepoint` was the gateway to every single project. 
 
@@ -215,4 +215,4 @@ More importantly, when you save a file, the Hot Module Replacement injects the c
 The migration from Yeoman and Gulp to the new SPFx CLI is the biggest quality-of-life improvement Microsoft has given SharePoint developers in five years. While ripping out Gulp might feel uncomfortable at first, the resulting bundle sizes and development speeds are well worth the 15 minutes it takes to upgrade your projects.
 
 Have you hit any unusual native module errors during your migration? Drop me a message on LinkedIn—I'm gathering edge cases for a follow-up troubleshooting post!
-
+
