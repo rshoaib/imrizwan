@@ -56,7 +56,7 @@ Targets the new/edit/display form. You rearrange fields into sections, add heade
 **When to use it:** Multi-section forms, conditional field visibility, branded form headers, custom submit buttons.
 
 <figure>
-<svg viewBox="0 0 560 380" style="max-width: 100%; height: auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Horizontal bar chart comparing the three Microsoft Lists formatting types by number of supported features">
+<svg viewBox="0 0 560 380" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; max-width:560px; height:auto; max-height:380px; margin:0 auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Horizontal bar chart comparing the three Microsoft Lists formatting types by number of supported features">
 <title>Microsoft Lists Formatting Types — Feature Coverage</title>
 <desc>Horizontal bar chart showing Column Formatting with 42 features, View Formatting with 35 features, and Form Formatting with 24 features. Source: Microsoft Learn, 2025.</desc>
 <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">Formatting Types — Feature Coverage</text>
@@ -476,7 +476,7 @@ If you're comfortable with [SharePoint column formatting basics](/blog/sharepoin
 | toString | `toString()` | `=toString(@currentField) + '%'` |
 
 <figure>
-<svg viewBox="0 0 560 380" style="max-width: 100%; height: auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Donut chart showing distribution of formatting element types used in PnP community samples">
+<svg viewBox="0 0 560 380" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; max-width:560px; height:auto; max-height:380px; margin:0 auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Donut chart showing distribution of formatting element types used in PnP community samples">
 <title>Most Used elmType Values in PnP Samples</title>
 <desc>Donut chart showing div at 38%, span at 28%, a (links) at 14%, img at 11%, and button at 9% based on analysis of PnP List-Formatting community samples.</desc>
 <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">Most Used elmType Values in PnP Samples</text>
@@ -590,7 +590,7 @@ Copilot integration with Microsoft Lists reached General Availability in January
 80% of Fortune 500 companies rely on SharePoint for document management ([Jobera](https://jobera.com/sharepoint-statistics/), 2025). Lists formatting gives those enterprises a way to modernize their interfaces without the overhead of custom development. If you're managing permissions for these formatted lists at scale, our [SharePoint permissions guide](/blog/sharepoint-online-permissions-complete-guide) covers the full permission model.
 
 <figure>
-<svg viewBox="0 0 560 380" style="max-width: 100%; height: auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Timeline showing key Microsoft Lists formatting milestones from 2020 to 2026">
+<svg viewBox="0 0 560 380" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block; width:100%; max-width:560px; height:auto; max-height:380px; margin:0 auto; font-family: 'Inter', system-ui, sans-serif" role="img" aria-label="Timeline showing key Microsoft Lists formatting milestones from 2020 to 2026">
 <title>Microsoft Lists Formatting — Key Milestones</title>
 <desc>Timeline chart showing: Microsoft Lists launch in 2020, PnP repo reaches 1000 stars in 2022, View formatting enhancements in 2023, Form formatting GA in 2024, SPFx customizer reversal and mobile app retirement in 2025, and Copilot integration GA in January 2026.</desc>
 <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">Microsoft Lists Formatting — Key Milestones</text>
@@ -698,6 +698,4 @@ Here's your action plan:
 4. **Store your JSON in version control** — formatting applied through the UI has no undo history
 5. **Graduate to view formatting** once you're comfortable with columns
 
-For the JSON syntax reference that powers all of this, check our [SharePoint column formatting guide](/blog/sharepoint-column-formatting-guide) for additional basics, or explore the [provisioning automation guide](/blog/sharepoint-provisioning-automation-guide-2026) if you want to deploy formatting at scale across multiple lists.
-
-The 200 million SharePoint users aren't going anywhere. Make their lists worth looking at.
+For the JSON syntax reference that powers all of this, check our [SharePoint column formatting guide

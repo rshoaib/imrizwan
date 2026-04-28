@@ -954,6 +954,32 @@ img {
   margin: var(--space-6) 0;
 }
 
+/* Inline SVG figures (charts, diagrams) inside posts */
+.post__content figure {
+  max-width: 600px;
+  margin: var(--space-8) auto;
+  padding: var(--space-4);
+  background: var(--bg-elevated, #fff);
+  border: 1px solid var(--border-light, var(--border));
+  border-radius: var(--radius-lg);
+}
+
+.post__content figure svg {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  display: block;
+  margin: 0 auto;
+}
+
+.post__content figure figcaption {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: var(--space-3);
+  font-style: italic;
+}
+
 .post__content table {
   width: 100%;
   border-collapse: collapse;
@@ -6501,35 +6527,4 @@ div.my-12:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
   color: var(--accent);
 }
 
-.privacy__content ul {
-  list-style: disc;
-  padding-left: var(--space-8);
-  margin-bottom: var(--space-4);
-}
-
-.privacy__content li {
-  color: var(--text-secondary);
-  line-height: var(--lh-relaxed);
-  margin-bottom: var(--space-2);
-}
-
-.privacy__content a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.privacy__content a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-  .privacy {
-    padding: var(--space-10) var(--space-4);
-  }
-
-  .privacy__title {
-    font-size: var(--fs-2xl);
-  }
-}
+.privacy__con
