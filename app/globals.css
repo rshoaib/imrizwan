@@ -6527,4 +6527,35 @@ div.my-12:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
   color: var(--accent);
 }
 
-.privacy__con
+.privacy__content ul {
+  list-style: disc;
+  padding-left: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+
+.privacy__content li {
+  color: var(--text-secondary);
+  line-height: var(--lh-relaxed);
+  margin-bottom: var(--space-2);
+}
+
+.privacy__content a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.privacy__content a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .privacy {
+    padding: var(--space-10) var(--space-4);
+  }
+
+  .privacy__title {
+    font-size: var(--fs-2xl);
+  }
+}
