@@ -1,7 +1,7 @@
 ---
-title: "Fetch M365 User Profiles in SPFx using the Graph API"
+title: "Microsoft Graph API in SPFx: User Profiles & Teams Data (2026)"
 slug: microsoft-graph-api-spfx-user-profiles-teams
-excerpt: "Learn how to securely authenticate and fetch Microsoft 365 user profile data inside your SPFx components and Teams apps."
+excerpt: "Use Microsoft Graph from SPFx in 2026 — authenticate with MSGraphClientV3, fetch user profiles, photos, and Teams data with the right scopes."
 date: "2026-03-01"
 displayDate: "March 1, 2026"
 readTime: "12 min read"
@@ -36,7 +36,7 @@ The best part? **SPFx has built-in Graph support** through the `MSGraphClientV3`
 
 Before you start, make sure you have:
 
-- **SPFx 1.19+** development environment set up ([see my SPFx Hello World guide](/blog/building-spfx-hello-world-webpart))
+- **SPFx 1.22+** development environment set up using the modern SPFx CLI ([see my SPFx Hello World guide](/blog/building-spfx-hello-world-webpart))
 - **Microsoft 365 developer tenant** or access to a SharePoint Online site
 - **API permissions** configured in your `package-solution.json`
 - **Admin consent** granted for the Graph scopes you need
@@ -317,7 +317,7 @@ Admin consent hasn't been granted. A tenant administrator must approve your API 
 Store the response in React state with a timestamp. Before calling Graph again, check if the cached data is still fresh (e.g., less than 5 minutes old).
 
 ### Can I batch more than 20 requests?
-No. The `/$batch` endpoint has a hard limit of 20 requests. For more, split into multiple batches or use sequential calls with throttling safeguards.
+No. The `/$batch` endpoint has a hard limit of 20 requests. For more, split into multiple batches or use sequential calls with throttling safeguards — see [Microsoft Graph $batch requests](/blog/microsoft-graph-batch-requests-combine-api-calls-2026) for the patterns, and [Surviving Graph throttling](/blog/microsoft-graph-throttling-survive-429-retry-backoff-2026) for the retry side.
 
 ## Common Mistakes
 
