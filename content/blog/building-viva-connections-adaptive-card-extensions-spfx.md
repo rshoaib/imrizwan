@@ -1,7 +1,7 @@
 ---
-title: "Building Viva Connections Adaptive Card Extensions (ACEs)"
+title: "Building Viva Connections Adaptive Card Extensions in SPFx (2026)"
 slug: building-viva-connections-adaptive-card-extensions-spfx
-excerpt: "Build interactive Viva Connections dashboard widgets with SPFx adaptive cards. Deploy real-time card extensions without a dedicated API."
+excerpt: "Build Viva Connections Adaptive Card Extensions (ACEs) with SPFx 1.22+ in 2026 — interactive dashboard widgets without a dedicated backend API."
 date: "2026-03-02"
 displayDate: "March 2, 2026"
 readTime: "14 min read"
@@ -46,7 +46,7 @@ Real-world ACE use cases that are trending right now:
 
 Set up your environment before starting:
 
-- **SPFx 1.19+** (ACE improvements require at minimum 1.18; 1.21+ recommended for latest ACE features)
+- **SPFx 1.22+** (the modern SPFx CLI + Heft toolchain; older 1.18–1.21 still works for ACEs but is on the legacy Yeoman + Gulp path)
 - **Node.js 20.x LTS** — use `nvm` to manage versions
 - **SPFx CLI** (`@microsoft/spfx-cli`) for SPFx 1.22+ (or Yeoman for legacy projects)
 - **Microsoft 365 developer tenant** with Viva Connections enabled
@@ -289,3 +289,5 @@ this.quickViewNavigator.close();
 - **AI-generated card content** — Integration point for Copilot-generated summaries in ACE card views
 
 Viva Connections ACEs are the most direct way for SPFx developers to impact the daily experience of every employee in an organization. With mobile-first usage growing and Viva becoming the default Teams home page, the investment in learning ACEs pays dividends quickly.
+
+**Related reading:** Wire your card actions into business logic with [Power Platform custom connectors](/blog/power-platform-custom-connectors-rest-api-guide-2026), or layer in declarative Copilot agents using the [Microsoft 365 Agents Toolkit](/blog/building-copilot-declarative-agents-teams-toolkit).
