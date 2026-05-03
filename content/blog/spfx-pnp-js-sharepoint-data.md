@@ -1,7 +1,7 @@
 ---
 title: "PnP JS in SPFx: Read and Write SharePoint Data (2026)"
 slug: spfx-pnp-js-sharepoint-data
-excerpt: "Master PnP JS for CRUD operations, filtering, batching, and error handling in SharePoint. Write cleaner TypeScript with fluent APIs instead of raw REST."
+excerpt: "PnP JS for SPFx in 2026 — CRUD, filtering, batching, and error handling for SharePoint with cleaner TypeScript than raw REST."
 date: "2026-02-10"
 displayDate: "February 10, 2026"
 readTime: "12 min read"
@@ -463,7 +463,7 @@ A: Use paging with batching. Retrieve items in smaller chunks using `skip()` and
 
 **Q: What's the difference between PnP JS and the Graph API?**
 
-A: PnP JS wraps the SharePoint REST API with a fluent interface. The Graph API is Microsoft's unified API for Microsoft 365. Use PnP JS for SharePoint-specific operations; use Graph for cross-Microsoft-365 scenarios like calendar, mail, or organizational data.
+A: PnP JS wraps the SharePoint REST API with a fluent interface. The Graph API is Microsoft's unified API for Microsoft 365. Use PnP JS for SharePoint-specific operations; use Graph for cross-Microsoft-365 scenarios like calendar, mail, or organizational data. For Graph from inside SPFx, see [Microsoft Graph API: getting started](/blog/microsoft-graph-api-getting-started).
 
 ## Next Steps
 
@@ -472,4 +472,5 @@ You now have the foundations to read, write, filter, batch, and handle errors wi
 - Explore the [PnP JS GitHub](https://github.com/pnp/pnpjs) repository for advanced patterns
 - Combine PnP JS with [Fluent UI for polished web parts](/blog/spfx-fluent-ui-v9-web-parts-migration-guide-2026)
 - Modernize your build toolchain with [the Heft migration guide](/blog/spfx-migrate-gulp-heft-webpack-2026)
+- Cut request volume with [Microsoft Graph $batch requests](/blog/microsoft-graph-batch-requests-combine-api-calls-2026) when you need cross-Microsoft-365 data
 - Check the [official PnP JS docs](https://pnp.github.io/pnpjs/) for the latest updates
