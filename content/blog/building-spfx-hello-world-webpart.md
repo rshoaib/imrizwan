@@ -1,7 +1,7 @@
 ---
 title: "Build Your First SPFx Web Part: Hello World Guide (2026)"
 slug: building-spfx-hello-world-webpart
-excerpt: "Create and deploy your first SharePoint Framework web part using the modern SPFx CLI with Heft. Works in SharePoint, Teams, and Viva."
+excerpt: "Build your first SPFx web part in 2026 — the modern SPFx CLI + Heft toolchain, Node 20+, deployable to SharePoint, Teams, and Viva."
 date: "2026-02-18"
 displayDate: "February 18, 2026"
 readTime: "15 min read"
@@ -261,3 +261,4 @@ Now that you have a working Hello World web part, here are some paths to level u
 - **Modernize your toolchain** — Understand the architecture behind Heft and Webpack. See our guide on [migrating from Gulp to Heft and Webpack](/blog/spfx-migrate-gulp-heft-webpack-2026) for the latest approach.
 - **Build for Viva Connections** — Extend your skills beyond web parts by [creating Adaptive Card Extensions for Viva Connections](/blog/building-viva-connections-adaptive-card-extensions-spfx).
 - **Add a global header or footer** — Use an [SPFx Application Customizer to inject headers and footers](/blog/spfx-application-customizer-header-footer-sharepoint-2026) across your entire SharePoint site.
+- **Polish the UI** — Once your web part renders, swap inline styles for [Fluent UI v9 components](/blog/spfx-fluent-ui-v9-web-parts-migration-guide-2026) to match the modern Microsoft 365 look.
