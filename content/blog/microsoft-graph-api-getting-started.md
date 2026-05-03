@@ -1,7 +1,7 @@
 ---
 title: "Getting Started with Microsoft Graph API in 2026"
 slug: microsoft-graph-api-getting-started
-excerpt: "Master Microsoft Graph: the unified API for M365 data. Learn authentication, make your first call, explore endpoints, and integrate with Power Automate."
+excerpt: "Microsoft Graph API getting started for 2026 — Entra ID app registration, your first call, common endpoints, and Power Automate integration."
 date: "2026-02-12"
 displayDate: "February 12, 2026"
 readTime: "9 min read"
@@ -125,9 +125,9 @@ The **[Graph Explorer](https://developer.microsoft.com/graph/graph-explorer)** i
 
 This is invaluable for exploration. You can see the JSON structure before you write a single line of code, test pagination, filter results with query parameters (`$filter`, `$select`), and verify you have the right permissions. If you get a `401` or `403` error, the response tells you what permission is missing.
 
-Before writing a single line of code, you can also easily test endpoints and view exact permission scopes using the **[Microsoft Graph API Explorer Lite](/tools/graph-api-explorer)** tool. It’s perfect for exploring the JSON structures without needing an active Entra ID tenant token.
+Before writing a line of production code, drive each endpoint in Graph Explorer to see the response shape and confirm the exact permission scope you need. It saves a lot of round-trips to the docs.
 
-Once you’re comfortable with these endpoints, you can put them to practical use inside SharePoint Framework solutions. Our guide on [using the Graph API in SPFx for user profiles and Teams data](/blog/microsoft-graph-api-spfx-user-profiles-teams) walks through a real-world example. You can also leverage Graph in modern Microsoft 365 scenarios like [SharePoint Embedded for document management](/blog/sharepoint-embedded-developer-guide-2026).
+Once you’re comfortable with these endpoints, you can put them to practical use inside SharePoint Framework solutions. Our guide on [using the Graph API in SPFx for user profiles and Teams data](/blog/microsoft-graph-api-spfx-user-profiles-teams) walks through a real-world example. You can also leverage Graph in modern Microsoft 365 scenarios like [SharePoint Embedded for document management](/blog/sharepoint-embedded-developer-guide-2026). When you start scaling — combine calls with [Graph $batch requests](/blog/microsoft-graph-batch-requests-combine-api-calls-2026) and use [delta query for incremental sync](/blog/microsoft-graph-delta-query-incremental-sync-2026).
 
 ## Error Handling and Common Status Codes
 
@@ -140,7 +140,7 @@ Graph doesn’t always succeed on the first try. Here’s what common HTTP statu
 | `401` | Unauthorized | Your token is missing, invalid, or expired. Refresh your token and retry. |
 | `403` | Forbidden | You’re authenticated but don’t have permission to access this resource. Check your scopes in Microsoft Entra ID. |
 | `404` | Not Found | The endpoint or resource doesn’t exist. Double-check the endpoint URL and IDs. |
-| `429` | Too Many Requests | You’ve hit the rate limit. Implement exponential backoff and retry after the `Retry-After` header. |
+| `429` | Too Many Requests | You’ve hit the rate limit. Implement exponential backoff and retry after the `Retry-After` header — see [Surviving Graph throttling](/blog/microsoft-graph-throttling-survive-429-retry-backoff-2026). |
 | `500` | Internal Server Error | Microsoft’s servers had an issue. Retry after a delay; if it persists, check the [Microsoft 365 status page](https://status.office365.com). |
 
 **Pro tip**: Always read the error response body. Graph returns a detailed error message in JSON, often including which permission you’re missing or what field is invalid:
