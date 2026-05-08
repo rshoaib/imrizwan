@@ -1,5 +1,5 @@
 ---
-title: "SPFx Form Customizer Extensions in 2026: Modernize SharePoint List Forms with React"
+title: "SPFx Form Customizer Extensions: Modern List Forms (2026)"
 slug: spfx-form-customizer-extensions-modernize-sharepoint-list-forms-2026
 excerpt: "Replace SharePoint's default new/edit/view forms with a custom React UI using SPFx Form Customizer extensions — practical 2026 guide with full code."
 date: "2026-05-01T09:00:00.000Z"

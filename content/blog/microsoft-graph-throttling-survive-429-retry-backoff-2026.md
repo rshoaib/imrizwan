@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Graph Throttling: Survive 429s with Smart Retry, Backoff, and Caching (2026)"
+title: "Microsoft Graph Throttling: Surviving 429s in 2026"
 slug: microsoft-graph-throttling-survive-429-retry-backoff-2026
 excerpt: "Microsoft Graph throttles aggressively in production. Build a retry-with-backoff layer, respect Retry-After, reduce call volume, and avoid the patterns that get you blocked."
 date: "2026-04-30T13:00:00.000Z"
