@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Graph $batch Requests: Combine Up to 20 API Calls in One Round Trip (2026)"
+title: "Microsoft Graph $batch: 20 API Calls in One Request (2026)"
 slug: microsoft-graph-batch-requests-combine-api-calls-2026
 excerpt: "Combine up to 20 Microsoft Graph API calls in a single HTTP request with $batch. Sequencing, dependsOn, error handling, and 2026 production patterns."
 date: "2026-04-30T09:00:00.000Z"
