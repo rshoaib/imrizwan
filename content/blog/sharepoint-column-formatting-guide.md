@@ -217,3 +217,7 @@ Click the column header → Column settings → Format this column → Clear for
 - [Microsoft Lists JSON Formatting Complete Guide (2026)](/blog/microsoft-lists-json-formatting-complete-guide-2026)
 - [Power Apps Canvas App & SharePoint: Complete Guide](/blog/power-apps-canvas-app-sharepoint-complete-guide)
    
+
+## When forms need full custom UI
+
+Column formatting handles the *display* side. When the new/edit/view forms themselves need a custom React UI, [SPFx Form Customizer Extensions: Modern List Forms (2026)](/blog/spfx-form-customizer-extensions-modernize-sharepoint-list-forms-2026) is the next step — full control over validation, layout, and data flow.

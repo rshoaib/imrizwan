@@ -142,6 +142,10 @@ Schedule quarterly reviews:
 - [ ] Update restricted site list
 - [ ] Refresh retention policies
 
+## SharePoint-specific governance
+
+If the bulk of your Copilot surface is in SharePoint, the [M365 Copilot Governance Checklist for SharePoint Admins](/blog/sharepoint-ai-copilot-governance-checklist-2026) goes one level deeper into site-collection-level controls and sensitivity labels.
+
 ## Copilot Governance Checklist
 
 | Control | Priority | Status |

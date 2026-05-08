@@ -293,6 +293,10 @@ export default class GraphWebPart extends BaseClientSideWebPart {
 
 ---
 
+## Where to deploy this
+
+If you're putting a Graph-backed web app behind authentication, [Azure Static Web Apps with Microsoft Graph](/blog/azure-static-web-apps-microsoft-graph-2026) walks through the deployment side — managed identity, route-level auth, and the API conventions Static Web Apps expects.
+
 ## FAQ
 
 ### What is the difference between delegated and application permissions?

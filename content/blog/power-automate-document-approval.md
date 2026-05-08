@@ -153,6 +153,10 @@ Use a **Configure run after** setting on key actions to catch failures:
 - If **Post message in a chat or channel** fails, send a fallback email notification
 - Always include a final "If flow fails" action to notify the flow owner
 
+## Customizing the form itself
+
+Approvals are only as good as the data captured up front. If the default SharePoint forms aren't doing it, [SPFx Form Customizer Extensions: Modern List Forms (2026)](/blog/spfx-form-customizer-extensions-modernize-sharepoint-list-forms-2026) shows how to swap them for a fully custom React UI.
+
 ## Multi-Level Approvals
 
 Sometimes you need sequential approvals—manager approves first, then director. Here's the pattern:
