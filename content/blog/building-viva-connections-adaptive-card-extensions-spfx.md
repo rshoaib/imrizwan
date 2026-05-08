@@ -1,7 +1,7 @@
 ---
-title: "Building Viva Connections Adaptive Card Extensions in SPFx (2026)"
+title: "Viva Connections Adaptive Card Extensions (ACE) Guide"
 slug: building-viva-connections-adaptive-card-extensions-spfx
-excerpt: "Build Viva Connections Adaptive Card Extensions (ACEs) with SPFx 1.22+ in 2026 — interactive dashboard widgets without a dedicated backend API."
+excerpt: "Build Viva Connections Adaptive Card Extensions with SPFx — card view, quick view, and the Microsoft 365 dashboard integration patterns."
 date: "2026-03-02"
 displayDate: "March 2, 2026"
 readTime: "14 min read"

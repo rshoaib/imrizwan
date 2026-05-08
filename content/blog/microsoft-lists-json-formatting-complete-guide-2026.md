@@ -1,7 +1,7 @@
 ---
 title: "Microsoft Lists JSON Formatting: Complete Guide (2026)"
 slug: microsoft-lists-json-formatting-complete-guide-2026
-excerpt: "Master column, view, and form formatting in Microsoft Lists with copy-paste JSON examples. 2,100+ PnP community samples included."
+excerpt: "Microsoft Lists JSON column and view formatting — schemas, conditional formatting, action buttons, and 2026 examples that actually render."
 date: "2026-04-07"
 displayDate: "April 7, 2026"
 readTime: "18 min read"

@@ -1,7 +1,7 @@
 ---
-title: "Microsoft Graph Connectors: Index External Content for Copilot and Microsoft Search (2026)"
+title: "Microsoft Graph Connectors for Copilot & Search (2026)"
 slug: microsoft-graph-connectors-copilot-search-guide-2026
-excerpt: "Build a Microsoft Graph connector that indexes external content into Microsoft Search and Copilot. Schema design, ingestion code, ACLs, and 2026-era best practices."
+excerpt: "Index external content for Microsoft Search and Copilot grounding — schemas, ingestion, ACLs, and incremental crawls in 2026."
 date: "2026-04-25T09:00:00.000Z"
 displayDate: "April 25, 2026"
 readTime: "13 min read"

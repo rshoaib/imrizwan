@@ -1,7 +1,7 @@
 ---
-title: "Microsoft Graph Toolkit: Build M365-Powered Web Apps with Zero Backend Code (2026)"
+title: "Microsoft Graph Toolkit: M365 Web Apps Guide (2026)"
 slug: microsoft-graph-toolkit-web-apps-guide-2026
-excerpt: "Learn how to use Microsoft Graph Toolkit components to display people, files, calendars, and tasks from Microsoft 365 in any web app — with full code examples and authentication setup."
+excerpt: "Build M365-powered web apps fast with Microsoft Graph Toolkit components — auth, people, files, calendar, and Teams in minutes."
 date: "2026-04-13T08:00:00.000Z"
 displayDate: "April 13, 2026"
 readTime: "8 min read"

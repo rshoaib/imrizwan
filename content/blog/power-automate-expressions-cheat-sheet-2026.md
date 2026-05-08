@@ -1,7 +1,7 @@
 ---
-title: "Power Automate Expressions Reference"
+title: "Power Automate Expressions Cheat Sheet (2026)"
 slug: power-automate-expressions-cheat-sheet-2026
-excerpt: "Essential Power Automate expressions cheat sheet with 50+ functions, quick reference guide, and copy-paste formulas for string, date, and logic operations."
+excerpt: "50+ Power Automate expressions you'll actually use. Quick reference with copy-paste formulas for strings, dates, conditionals, and arrays."
 date: "2026-04-03"
 displayDate: "April 3, 2026"
 readTime: "12 min read"

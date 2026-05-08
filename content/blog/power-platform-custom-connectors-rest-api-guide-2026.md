@@ -1,7 +1,7 @@
 ---
-title: "Building Custom Connectors in Power Platform: Connect Any REST API (2026)"
+title: "Power Platform Custom Connectors: Any REST API (2026)"
 slug: power-platform-custom-connectors-rest-api-guide-2026
-excerpt: "Step-by-step guide to building custom connectors in Power Platform. Connect any REST API to Power Apps and Power Automate with authentication, actions, and real-world examples."
+excerpt: "Wrap any REST API as a Power Platform custom connector — OpenAPI definition, auth, policies, certification, and working examples for 2026."
 date: "2026-04-17T08:00:00.000Z"
 displayDate: "April 17, 2026"
 readTime: "8 min read"

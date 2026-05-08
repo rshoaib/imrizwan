@@ -1,7 +1,7 @@
 ---
-title: "Master Graph API Authentication"
+title: "Microsoft Graph API Authentication Guide (2026)"
 slug: microsoft-graph-api-authentication-guide
-excerpt: "Complete Microsoft Graph API authentication guide. App registration, OAuth flows, permissions, and MSAL setup with working code examples."
+excerpt: "Microsoft Graph API authentication: app registration, OAuth flows, MSAL setup, and permissions — with working code examples for 2026."
 date: "2026-03-27"
 displayDate: "March 29, 2026"
 readTime: "12 min read"

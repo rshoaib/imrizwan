@@ -1,7 +1,7 @@
 ---
-title: "Migrate SPFx from Gulp to Heft & Webpack"
+title: "Migrate SPFx from Gulp to Heft & Webpack (2026)"
 slug: spfx-migrate-gulp-heft-webpack-2026
-excerpt: "Migrate SPFx from Gulp to Heft build system and significantly speed up your builds. Complete step-by-step migration guide for SPFx projects in 2026."
+excerpt: "Step-by-step SPFx migration off Gulp to the new Heft + Webpack toolchain — gotchas, breaking changes, and a working sample for 2026."
 date: "2026-03-13"
 displayDate: "March 13, 2026"
 readTime: "6 min read"

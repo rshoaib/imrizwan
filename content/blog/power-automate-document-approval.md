@@ -1,7 +1,7 @@
 ---
 title: "Power Automate: Approval Workflow (2026)"
 slug: power-automate-document-approval
-excerpt: "Build a complete document approval workflow triggered on SharePoint uploads, with approval actions, conditional branching, and Teams notifications."
+excerpt: "Build a Power Automate document approval flow end-to-end — SharePoint trigger, approver routing, parallel branches, and notifications."
 date: "2026-02-16"
 displayDate: "February 16, 2026"
 readTime: "10 min read"

@@ -1,7 +1,7 @@
 ---
-title: "Microsoft Graph Change Notifications: Real-Time Webhooks Guide (2026)"
+title: "Microsoft Graph Change Notifications & Webhooks (2026)"
 slug: microsoft-graph-change-notifications-webhooks-guide-2026
-excerpt: "Subscribe to Microsoft Graph change notifications and react to mailbox, drive, and Teams events in real time. Full webhook setup, validation, and lifecycle handling."
+excerpt: "Real-time Graph webhooks: subscribe, validate, renew, and handle change notifications for mail, calendar, drives, and Teams in 2026."
 date: "2026-04-24T09:00:00.000Z"
 displayDate: "April 24, 2026"
 readTime: "12 min read"
