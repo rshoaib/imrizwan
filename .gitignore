@@ -36,3 +36,7 @@ tsconfig.tsbuildinfo
 
 # Claude Code / Cowork session state
 .claude/
+
+# Credentials and service account keys
+.gsc-service-account.json
+*-service-account.json
