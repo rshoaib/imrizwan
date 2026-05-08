@@ -266,6 +266,10 @@ Does the user need to download documents?
   → No → View Only
 ```
 
+## When Copilot enters the picture
+
+Copilot inherits permissions but expands what's effectively *exposed* through search and grounding. The [M365 Copilot Governance Checklist for SharePoint Admins](/blog/sharepoint-ai-copilot-governance-checklist-2026) is the companion read once your permission model is locked down.
+
 ## Tools for Permission Management
 
 Here are tools I use regularly for SharePoint permission management:

@@ -302,6 +302,8 @@ A handful of mistakes show up over and over in support tickets and pull request 
 
 ## When NOT to Use $batch
 
+`$batch` is for combining many small calls. For the opposite problem — one large payload that's too big for a single PUT — use [Microsoft Graph Large File Uploads with createUploadSession](/blog/microsoft-graph-large-file-uploads-upload-session-2026), which covers chunking, resumable transfers, and 4 MiB alignment.
+
 Bundling is not free. There are three cases where you should keep calls separate:
 
 - **Long-running operations.** If one of your inner requests takes 30+ seconds (a large search, a heavy `$expand`), the whole batch waits on it. The other 19 results are held until the slow one finishes. Pull slow operations out and run them parallel to the batch.

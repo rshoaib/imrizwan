@@ -154,6 +154,10 @@ Graph doesn’t always succeed on the first try. Here’s what common HTTP statu
 }
 ```
 
+## Deploying your Graph app
+
+When you're ready to ship, [Azure Static Web Apps with Microsoft Graph](/blog/azure-static-web-apps-microsoft-graph-2026) covers a deployment path that pairs nicely with the patterns above — auth, managed identity, and API routes in one place.
+
 ## FAQ
 
 ### Do I need an Azure subscription to use Microsoft Graph?

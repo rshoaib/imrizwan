@@ -249,6 +249,10 @@ For deeper visibility into tenant-level health, the Microsoft 365 admin center e
 
 ---
 
+## Throttling and large uploads
+
+Large file uploads have their own throttling profile. Pair the retry/backoff layer here with [Microsoft Graph Large File Uploads with createUploadSession](/blog/microsoft-graph-large-file-uploads-upload-session-2026), which covers chunking and the upload-session conventions that play well with retries.
+
 ## Common Pitfalls
 
 **Retrying too fast.** The most common bug. Hard-coded 1-second waits, exponential backoff that starts at 100 ms, parallel retries that fire ten copies of the same request — all of these dig you a deeper hole. Read `Retry-After`. Honor it.
