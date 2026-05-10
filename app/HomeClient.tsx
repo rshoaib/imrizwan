@@ -6,18 +6,28 @@ import Image from 'next/image'
 import type { BlogPost } from '@/lib/blogService'
 import { tools } from '@/data/tools'
 
-/* ── Animated counter hook ── */
+/* ── Animated counter hook ──
+ * SSR-friendly: initializes at the target value so the server-rendered HTML
+ * shows the real number (good for SEO and prevents the 0+/0+/0+/0 snapshot).
+ * After mount, resets to 0 and animates up to target when the card scrolls
+ * into view, preserving the count-up effect for human visitors.
+ */
 function useCounter(target: number, duration = 1200) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(target)
   const ref = useRef<HTMLDivElement>(null)
+  const startedRef = useRef(false)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
 
+    // Reset to 0 only on the client, after hydration, so SSR snapshot stays accurate.
+    setCount(0)
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !startedRef.current) {
+          startedRef.current = true
           const start = performance.now()
           const step = (now: number) => {
             const elapsed = now - start
@@ -113,10 +123,10 @@ export default function HomeClient({ initialPosts }: { initialPosts: BlogPost[] 
             <div className="dashboard__identity">
               <div className="dashboard__name-row">
                 <h1 className="dashboard__name">
-                  <span className="gradient-text">Rizwan</span>
+                  <span className="gradient-text">SharePoint, SPFx &amp; Power Platform Developer</span>
                 </h1>
               </div>
-              <p className="dashboard__role">SharePoint &amp; Power Platform Developer</p>
+              <p className="dashboard__role">Hi, I&rsquo;m Rizwan — Microsoft 365 developer building SPFx web parts, Power Automate flows, and Microsoft Graph integrations.</p>
             </div>
           </div>
           <div className="dashboard__banner-right">

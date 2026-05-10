@@ -2,10 +2,60 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About Rizwan — SharePoint & Power Platform Developer',
   description:
-    'Rizwan is a SharePoint & Power Platform developer with 5+ years of enterprise experience in SPFx, Power Automate, and Microsoft 365 solutions.',
+    'Rizwan is a Microsoft 365 developer with 5+ years of enterprise experience in SPFx, Power Automate, Power Apps, and the Microsoft Graph API. Independent consultant building production solutions and free developer tools.',
   alternates: { canonical: '/about' },
+}
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Rizwan',
+  alternateName: 'Rizwan Shoaib',
+  url: 'https://imrizwan.com/about',
+  image: 'https://imrizwan.com/images/avatar.png',
+  jobTitle: 'SharePoint & Power Platform Developer',
+  description:
+    'Independent Microsoft 365 developer specializing in SharePoint Framework (SPFx), Power Platform, and Microsoft Graph API integrations.',
+  knowsAbout: [
+    'SharePoint Framework',
+    'SPFx',
+    'Microsoft Power Platform',
+    'Power Automate',
+    'Power Apps',
+    'Microsoft Graph API',
+    'SharePoint Online',
+    'Microsoft 365',
+    'Microsoft Teams Development',
+    'Entra ID',
+    'PnP JS',
+    'React',
+    'TypeScript',
+  ],
+  hasCredential: [
+    { '@type': 'EducationalOccupationalCredential', name: 'Microsoft 365 Certified: Developer Associate' },
+    { '@type': 'EducationalOccupationalCredential', name: 'SharePoint Framework Specialist' },
+    { '@type': 'EducationalOccupationalCredential', name: 'Power Platform Fundamentals' },
+  ],
+  sameAs: [
+    'https://github.com/nicegamer7',
+    'https://www.linkedin.com/in/rizwan-shoaib-b341b485/',
+  ],
+  worksFor: {
+    '@type': 'Organization',
+    name: 'ImRizwan',
+    url: 'https://imrizwan.com',
+  },
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://imrizwan.com' },
+    { '@type': 'ListItem', position: 2, name: 'About', item: 'https://imrizwan.com/about' },
+  ],
 }
 
 const skills = [
@@ -53,6 +103,14 @@ const timeline = [
 export default function AboutPage() {
   return (
     <div className="about">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <header suppressHydrationWarning className="about__header reveal">
         <div className="about__avatar">R</div>
         <h1 className="about__name">Rizwan</h1>

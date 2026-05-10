@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { inter, jetbrainsMono } from './fonts'
 import Header from '@/components/Header'
@@ -10,10 +10,16 @@ import './globals.css'
 const GA_ID = 'G-XF8F329XFD'
 const ADSENSE_CLIENT = 'ca-pub-3166995085202346'
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0f172a',
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://imrizwan.com'),
   title: {
-    default: 'Rizwan | Microsoft 365, SharePoint & Power Platform Developer',
+    default: 'Rizwan — SharePoint, SPFx & Power Platform Developer',
     template: '%s | ImRizwan',
   },
   description:
@@ -42,9 +48,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'vFCJmiQt9CxKIRs6l6f-DkldV1Rp8SVnC7WQOMLQFE8',
-  },
-  other: {
-    'theme-color': '#0f172a',
   },
 }
 
