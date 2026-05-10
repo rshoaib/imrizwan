@@ -1,5 +1,6 @@
 import { getAllPosts } from '@/lib/blogService'
 import { tools } from '@/data/tools'
+import { m365Errors, errorSlug } from '@/data/errors'
 import type { MetadataRoute } from 'next'
 
 const SITE_URL = 'https://imrizwan.com'
@@ -11,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
         { url: `${SITE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
         { url: `${SITE_URL}/tools`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+        { url: `${SITE_URL}/errors`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
         { url: `${SITE_URL}/projects`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
         { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
         { url: `${SITE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
@@ -24,6 +26,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }))
 
+    const errorPages: MetadataRoute.Sitemap = m365Errors.map((err) => ({
+        url: `${SITE_URL}/errors/${errorSlug(err)}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+    }))
+
     const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
         url: `${SITE_URL}/blog/${post.slug}`,
         lastModified: new Date(post.date),
@@ -31,5 +40,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }))
 
-    return [...staticPages, ...toolPages, ...blogPages]
+    return [...staticPages, ...toolPages, ...errorPages, ...blogPages]
 }

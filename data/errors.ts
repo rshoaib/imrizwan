@@ -7,6 +7,12 @@ export interface M365Error {
   rootCause: string
   solution: string[]
   matchKeywords: string[]
+  /** Optional Microsoft Learn / official docs URL for this error. */
+  docsUrl?: string
+  /** Optional list of related error `id`s, used for cross-linking on the detail page. */
+  relatedCodes?: string[]
+  /** ISO date the entry was last reviewed. Used for Article datePublished/dateModified. */
+  reviewed?: string
 }
 
 export const m365Errors: M365Error[] = [
@@ -148,3 +154,12 @@ export const m365Errors: M365Error[] = [
     matchKeywords: ['aadsts50011', 'reply url', 'redirect_uri', 'does not match']
   }
 ]
+
+/**
+ * Returns the URL slug for an M365Error.
+ * Uses the `id` field (already lowercase + hyphenated) so URLs stay stable
+ * even if the human-facing `code` field is renamed.
+ */
+export function errorSlug(err: M365Error): string {
+  return err.id.toLowerCase()
+}
