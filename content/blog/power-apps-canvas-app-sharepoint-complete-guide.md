@@ -4,7 +4,8 @@ slug: power-apps-canvas-app-sharepoint-complete-guide
 excerpt: "Build Power Apps canvas apps connected to SharePoint: data setup, interactive forms, advanced filters, and search functionality."
 date: "2026-03-01"
 displayDate: "March 1, 2026"
-readTime: "10 min read"
+updated_at: "2026-05-12"
+readTime: "16 min read"
 image: "/images/blog/sharepoint-rest-api-cheatsheet.png"
 category: "Power Platform"
 tags:
@@ -313,6 +314,165 @@ Concurrent(
 ```
 
 This loads all your data sources in parallel instead of sequentially, cutting load time significantly.
+
+## Connecting Multiple SharePoint Lists
+
+Most real apps pull from more than one list. Power Apps handles this differently from relational databases — there are no native joins, but there are patterns that work reliably.
+
+### Setting Up Related Lists
+
+Continuing the Project Tracker example, add a **Departments** list with two columns: `Title` (department name) and `BudgetCode` (single line of text). Then add a **Department** Lookup column to your Project Tracker list pointing at the Departments list.
+
+> **Gotcha:** Power Apps supports a maximum of two lookup levels in a single query. Nesting a lookup inside another lookup is the most common cause of unexpected delegation warnings. See [Link lists using a lookup column](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/sharepoint-lookup-fields) for the supported shapes.
+
+### Cascading Dropdowns
+
+A common pattern: when a user picks a department, filter a second dropdown to show only that department's projects. Add a **DepartmentFilter** Dropdown on BrowseScreen1:
+
+```
+// DepartmentFilter.Items — load all departments:
+Departments
+```
+
+Update the gallery's **Items** property to cascade the filter:
+
+```
+SortByColumns(
+    Filter(
+        'Project Tracker',
+        DepartmentFilter.Selected.Title = "All" ||
+        Department.Value = DepartmentFilter.Selected.Title,
+        StartsWith(Title, TextSearchBox1.Text) || TextSearchBox1.Text = ""
+    ),
+    "DueDate",
+    SortOrder.Ascending
+)
+```
+
+### Pre-Loading Related Data for Gallery Performance
+
+Avoid calling `LookUp()` live per gallery row — each row fires a separate network request. Instead, load both lists into local collections at startup and reference the cached copy:
+
+```
+// App.OnStart — load both lists in parallel:
+Concurrent(
+    ClearCollect(colProjects, 'Project Tracker'),
+    ClearCollect(colDepartments, Departments)
+);
+```
+
+Then in the gallery, resolve the related department name client-side:
+
+```
+// Department label in gallery row:
+LookUp(colDepartments, ID = ThisItem.Department.Id).Title
+```
+
+Resolving 100 gallery rows drops from 100 separate network calls to zero — the lookup runs against the local collection already in memory.
+
+### Canvas App vs Model-Driven App vs SPFx Web Part
+
+| Requirement | Canvas App | Model-Driven App | SPFx Web Part |
+|---|---|---|---|
+| SharePoint list as primary store | ✅ Best fit | ❌ Requires Dataverse | ✅ Supported |
+| Complex many-to-many relationships | ⚠️ Workarounds needed | ✅ Native | ✅ Custom code |
+| Pixel-perfect custom UI | ✅ Full control | ❌ Limited | ✅ Full control |
+| Field-level security | ❌ | ✅ Dataverse | ✅ Custom |
+| Works without Premium license | ✅ | ❌ | ✅ |
+| Offline mobile support | ⚠️ Limited | ✅ (Dataverse) | ❌ |
+| TypeScript/React required | ❌ | ❌ | ✅ |
+| External tenant sharing | ✅ Guest access | ⚠️ | ✅ |
+
+Use Canvas Apps for SharePoint-backed tools where speed of delivery matters. Switch to Dataverse + Model-Driven when you need enforced relationships, server-side business rules, or field-level permissions.
+
+---
+
+## Pagination for Large SharePoint Lists
+
+The 2000-item delegation limit is the most misunderstood constraint in Power Apps. Here's exactly what happens and how to work around it at each scale.
+
+### What Really Happens Past 2,000 Items
+
+When a `Filter()` formula is delegable, SharePoint evaluates it server-side and returns only matching rows. When it is not delegable, Power Apps:
+
+1. Downloads the first 2,000 items (your configured data row limit)
+2. Applies the formula client-side on those rows
+3. Returns the result — silently dropping all items above position 2,000
+
+There is no error. An app that filters correctly with 50 items can silently miss records in production with 5,000. Always test with production-scale data volumes.
+
+### The 5,000-Item List View Threshold
+
+SharePoint enforces a hard List View Threshold at 5,000 items. Any query that cannot use an index will be blocked server-side with:
+
+```
+Microsoft.SharePoint.Client.ServerException: The attempted operation is prohibited 
+because it exceeds the list view threshold enforced by the administrator.
+```
+
+To prevent this, index every column you use in `Filter()` or `Sort()`:
+
+1. Go to **List Settings** → **Indexed Columns** → **Create a new index**
+2. Add indexes on: `Status`, `Priority`, `DueDate`, `AssignedTo`
+
+Indexed columns turn full-table scans into index seeks — queries stay fast and stay below the threshold even with tens of thousands of items. See [Performance considerations for Power Apps](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/app-performance-considerations) for the full checklist.
+
+### ID-Based Cursor Pagination (Delegable)
+
+The `Skip()` function is not delegable with SharePoint, so offset-based pagination silently breaks. The correct pattern uses an ID cursor — delegable and reliable:
+
+```powerfx
+// App.OnStart — load first page:
+Set(varPageSize, 100);
+Set(varLastID, 0);
+ClearCollect(colProjects,
+    FirstN(
+        Filter('Project Tracker', ID > varLastID),
+        varPageSize
+    )
+);
+```
+
+Add a **Load More** button with this `OnSelect`:
+
+```powerfx
+// Load the next page after the last loaded ID:
+Collect(colProjects,
+    FirstN(
+        Filter('Project Tracker', ID > Last(colProjects).ID),
+        varPageSize
+    )
+);
+```
+
+Because `Filter('List', ID > n)` is delegable with SharePoint, the server evaluates it and returns exactly the next batch — no silent truncation.
+
+Show a progress indicator:
+
+```powerfx
+// Label showing how many items are loaded:
+Text(CountRows(colProjects)) & " items loaded"
+```
+
+### Scale Decision Matrix
+
+| List Size | Recommended Strategy |
+|---|---|
+| < 2,000 items | `ClearCollect()` on App.OnStart — cache everything locally |
+| 2,000–5,000 items | Delegable `Filter()` + indexed columns, increase data row limit to 2000 in Settings |
+| 5,000–20,000 items | ID-cursor pagination pattern above, mandatory column indexes |
+| 20,000+ items | Migrate to Dataverse or call SharePoint REST API via HTTP connector with `$skiptoken` OData paging |
+
+For the REST API approach on very large lists, use the `@odata.nextLink` value returned in each response page as your `$skiptoken` — true server-side paging with no client-side truncation.
+
+### Reference Documentation
+
+- [Understand delegation in Power Apps](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/delegation-overview) — which functions are delegable with SharePoint
+- [Link lists using a lookup column](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/sharepoint-lookup-fields) — supported lookup shapes and limits
+- [Connect to SharePoint from a canvas app](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/connections/connection-sharepoint-online) — connector reference including column type support
+- [Performance considerations for canvas apps](https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/app-performance-considerations) — official Microsoft optimization guide
+
+---
 
 ## My Recommendations
 
