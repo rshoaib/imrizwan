@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: Request) {
-  const { email } = await request.json()
-
-  if (!email || typeof email !== 'string') {
-    return NextResponse.json({ error: 'Email is required' }, { status: 400 })
+export async function POST(req: NextRequest) {
+  try {
+    const { email } = await req.json()
+    if (!email || !email.includes('@')) {
+      return NextResponse.json({ ok: false, error: 'Invalid email' }, { status: 400 })
+    }
+    // TODO: integrate with email provider (Resend, Mailchimp, etc.)
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 })
   }
-
-  // TODO: Wire to your preferred email service (Mailchimp, ConvertKit, Resend, etc.)
-  console.log('[newsletter] New subscriber:', email)
-
-  return NextResponse.json({ ok: true })
 }

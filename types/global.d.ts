@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 interface Window {
-    gtag: (...args: any[]) => void
-    adsbygoogle: any[]
-    dataLayer: any[]
+  gtag: (...args: unknown[]) => void
+  adsbygoogle: unknown[]
+  dataLayer: unknown[]
 }
