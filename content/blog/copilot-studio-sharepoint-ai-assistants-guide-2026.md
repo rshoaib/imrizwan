@@ -18,7 +18,7 @@ tags:
 
 ## Why Copilot Studio for SharePoint?
 
-Microsoft Copilot Studio is a low-code platform for building AI agents (chatbots) that connect to your organization’s data. When combined with SharePoint, these agents can:
+Microsoft Copilot Studio is a low-code platform for building AI agents (chatbots) that connect to your organization's data. When combined with SharePoint, these agents can:
 
 - **Answer questions** from documents stored in SharePoint libraries
 - **Search across multiple sites** to find policies, procedures, and knowledge base articles
@@ -114,7 +114,7 @@ This agent searches across **multiple SharePoint sites** — useful for organiza
 In the Knowledge tab, add multiple SharePoint sources:
 
 | Knowledge Source | SharePoint URL | Purpose |
-|-----------------|----------------|---------|
+|-----------------|----------------|-------|
 | HR Policies | /sites/HR | Benefits, leave, onboarding |
 | IT Knowledge Base | /sites/ITSupport | Troubleshooting, access requests |
 | Legal Compliance | /sites/Legal | Contracts, compliance docs |
@@ -317,4 +317,3 @@ You have seen how to build 3 types of agents — from a simple FAQ bot to a work
 For more Microsoft 365 development, check out my guides on [building SPFx web parts](/blog/spfx-pnp-js-sharepoint-data), [Microsoft Graph API examples](/blog/microsoft-graph-api-getting-started), and [Power Automate workflows](/blog/power-automate-document-approval). To extend your agents to Viva Connections dashboards, see my [Adaptive Card Extensions guide](/blog/building-viva-connections-adaptive-card-extensions-spfx).
 
 Before deploying to production, review the [Enterprise Governance Checklist for SharePoint and AI](/blog/enterprise-governance-sharepoint-ai-developer-checklist) to ensure your AI assistants meet compliance requirements and follow best practices for data classification and access control.
-
