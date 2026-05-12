@@ -74,7 +74,7 @@ The CLI creates a complete project structure with modern tooling (Heft, Webpack,
 Here's what SPFx scaffolds for you:
 
 | Folder | Purpose |
-|--------|----------|
+|--------|---------|
 | `src/` | TypeScript/React source files |
 | `src/webparts/HelloWorld/` | Your web part component and manifest |
 | `lib/` | Compiled JavaScript (generated on build) |

@@ -65,7 +65,7 @@ Get-PnPTenantSite | ForEach-Object {
 Apply Microsoft Purview sensitivity labels to classify documents:
 
 | Label | Access Scope | Copilot Behavior |
-|-------|-------------|-----------------|
+|-------|-------------|------------------|
 | **Public** | Everyone | Copilot can reference freely |
 | **General** | All employees | Copilot can reference for employees |
 | **Confidential** | Specific groups | Copilot only surfaces for group members |
