@@ -144,7 +144,7 @@ export default function AdaptiveCardGeneratorClient() {
         </nav>
 
         <header className="tool-header">
-          <div className="tool-header__icon">🊴</div>
+          <div className="tool-header__icon">🎴</div>
           <h1 className="tool-header__title">Adaptive Card AI Generator</h1>
           <p className="tool-header__desc">
             Build and preview Adaptive Cards visually with JSON templates optimized for SPFx Viva Connections ACEs.
@@ -176,7 +176,7 @@ export default function AdaptiveCardGeneratorClient() {
                   onChange={(e) => { setJsonInput(e.target.value); trackToolUsage(); }}
                   className="formatter-textarea"
                   style={{ whiteSpace: 'pre', color: '#d4d4d4', fontFamily: 'monospace', height: '100%', padding: '1rem' }}
-                  spellCheck="false"
+                  spellCheck={false}
                 />
               </div>
             </div>
