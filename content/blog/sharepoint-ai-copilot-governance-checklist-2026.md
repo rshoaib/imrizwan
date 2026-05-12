@@ -117,4 +117,3 @@ The rush to implement AI must be balanced with strict, automated governance. By 
 
 - [Enterprise Governance Checklist for SharePoint and AI Developers](/blog/enterprise-governance-sharepoint-ai-developer-checklist) — A developer-focused companion covering code-level governance patterns and CI/CD enforcement.
 - [SharePoint Online Permissions Complete Guide](/blog/sharepoint-online-permissions-complete-guide) — Deep dive into the permission model that underpins everything discussed in this article.
-

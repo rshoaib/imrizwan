@@ -195,4 +195,3 @@ You can embed `<img>` tags and `<a>` tags inside your table cells. However, in O
   <a href="https://yoursite.sharepoint.com" style="color:#0563c1;text-decoration:none;">View Report</a>
 </td>
 ```
-

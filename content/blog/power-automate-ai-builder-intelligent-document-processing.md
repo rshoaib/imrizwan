@@ -112,7 +112,7 @@ Combine with Power Automate Approvals for procure-to-pay workflows with tiered a
 ## Real-World Performance Metrics
 
 | Metric | Before IDP | After IDP |
-|--------|-----------|-----------|
+|--------|-----------|----------|
 | Invoice processing time | 15-20 min/invoice | 30 seconds |
 | Error rate | 5-8% (human entry) | 1-2% (AI + human review) |
 | Monthly capacity | ~500 invoices/person | ~5,000 invoices/person |

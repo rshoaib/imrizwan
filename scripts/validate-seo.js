@@ -158,7 +158,7 @@ pages.forEach(validatePage);
 
 // Find and validate layouts
 const layouts = findLayoutFiles(appDir);
-console.log(`\n${BOLD}📐 Scanning ${layouts.length} layouts...${RESET}`);
+console.log(`\n${BOLD}\ud83d� Scanning ${layouts.length} layouts...${RESET}`);
 layouts.forEach(validateLayout);
 
 // Summary

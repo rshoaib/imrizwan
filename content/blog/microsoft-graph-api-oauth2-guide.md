@@ -128,4 +128,3 @@ The Microsoft Graph API is incredibly powerful, but unlocking it requires a soli
 
 - [Microsoft Graph API Authentication Guide](/blog/microsoft-graph-api-authentication-guide) — A broader look at authentication patterns beyond OAuth 2.0, including certificate-based auth and managed identities.
 - [Building a Copilot Declarative Agent with Teams Toolkit](/blog/building-copilot-declarative-agents-teams-toolkit) — Once you have authentication mastered, learn how to build AI agents that leverage Graph API data.
-
