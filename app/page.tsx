@@ -1,7 +1,8 @@
 import { getAllPosts } from '@/lib/blogService'
-import HomeClient from '@/components/HomeClient'
+import HomeClient from './HomeClient'
 
-export default async function HomePage() {
-  const posts = await getAllPosts()
-  return <HomeClient posts={posts} />
+export default async function Home() {
+  const allPosts = await getAllPosts()
+
+  return <HomeClient initialPosts={allPosts} />
 }
