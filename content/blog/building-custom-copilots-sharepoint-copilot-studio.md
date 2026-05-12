@@ -413,4 +413,3 @@ Microsoft's roadmap for Copilot Studio includes exciting capabilities:
 6. **Scale gradually** — Once proven, expand to additional sites and use cases
 
 Custom copilots are the most impactful way to deliver AI value in your Microsoft 365 environment. By grounding responses in curated SharePoint content and respecting existing permissions, you create AI assistants that are both powerful and trustworthy.
-

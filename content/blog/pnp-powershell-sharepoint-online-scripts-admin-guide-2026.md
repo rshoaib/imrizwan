@@ -494,7 +494,7 @@ $unlabeled | Export-Csv -Path "C:\Reports\UnlabeledSites.csv" -NoTypeInformation
 ## Quick Reference: Most-Used PnP Cmdlets
 
 | Cmdlet | Purpose |
-|--------|---------|
+|--------|--------|
 | `Connect-PnPOnline` | Authenticate to a SharePoint site |
 | `Get-PnPTenantSite` | List all site collections in the tenant |
 | `New-PnPSite` | Create team or communication sites |
