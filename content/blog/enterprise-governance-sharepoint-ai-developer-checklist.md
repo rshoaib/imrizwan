@@ -69,8 +69,6 @@ foreach ($site in $sites) {
 
 ### Script: Remove "Everyone" from the People Picker
 
-This is the single most impactful change you can make. It prevents users from accidentally sharing with the entire organization:
-
 ```powershell
 # Disable "Everyone except external users" in People Picker
 Set-PnPTenant -ShowEveryoneExceptExternalUsersClaim $false
@@ -82,8 +80,6 @@ Get-PnPTenant | Select ShowEveryoneExceptExternalUsersClaim
 > **Pro Tip:** After running this, existing permissions are NOT removed. You still need to clean up sites that already have "Everyone" access using the audit script above.
 
 ### Implementing Least Privilege
-
-The principle is simple: **users should only access what they need for their role**. In practice, this means:
 
 1. **Use Security Groups**, not individual sharing
 2. **Default to "Members" (Edit)** — avoid giving "Full Control" to non-owners
@@ -154,8 +150,6 @@ Sensitivity labels are the mechanism that tells Copilot **what it can and cannot
 
 ### The Label Hierarchy
 
-Design your labels in tiers. Here's a proven enterprise pattern:
-
 | Label | Encryption | Copilot Behavior | Use Case |
 |-------|-----------|-------------------|----------|
 | **Public** | None | Full access | Marketing materials, published docs |
@@ -164,8 +158,6 @@ Design your labels in tiers. Here's a proven enterprise pattern:
 | **Highly Confidential** | AES-256 + DLP | **Blocked from Copilot** unless explicitly enabled | M&A documents, legal contracts |
 
 ### Enabling Sensitivity Labels for Copilot
-
-By default, Copilot **cannot process encrypted files**. You must explicitly enable this in the Microsoft Purview compliance portal:
 
 1. Navigate to **Microsoft Purview** → **Information Protection** → **Labels**
 2. Edit each label → **Encryption** tab
@@ -198,7 +190,7 @@ With [SharePoint Agents and Copilot Studio](/blog/building-custom-copilots-share
 ### Key Controls
 
 1. **Restrict agent creation** to approved developers using Copilot Studio DLP policies
-2. **Use `Sites.Selected`** instead of `Sites.Read.All` for Graph API permissions — this scopes agent access to specific SharePoint sites only
+2. **Use `Sites.Selected`** instead of `Sites.Read.All` for Graph API permissions
 3. **Audit agent activity** via the Microsoft 365 unified audit log:
 
 ```powershell
@@ -215,8 +207,6 @@ Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) `
 
 
 ## Checklist Part 5: Monitoring & Continuous Improvement
-
-Governance is not a one-time project. It's a continuous loop.
 
 ### The Governance Feedback Loop
 
@@ -238,8 +228,6 @@ Governance is not a one-time project. It's a continuous loop.
 
 ## Quick-Start Summary
 
-Here's the prioritized order of operations — tackle these in your first sprint:
-
 | Priority | Action | Time Estimate |
 |----------|--------|---------------|
 | 🔴 1 | Disable "Everyone" in People Picker | 5 minutes |
@@ -254,17 +242,16 @@ Here's the prioritized order of operations — tackle these in your first sprint
 ## FAQ
 
 ### Does Copilot bypass SharePoint permissions?
-**No.** Copilot strictly respects the existing Microsoft 365 permission model. It can only access content that the signed-in user already has access to. The risk is not that Copilot bypasses security — it's that **existing oversharing becomes more visible** because Copilot actively surfaces content users didn't know they could access.
+**No.** Copilot strictly respects the existing Microsoft 365 permission model. The risk is not that Copilot bypasses security — it's that **existing oversharing becomes more visible** because Copilot actively surfaces content users didn't know they could access.
 
 ### Do I need SharePoint Advanced Management (SAM) for Copilot governance?
-SAM is not strictly required, but it's **strongly recommended**. SAM provides Restricted Access Control (RAC), Restricted Content Discoverability (RCD), and inactive site policies that are critical for enterprise-scale governance. SAM licenses are typically included with Microsoft 365 Copilot licenses.
+SAM is not strictly required, but it's **strongly recommended**. SAM provides RAC, RCD, and inactive site policies that are critical for enterprise-scale governance.
 
 ### What happens to files without sensitivity labels when Copilot is enabled?
-Unlabeled files are treated as accessible to anyone with existing permissions. **Encrypted files without Copilot-enabled labels are skipped entirely** — Copilot cannot process them. This means important encrypted content may silently disappear from Copilot results unless you explicitly enable processing.
+Unlabeled files are treated as accessible to anyone with existing permissions. **Encrypted files without Copilot-enabled labels are skipped entirely** — Copilot cannot process them.
 
 ### How do I prevent Copilot from surfacing outdated content?
-Implement a content lifecycle policy: use the inactive sites audit script to identify stale content, set retention labels via Microsoft Purview, and configure SAM's Restricted Content Discoverability (RCD) to exclude archived sites from Copilot and Search results.
+Implement a content lifecycle policy: use the inactive sites audit script to identify stale content, set retention labels via Microsoft Purview, and configure SAM's RCD to exclude archived sites from Copilot and Search results.
 
 ### Can I control which SharePoint sites Copilot Agents can access?
-Yes. Use **Resource-Specific Consent (RSC)** and the `Sites.Selected` Graph permission instead of `Sites.Read.All`. This scopes each agent to only the SharePoint sites it explicitly needs, following the principle of least privilege.
-
+Yes. Use **Resource-Specific Consent (RSC)** and the `Sites.Selected` Graph permission instead of `Sites.Read.All`.

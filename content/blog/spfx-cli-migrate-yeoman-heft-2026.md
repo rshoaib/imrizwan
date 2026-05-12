@@ -247,4 +247,3 @@ The Yeoman-to-SPFx CLI migration is not just a tooling change — it's a shift t
 4. ✅ Consider creating a shared Heft rig for your organization's SPFx template
 
 Ready to test your knowledge on SPFx and the full M365 developer stack? Try the [M365 Challenge Mode quiz](/tools/m365-challenge) — a gamified quiz covering SPFx, Power Automate, Graph API, and more, with detailed explanations after every question.
-

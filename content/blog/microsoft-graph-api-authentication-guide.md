@@ -73,7 +73,7 @@ The app acts **as itself** — no user is signed in. Used for background service
 ### Quick Reference
 
 | Scenario | Permission Type | Admin Consent? | MSAL Flow |
-|----------|----------------|---------------|-----------|
+|----------|----------------|---------------|----------|
 | User reads own profile | Delegated | No | Auth Code |
 | User reads team files | Delegated | Yes | Auth Code |
 | Background job sends mail | Application | Yes | Client Credentials |
@@ -150,7 +150,6 @@ export async function getToken(): Promise<string> {
   const accounts = msalInstance.getAllAccounts();
   
   if (accounts.length > 0) {
-    // Silent token acquisition (from cache)
     try {
       const response = await msalInstance.acquireTokenSilent({
         ...loginRequest,
@@ -162,7 +161,6 @@ export async function getToken(): Promise<string> {
     }
   }
 
-  // Interactive login (popup or redirect)
   const response = await msalInstance.acquireTokenPopup(loginRequest);
   return response.accessToken;
 }
@@ -228,8 +226,6 @@ async function getAppToken(): Promise<string> {
 
 ### Certificate Authentication (Production Recommended)
 
-For production workloads, Microsoft recommends certificate-based auth over client secrets. Client secrets expire (max 24 months) and can be leaked in logs.
-
 ```typescript
 import { readFileSync } from 'fs';
 import { ConfidentialClientApplication } from '@azure/msal-node';
@@ -246,7 +242,6 @@ const msalConfig = {
 };
 
 const cca = new ConfidentialClientApplication(msalConfig);
-// Usage is identical to client secret
 ```
 
 ---
@@ -270,12 +265,9 @@ export default class GraphWebPart extends BaseClientSideWebPart {
     );
     
     const profile = await response.json();
-    // Render profile data
   }
 }
 ```
-
-**Important:** You still need to approve the API permissions in the SharePoint Admin Center under **API access** or via the `spo serviceprincipal grant add` CLI command.
 
 ---
 
@@ -292,10 +284,6 @@ export default class GraphWebPart extends BaseClientSideWebPart {
 | `InvalidAuthenticationToken` | Token expired or wrong audience | Re-acquire token with correct scope |
 
 ---
-
-## Where to deploy this
-
-If you're putting a Graph-backed web app behind authentication, [Azure Static Web Apps with Microsoft Graph](/blog/azure-static-web-apps-microsoft-graph-2026) walks through the deployment side — managed identity, route-level auth, and the API conventions Static Web Apps expects.
 
 ## FAQ
 
@@ -315,12 +303,4 @@ Access tokens are valid for **60-90 minutes** by default. MSAL handles token cac
 
 No. Microsoft Graph API exclusively uses Microsoft Entra ID for authentication. There is no API key or basic auth option. Every call requires a valid OAuth 2.0 bearer token.
 
-### How do I test Graph API calls without building an app?
-
-Use the [Microsoft Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer) — a browser-based tool where you can sign in with your Microsoft account and test any Graph API endpoint interactively.
-
----
-
-*For more practical Graph API examples, check out our [Microsoft Graph API: 10 Practical Examples](/blog/microsoft-graph-api-spfx-user-profiles-teams) guide. Need help with SPFx authentication specifically? See our [SPFx CRUD tutorial](/blog/building-spfx-hello-world-webpart) for the full setup.*
-
-*This guide covers authentication patterns current as of March 2026 (MSAL.js v3.x, Microsoft Entra ID). Always reference the [official Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth/) for the latest updates.*
+*This guide covers authentication patterns current as of March 2026 (MSAL.js v3.x, Microsoft Entra ID).*
