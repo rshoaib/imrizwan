@@ -187,6 +187,8 @@ This example checks the `Priority` column and adds a warning emoji and bold styl
 
 **Test in a dev site first**: Column formatting can make data unreadable if the logic is wrong. Create a test column in a dev environment, verify the rendering, then copy the JSON to production.
 
+**Draft complex rules interactively**: Before pasting into SharePoint's advanced mode panel, use the [JSON Column Formatter](/tools/json-column-formatter) to build and preview your formatting JSON in real time — faster iteration with immediate visual feedback and no round-trips through the list UI.
+
 **The 1000-character display limit**: SharePoint shows the first 1000 characters of your formatted output. If your JSON generates very long HTML, truncation may occur. Keep formatting concise.
 
 **Performance considerations**: Complex nested conditions or large datasets can slow rendering. Test with 1000+ rows before assuming your formatting will be fast. Avoid expensive operations in loops.
