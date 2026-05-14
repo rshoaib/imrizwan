@@ -51,6 +51,7 @@ Only run if Lanes A and B have nothing to do AND no new post has been published 
 - **Never fabricate statistics, study names, or citations.**
 - **Never skip pre-commit hooks** (`--no-verify`) or `--no-gpg-sign`.
 - **Never force-push.**
+- **Never write to Supabase.** This site is file-based (Next.js — content lives under `blog post files (inspect repo for exact path)` in the repo). The only legitimate target for new content is a git commit on the default branch. If you see a Supabase MCP connector attached to this routine, ignore it for content writes — that connector is shared across all routines but only `easyorder-bot` legitimately uses Supabase for content. Writing content to Supabase from this routine will contaminate the orderviachat database (verified incident: 2026-05-14 with online-image-shrinker).
 
 ## After the change
 
