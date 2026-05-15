@@ -3,8 +3,9 @@ title: "Power Automate Expressions Cheat Sheet (2026)"
 slug: power-automate-expressions-cheat-sheet-2026
 excerpt: "50+ Power Automate expressions you'll actually use. Quick reference with copy-paste formulas for strings, dates, conditionals, and arrays."
 date: "2026-04-03"
+updated_at: "2026-05-15"
 displayDate: "April 3, 2026"
-readTime: "12 min read"
+readTime: "18 min read"
 category: "Power Platform"
 image: "/images/blog/power-automate-expressions-cheat-sheet.png"
 tags:
@@ -19,6 +20,8 @@ tags:
 Power Automate expressions are the difference between a basic flow and one that actually handles real-world data. Without them, you are stuck with static values and rigid logic. With them, you can parse dates, manipulate strings, handle nulls, and build dynamic content on the fly.
 
 You write expressions in the **expression editor** -- click any input field in your flow, select the "Expression" tab, type your function, and hit OK. Every expression starts with a function name and returns a value that gets inserted into that field.
+
+This cheat sheet covers every function you are likely to need, organized by category with copy-paste examples.
 
 ---
 
@@ -76,11 +79,16 @@ The `formatDateTime()` function uses .NET custom date format strings. Common pat
 | **length** | `length(collection)` | `length(createArray('a','b','c'))` | `3` |
 | **contains** | `contains(collection, value)` | `contains(createArray('a','b'), 'b')` | `true` |
 | **join** | `join(collection, delimiter)` | `join(createArray('a','b','c'), '; ')` | `a; b; c` |
+| **split** | `split(text, delimiter)` | `split('a,b,c', ',')` | `["a","b","c"]` |
 | **union** | `union(collection1, collection2)` | `union(createArray(1,2), createArray(2,3))` | `[1,2,3]` |
 | **intersection** | `intersection(col1, col2)` | `intersection(createArray(1,2,3), createArray(2,3,4))` | `[2,3]` |
 | **skip** | `skip(collection, count)` | `skip(createArray('a','b','c'), 1)` | `["b","c"]` |
 | **take** | `take(collection, count)` | `take(createArray('a','b','c'), 2)` | `["a","b"]` |
 | **createArray** | `createArray(item1, item2, ...)` | `createArray(1, 2, 3)` | `[1,2,3]` |
+
+### Array Tips
+
+Use `empty()` to check if an array has items before looping. Combine `skip()` and `take()` for pagination. The `union()` function also works to merge two objects (not just arrays), which is useful for building dynamic JSON payloads.
 
 ---
 
@@ -94,13 +102,15 @@ The `formatDateTime()` function uses .NET custom date format strings. Common pat
 | **or** | `or(expr1, expr2)` | `or(equals(1,2), equals(1,1))` | `true` |
 | **not** | `not(expression)` | `not(equals(1,2))` | `true` |
 | **greater** | `greater(value1, value2)` | `greater(10, 5)` | `true` |
+| **greaterOrEquals** | `greaterOrEquals(value1, value2)` | `greaterOrEquals(5, 5)` | `true` |
 | **less** | `less(value1, value2)` | `less(3, 5)` | `true` |
+| **lessOrEquals** | `lessOrEquals(value1, value2)` | `lessOrEquals(5, 5)` | `true` |
 | **empty** | `empty(value)` | `empty('')` | `true` |
 | **coalesce** | `coalesce(value1, value2, ...)` | `coalesce(null, null, 'default')` | `default` |
 
 ### Logic Tips
 
-You cannot nest `if()` more than a few levels deep before it becomes unreadable. If you need complex branching, use a **Condition** or **Switch** action instead. The `coalesce()` function is your best friend for handling null values from SharePoint or Dataverse.
+You cannot nest `if()` more than a few levels deep before it becomes unreadable. If you need complex branching, use a **Condition** or **Switch** action instead. The `coalesce()` function is your best friend for handling null values from SharePoint or Dataverse -- it returns the first non-null value in the list.
 
 ---
 
@@ -113,15 +123,22 @@ You cannot nest `if()` more than a few levels deep before it becomes unreadable.
 | **string** | `string(value)` | `string(42)` | `"42"` |
 | **bool** | `bool(value)` | `bool(1)` | `true` |
 | **json** | `json(value)` | `json('{"name":"test"}')` | JSON object |
+| **xml** | `xml(value)` | `xml('<root><item>1</item></root>')` | XML object |
 | **base64** | `base64(value)` | `base64('Hello')` | `SGVsbG8=` |
 | **base64ToString** | `base64ToString(value)` | `base64ToString('SGVsbG8=')` | `Hello` |
+| **decodeBase64** | `decodeBase64(value)` | `decodeBase64('SGVsbG8=')` | `Hello` |
 | **uriComponent** | `uriComponent(value)` | `uriComponent('hello world')` | `hello%20world` |
+| **decodeUriComponent** | `decodeUriComponent(value)` | `decodeUriComponent('hello%20world')` | `hello world` |
 
 ---
 
 ## Common Patterns
 
+These are the expressions you will copy-paste most often in production flows.
+
 ### Format a Date as MM/dd/yyyy
+
+When SharePoint returns an ISO timestamp and you need a clean date for an email:
 
 ```
 formatDateTime(triggerOutputs()?['body/Created'], 'MM/dd/yyyy')
@@ -135,25 +152,53 @@ formatDateTime(triggerOutputs()?['body/Created'], 'MMMM d, yyyy')
 
 ### Get File Extension from a Filename
 
+Extract the extension from a file name dynamic value:
+
 ```
 last(split(triggerOutputs()?['body/{FilenameWithExtension}'], '.'))
 ```
 
+This splits `report-final.pdf` by the dot and returns `pdf`.
+
 ### Null-Safe Field Access
+
+SharePoint People columns and lookup columns return null when empty. Wrap them with `coalesce()` to avoid flow failures:
 
 ```
 coalesce(triggerOutputs()?['body/Manager/Email'], 'no-manager@contoso.com')
 ```
 
+For numeric fields that might be null:
+
+```
+coalesce(triggerOutputs()?['body/Amount'], 0)
+```
+
 ### Build a Dynamic Email Subject
+
+Combine multiple fields into a subject line for approval emails:
 
 ```
 concat('[', triggerOutputs()?['body/Department'], '] ', triggerOutputs()?['body/RequestType'], ' - ', triggerOutputs()?['body/Title'])
 ```
 
+Output: `[Finance] Purchase Order - Office Supplies Q2`
+
 For more on building approval flows, see the full guide at [Power Automate Document Approval Workflow](/blog/power-automate-document-approval).
 
+### Calculate Business Days Between Two Dates
+
+There is no built-in business days function. Use `dateDifference()` to get total days, then account for weekends with this approach:
+
+```
+div(mul(div(sub(ticks(outputs('EndDate')), ticks(outputs('StartDate'))), 864000000000), 5), 7)
+```
+
+This calculates a rough estimate. For exact results accounting for holidays, store holiday dates in a SharePoint list and loop through them.
+
 ### Parse JSON from an HTTP Response
+
+When calling an external API with the HTTP action, parse the response body:
 
 ```
 json(body('HTTP_Request'))?['results']
@@ -169,12 +214,133 @@ coalesce(json(body('HTTP_Request'))?['data']?['value'], 'Not found')
 
 ## Quick Reference: Expression Editor Shortcuts
 
+A few things that trip up new users:
+
 - **Accessing dynamic content in expressions**: Use `triggerOutputs()`, `outputs('ActionName')`, or `body('ActionName')` to reference values.
 - **Optional chaining**: The `?` operator (e.g., `body('Get_item')?['value']`) prevents errors when a property does not exist.
 - **Nested quotes**: Use single quotes inside expressions. Double quotes break the parser.
-- **Testing expressions**: Use a Compose action to test any expression.
+- **Testing expressions**: Use a Compose action to test any expression -- the output shows exactly what it returns.
 
-For styled HTML output in your flow emails, check out [Power Automate HTML Table Styling with CSS](/blog/power-automate-html-table-styling-css). You can also try our interactive [Power Automate Expressions Tool](/tools/power-automate-expressions) to test functions directly in the browser. These same expression patterns are equally powerful in Power Apps canvas formulas — see our guide on [Power Apps canvas apps and SharePoint integration](/blog/power-apps-canvas-app-sharepoint-complete-guide).
+For styled HTML output in your flow emails, check out [Power Automate HTML Table Styling with CSS](/blog/power-automate-html-table-styling-css). You can also try our interactive [Power Automate Expressions Tool](/tools/power-automate-expressions) to test functions directly in the browser. These same expression patterns are equally powerful in Power Apps canvas formulas — see our guide on [Power Apps canvas apps and SharePoint integration](/blog/power-apps-canvas-app-sharepoint-complete-guide) for examples of expressions in action.
+
+---
+
+## Expression Syntax Deep Dive
+
+Understanding how Power Automate parses expressions prevents the majority of "InvalidTemplate" errors you will hit in production.
+
+### The Two Syntaxes
+
+Power Automate has two ways to embed expressions in an action's input field:
+
+| Syntax | When to Use | Example |
+|--------|-------------|----------|
+| **Dynamic content tab** | Simple field references with no transformation | Picking a trigger field from the picker |
+| **`@{expression}` inline** | Embedding an expression inside a larger string | `Hello @{triggerOutputs()?['body/Title']}` |
+| **Expression tab (pure mode)** | Returning a single computed value | `concat('Ref-', string(triggerOutputs()?['body/ID']))` |
+
+The key rule: if the entire field value is one expression, use the **Expression tab** and do not wrap it in `@{}`. If you are embedding inside a string (e.g., an email body), use the inline `@{...}` syntax.
+
+### Accessing Outputs Correctly
+
+There are three accessor patterns you will use constantly:
+
+```
+triggerOutputs()?['body/FieldName']        # trigger (manual, SharePoint, etc.)
+outputs('Action_Name')?['body/FieldName']  # generic action output
+body('Action_Name')?['FieldName']          # shorthand for body of a specific action
+```
+
+The `?` before `['...']` is the null-safe operator. Without it, your flow throws a runtime error the first time a field is missing. Always use it unless you have a hard guarantee the property exists.
+
+### Operator Precedence and Parentheses
+
+Power Automate does not have infix operators (`+`, `>`, etc.) in expressions — everything is a function call. To check "is A greater than B and less than C":
+
+```
+and(greater(variables('Score'), 60), less(variables('Score'), 100))
+```
+
+This functional style means you never get operator precedence surprises. When logic gets deeply nested, extract intermediate values into **Compose** actions and reference them with `outputs('Compose')` — far easier to debug than a 200-character nested expression.
+
+### Type-Safety Gotchas
+
+- SharePoint `Number` columns return a string when accessed via trigger outputs in some connectors — always wrap with `int()` or `float()` before arithmetic.
+- Boolean columns from SharePoint return `true`/`false` as proper booleans in the trigger body. Use `equals(triggerOutputs()?['body/IsApproved'], true)`, not `equals(..., 'true')`.
+- Dataverse columns follow OData types: `DateTime` comes as ISO 8601 UTC, so `formatDateTime()` works directly without a conversion step.
+
+For the full function reference, see [Microsoft's Workflow Definition Language functions reference](https://learn.microsoft.com/en-us/azure/logic-apps/workflow-definition-language-functions-reference) — Power Automate and Logic Apps share the same expression engine.
+
+---
+
+## SharePoint-Specific Expression Patterns
+
+SharePoint is the most common data source for Power Automate flows. These patterns cover the field types that trip up developers at least once.
+
+### People Picker (Person or Group column)
+
+A People column returns an object, not a string. To get the email address:
+
+```
+triggerOutputs()?['body/AssignedTo/Email']
+```
+
+For a multi-select People field it returns an array of objects. To get the first person's email:
+
+```
+first(triggerOutputs()?['body/AssignedTo'])?['Email']
+```
+
+### Choice Columns
+
+A single-select Choice column returns the display value as a plain string — no unwrapping needed:
+
+```
+triggerOutputs()?['body/Status']
+```
+
+A multi-select Choice column returns an array of `{ "Value": "..." }` objects. To join them into a comma-separated string you need a **Select** action first to extract just the `Value` property, then:
+
+```
+join(body('Select_Choice_Values'), ', ')
+```
+
+### Lookup Columns
+
+A Lookup column returns an object with `Id` and `Value`:
+
+```
+triggerOutputs()?['body/Department/Value']   # display text
+triggerOutputs()?['body/Department/Id']      # numeric lookup ID
+```
+
+### Managed Metadata (Taxonomy)
+
+Managed Metadata fields return a `{ "Label": "...", "TermGuid": "...", "WssId": "..." }` object. To get just the tag label:
+
+```
+triggerOutputs()?['body/TaxonomyField/Label']
+```
+
+### SharePoint Column Expression Quick Reference
+
+| Column Type | Access Pattern | Common Mistake |
+|-------------|---------------|----------------|
+| Text / Number | `?['body/FieldName']` | Forgetting `?` null-safe operator |
+| People (single) | `?['body/Field/Email']` | Treating it as a plain string |
+| People (multi) | `first(...)?['Email']` or Select + join | Joining objects instead of values |
+| Choice (single) | `?['body/Field']` | None — works as-is |
+| Choice (multi) | Select action + `join()` | Joining object array directly |
+| Lookup | `?['body/Field/Value']` | Forgetting `/Value` sub-property |
+| Date | `formatDateTime(..., 'MM/dd/yyyy')` | Displaying raw UTC to users |
+| Managed Metadata | `?['body/Field/Label']` | Forgetting `/Label` sub-property |
+
+For a deep dive into SharePoint permissions and how they surface in flow triggers, see the [SharePoint Online Permissions Complete Guide](/blog/sharepoint-online-permissions-complete-guide). To automate SharePoint provisioning with these same expression patterns, check the [SharePoint Provisioning Automation Guide](/blog/sharepoint-provisioning-automation-guide-2026).
+
+**Official references:**
+- [Power Automate documentation](https://learn.microsoft.com/en-us/power-automate/) — connector-specific output schemas
+- [SharePoint connector for Power Automate](https://learn.microsoft.com/en-us/connectors/sharepointonline/) — exact field output shapes per trigger and action
+- [Workflow Definition Language functions reference](https://learn.microsoft.com/en-us/azure/logic-apps/workflow-definition-language-functions-reference) — every expression function with full parameter types
 
 ---
 
@@ -182,16 +348,16 @@ For styled HTML output in your flow emails, check out [Power Automate HTML Table
 
 ### What is the difference between concat() and formatString()?
 
-`concat()` joins values end-to-end. There is no separate `formatString()` in Power Automate -- use `concat()` for all string building, or use inline expressions with `@{...}` syntax directly in action inputs for simpler cases.
+`concat()` joins values end-to-end: `concat('Hello', ' ', 'World')` returns `Hello World`. You can pass any number of arguments. There is no separate `formatString()` in Power Automate -- use `concat()` for all string building, or use inline expressions with `@{...}` syntax directly in action inputs for simpler cases.
 
 ### Can you nest expressions inside other expressions?
 
-Yes. For example, `if(empty(triggerOutputs()?['body/Email']), 'N/A', toLower(triggerOutputs()?['body/Email']))` checks if a field is empty before transforming it. Be careful with parentheses.
+Yes, and you will do this constantly. For example, `if(empty(triggerOutputs()?['body/Email']), 'N/A', toLower(triggerOutputs()?['body/Email']))` checks if a field is empty before transforming it. Just be careful with parentheses -- one missing closing paren and the whole expression fails with a cryptic error.
 
 ### How do you handle time zones in Power Automate?
 
-Always use `convertTimeZone()` before displaying dates to users. Power Automate stores all timestamps in UTC internally. The function takes the timestamp, source zone (usually `'UTC'`), destination zone (e.g., `'Eastern Standard Time'`), and an optional format string.
+Always use `convertTimeZone()` before displaying dates to users. Power Automate stores all timestamps in UTC internally. The function takes the timestamp, source zone (usually `'UTC'`), destination zone (e.g., `'Eastern Standard Time'`), and an optional format string. You can find the full list of supported time zone names in the Microsoft documentation.
 
 ### Why does my expression return an error about "InvalidTemplate"?
 
-This usually means: a syntax error (check parentheses and single quotes), a type mismatch (use `int()` or `float()` to convert), or a null reference (wrap it in `coalesce()`).
+This usually means one of three things: a syntax error (check your parentheses and single quotes), a type mismatch (you are passing a string where a number is expected -- use `int()` or `float()` to convert), or a null reference (the dynamic content you are referencing does not exist at runtime -- wrap it in `coalesce()`).
