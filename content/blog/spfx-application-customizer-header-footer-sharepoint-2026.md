@@ -3,6 +3,7 @@ title: "SPFx Application Customizer: Build Global Headers & Footers"
 slug: spfx-application-customizer-header-footer-sharepoint-2026
 excerpt: "Build a global header and footer for SharePoint with an SPFx Application Customizer extension. Complete guide includes tenant-wide deployment instructions."
 date: "2026-04-10"
+updated_at: "2026-05-18"
 displayDate: "April 10, 2026"
 readTime: "14 min read"
 category: "SPFx"
@@ -251,6 +252,163 @@ Example JSON you would put in `ClientSideComponentProperties`:
 ```
 
 This pattern keeps your extension generic while allowing per-tenant or per-site configuration. The same compiled `.sppkg` runs everywhere; only the properties differ.
+
+## Using React Components in Your Application Customizer
+
+The `innerHTML` approach works for static banners, but as soon as you need dynamic data — the current user's display name, a notification count, a mega-menu that renders on hover — you want a proper React component tree. SPFx ships React and ReactDOM as part of the framework runtime, so you can render directly into a placeholder's `domElement` without adding React to your bundle.
+
+```typescript
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import Header from './components/Header';
+
+// In _renderPlaceholders():
+if (!this._headerPlaceholder) {
+  this._headerPlaceholder =
+    this.context.placeholderProvider.tryCreateContent(PlaceholderName.Top);
+}
+
+if (this._headerPlaceholder) {
+  const element: React.ReactElement<IHeaderProps> = React.createElement(Header, {
+    message: this.properties.headerMessage || 'Welcome to the intranet',
+    userDisplayName: this.context.pageContext.user.displayName,
+    siteUrl: this.context.pageContext.web.absoluteUrl
+  });
+  ReactDOM.render(element, this._headerPlaceholder.domElement);
+}
+```
+
+The component itself lives at `src/extensions/contosoHeaderFooter/components/Header.tsx`:
+
+```tsx
+import * as React from 'react';
+import styles from '../ContosoHeaderFooter.module.scss';
+
+export interface IHeaderProps {
+  message: string;
+  userDisplayName: string;
+  siteUrl: string;
+}
+
+const Header: React.FC<IHeaderProps> = ({ message, userDisplayName }) => (
+  <header className={styles.contosoHeader} role="banner">
+    <div className={styles.inner}>
+      <a href="/" aria-label="Contoso Home" className={styles.logoLink}>
+        <img src="/sites/intranet/SiteAssets/logo.svg" alt="Contoso" height={32} />
+      </a>
+      <span className={styles.message}>{message}</span>
+      <span className={styles.userGreeting} aria-live="polite">
+        Hello, {userDisplayName}
+      </span>
+    </div>
+  </header>
+);
+
+export default Header;
+```
+
+### Cleaning Up on Dispose
+
+When you use `ReactDOM.render`, you must unmount the component tree when the customizer is disposed. Without this, React roots leak across page navigations in SharePoint's single-page-app shell — the modern SharePoint shell reuses the browser context as users move between sites.
+
+```typescript
+@override
+protected onDispose(): void {
+  if (this._headerPlaceholder) {
+    ReactDOM.unmountComponentAtNode(this._headerPlaceholder.domElement);
+  }
+  if (this._footerPlaceholder) {
+    ReactDOM.unmountComponentAtNode(this._footerPlaceholder.domElement);
+  }
+  super.onDispose();
+}
+```
+
+### When to Use Each Approach
+
+| Approach | When to Use | Trade-offs |
+|---|---|---|
+| **Raw innerHTML** | Static banners, simple escaped text | Fast, no component overhead; XSS risk if not escaped carefully |
+| **React functional component** | Dynamic data, user context, event handlers | Proper lifecycle; component size adds to bundle |
+| **React + dynamic import** | Mega-menus, modals, notification panels | Smallest synchronous bundle; secondary chunk loads on demand |
+
+The [PnP SPFx extensions sample repository](https://github.com/SharePoint/sp-dev-fx-extensions) contains production-grade Application Customizer examples using React — the `react-application-header` sample is a useful starting reference for real-world patterns. ([PnP SPFx Extensions — GitHub](https://github.com/SharePoint/sp-dev-fx-extensions))
+
+## Optimizing Bundle Size for Tenant-Wide Customizers
+
+Every web part has a bounded blast radius: it only loads on pages where a site owner placed it. Application Customizers are different — they load on **every page load in the tenant**. A 500 KB synchronous bundle that blocks the main thread is a site-wide performance problem, not a per-page concern.
+
+### Inspect Your Bundle Before Optimizing
+
+Use the webpack bundle analyzer to see what's inside your `.sppkg` before making changes:
+
+```bash
+npm install --save-dev webpack-bundle-analyzer
+```
+
+For legacy Gulp-based projects, wire it up in `gulpfile.js`:
+
+```javascript
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+build.configureWebpack.mergeConfig({
+  additionalConfiguration: (generatedConfiguration) => {
+    generatedConfiguration.plugins.push(
+      new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false })
+    );
+    return generatedConfiguration;
+  }
+});
+```
+
+Run `npm run bundle` and open the generated `report.html`. You will almost always find one large transitive dependency responsible for 40–60% of the bundle — typically `moment.js`, a full `lodash` import, or a UI component library you imported wholesale.
+
+### Lazy-Load Non-Critical UI with Dynamic Import
+
+For components that only appear after user interaction — a dropdown menu, a notification panel, a help widget — use dynamic `import()` to split them into a separate webpack chunk:
+
+```tsx
+import * as React from 'react';
+import styles from '../ContosoHeaderFooter.module.scss';
+
+const MegaMenu = React.lazy(
+  () => import(/* webpackChunkName: "mega-menu" */ './MegaMenu')
+);
+
+const Header: React.FC<IHeaderProps> = ({ message, userDisplayName }) => {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  return (
+    <header className={styles.contosoHeader} role="banner">
+      <div className={styles.inner}>
+        <button
+          className={styles.menuButton}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(v => !v)}
+        >
+          Menu
+        </button>
+        {menuOpen && (
+          <React.Suspense fallback={<div className={styles.menuLoading}>Loading…</div>}>
+            <MegaMenu onClose={() => setMenuOpen(false)} />
+          </React.Suspense>
+        )}
+      </div>
+    </header>
+  );
+};
+```
+
+The `MegaMenu` chunk is fetched from the same CDN location as your primary bundle on first click, then cached by the browser. Subsequent navigations within the same session load it from memory. ([Microsoft Learn — Dynamic loading in SPFx](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/dynamic-loading))
+
+### Bundle Size Ground Rules
+
+| Rule | Detail |
+|---|---|
+| **Do not re-bundle SPFx framework deps** | `@microsoft/sp-http`, `@microsoft/sp-application-base`, and React are already loaded by the SPFx runtime on every page. They appear as `externals` in SPFx's generated webpack config — confirm yours hasn't overridden this. |
+| **Avoid full lodash imports** | `import _ from 'lodash'` adds ~70 KB. Use `import debounce from 'lodash/debounce'` per method, or replace with native `Array` methods and `setTimeout`. |
+| **Avoid moment.js** | 67 KB minified. Use `date-fns` (fully tree-shakeable) or native `Intl.DateTimeFormat` for any date formatting in your header or footer. |
+| **Target < 50 KB for the synchronous chunk** | The synchronous chunk blocks page render on every SharePoint page load. Anything heavier should be a lazy import. |
+| **Import PnP Reusable Controls selectively** | `@pnp/spfx-controls-react` is comprehensive but large. Import only the specific control you need — do not import the entire package. ([PnP SPFx Reusable Controls](https://pnp.github.io/sp-dev-fx-controls-react/)) |
 
 ## Styling Without Violating SharePoint's CSP
 
