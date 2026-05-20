@@ -597,6 +597,8 @@ Refer to the [Graph API in SPFx user profiles guide](/blog/microsoft-graph-api-s
 
 For advanced scenarios like reading SharePoint list data for dynamic navigation, also see [PnP JS in SPFx](/blog/spfx-pnp-js-sharepoint-data) for a cleaner data-access layer.
 
+If you build several Application Customizers or web parts that all need the same Graph or PnP wrappers, extract those services into an [SPFx library component](/blog/spfx-library-components-share-code-services-2026) so each consumer imports a single versioned package from the App Catalog instead of bundling its own copy.
+
 ## Upgrading Existing Add-in-Based Headers
 
 If you are migrating from a retired SharePoint Add-in, the pattern is:
