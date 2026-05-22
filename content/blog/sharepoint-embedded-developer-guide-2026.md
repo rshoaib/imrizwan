@@ -3,6 +3,7 @@ title: "SharePoint Embedded: Build Document Apps on Microsoft 365"
 slug: sharepoint-embedded-developer-guide-2026
 excerpt: "2026 guide to SharePoint Embedded — create containers, manage files via Graph, and connect Power Automate and AI agents."
 date: "2026-04-11"
+updated: "2026-05-22"
 displayDate: "April 11, 2026"
 readTime: "15 min read"
 category: "SharePoint"
@@ -364,6 +365,114 @@ SharePoint Embedded billing has two components: **storage** and **API operations
 SharePoint Embedded reached **GCC (US Government Community Cloud) availability in November 2025** ([Microsoft Learn — What's New](https://learn.microsoft.com/en-us/sharepoint/dev/embedded/whats-new)). ISVs serving US federal, state, and local government customers can now offer container-based document management that meets FedRAMP Moderate requirements.
 
 **What works in GCC:** Container creation and management, file CRUD via Graph, the Power Platform connector, and migration APIs. **What is not yet in GCC:** Some Foundry AI features — check the Microsoft GCC feature matrix for the current state before committing to an AI roadmap for government customers.
+
+---
+
+## SharePoint Embedded vs. Azure Blob, OneDrive, and Dataverse: When to Choose Each
+
+ISVs evaluating where to put customer documents have at least four credible Microsoft-hosted options. Each makes sense for different scenarios, and choosing the wrong one is expensive to undo once tens of thousands of files have landed. The table below summarizes the trade-offs as they stand in May 2026.
+
+| Capability | SharePoint Embedded | Azure Blob Storage | OneDrive / SharePoint Sites | Dataverse File Columns |
+|---|---|---|---|---|
+| Storage primitive | Container | Blob container | Site / document library | File column on a row |
+| Compliance (DLP, eDiscovery, retention, sensitivity labels) | Inherited from SharePoint Online | None built in — bring your own | Inherited from SharePoint Online | Inherited from Power Platform compliance |
+| End-user M365 license required | No | No | Yes (E3/E5 or per-app) | Yes (Power Apps per-app or per-user) |
+| Visible in SharePoint admin center | No | No | Yes | No |
+| Copilot / Foundry knowledge source integration | First-class via container registration | Custom code only | First-class via SharePoint connector | Limited — preview at time of writing |
+| Permissions model | Container-level + item-level via Graph | RBAC on container + SAS tokens | Site/library/item permissions | Dataverse row-level + column security |
+| Power Platform connector | GA — February 2026 | Generic Azure Blob connector | GA — multiple connectors | Native — Power Apps and Power Automate |
+| Billing | Storage + agent interactions | Storage + egress + transactions | Per-user license + storage | Per-app or per-user license + Dataverse capacity |
+| Best for | Multi-tenant ISV document apps | Raw object storage, media, archives | Internal collaboration, intranet content | Structured business apps with attachments |
+
+A few decision shortcuts that hold up well in practice:
+
+- **Pick SharePoint Embedded** when you are building an ISV product that needs document management features (versioning, sharing, retention, AI grounding) but you do not want end users to log into SharePoint or hold M365 licenses. This is the only option that gives you full SharePoint compliance machinery without exposing the SharePoint UI.
+- **Pick Azure Blob Storage** when documents are not the user-facing primitive — for example, video originals, machine-generated logs, ML training data, or compliance archives where you have already built your own metadata index. You get the cheapest per-GB rate and the most control, at the cost of building permissions, audit, and retention yourself.
+- **Pick OneDrive / SharePoint Sites** when the audience is internal to a single M365 tenant and you want them to use Microsoft's UI directly — Teams, file picker, SharePoint pages. This is the wrong choice for multi-tenant ISV scenarios because every consuming tenant needs SharePoint licenses for end users.
+- **Pick Dataverse file columns** when documents are attachments on structured records (a contract attached to an opportunity, an inspection photo attached to a work order) and the parent app is already a Power App. The file is a property of the row, not a first-class document.
+
+A common ISV mistake is starting in OneDrive/SharePoint sites because the SDK is familiar, then realizing six months in that the per-user license requirement breaks the pricing model. Embedded is the more boring choice up front and the more sustainable choice over a multi-year product lifecycle.
+
+For deeper coverage of the SharePoint Online side of this comparison, see the [SharePoint Online permissions guide](/blog/sharepoint-online-permissions-complete-guide) and the [Microsoft Graph getting started guide](/blog/microsoft-graph-api-getting-started), both of which apply directly when you use SharePoint Embedded.
+
+---
+
+## Troubleshooting Common SharePoint Embedded Errors
+
+Most SharePoint Embedded errors at runtime come from three places: app registration mismatches, container type permission gaps, and Graph throttling. The patterns below cover the failures I see come up repeatedly in early integrations.
+
+### `accessDenied` when creating a container
+
+Symptoms: `POST /v1.0/storage/fileStorage/containers` returns HTTP 403 with `accessDenied` even though your app token includes `FileStorageContainer.Selected`.
+
+Causes and fixes, in order of likelihood:
+
+1. **Container type not registered in the consuming tenant.** The container type lives in your provider tenant, but each consuming tenant must explicitly grant your app permission to use it. Run `Register-SPOContainerTypeRegistration` against the consuming tenant's SharePoint admin endpoint to issue the grant.
+2. **`FileStorageContainer.Selected` requires a per-container grant.** Even after the container type is registered, the *first* container in a tenant is created via app-only context with `Container.Selected` permission. Subsequent operations on that container then use `FileStorageContainer.Selected` plus a `permissionSet` reference. Trying to mix the two will return 403.
+3. **Admin consent missing.** Multi-tenant apps require a tenant admin to grant consent before any container operation works. Send the consuming tenant's admin to `https://login.microsoftonline.com/{tenant}/adminconsent?client_id={your-app-id}` and confirm the consent log shows the right scopes.
+
+### `itemNotFound` when uploading to a container
+
+If `PUT /storage/fileStorage/containers/{id}/drive/root:/{filename}:/content` returns `itemNotFound`, the container ID is almost always wrong. Two reliable checks:
+
+```typescript
+async function verifyContainerExists(client: Client, containerId: string) {
+  try {
+    const container = await client
+      .api(`/storage/fileStorage/containers/${containerId}`)
+      .get();
+    return container.status === "active";
+  } catch (err) {
+    if (err.statusCode === 404) return false;
+    throw err;
+  }
+}
+```
+
+Containers can also be in `inactive` status during creation propagation (usually under 30 seconds, occasionally longer in GCC). If a freshly created container returns `itemNotFound` on upload, retry the upload after a short backoff before assuming a real failure.
+
+### `429 Too Many Requests` on bulk operations
+
+The Graph file APIs that back SharePoint Embedded share the same throttling envelope as OneDrive/SharePoint Drive APIs. For migrations and bulk uploads, you will hit 429 well before you saturate any other limit.
+
+The fix is the same retry-after-with-jitter pattern that works everywhere else in Graph:
+
+```typescript
+async function uploadWithRetry(
+  client: Client,
+  containerId: string,
+  fileName: string,
+  fileContent: Buffer,
+  maxAttempts = 5
+): Promise<string> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      const response = await client
+        .api(`/storage/fileStorage/containers/${containerId}/drive/root:/${fileName}:/content`)
+        .put(fileContent);
+      return response.id;
+    } catch (err: any) {
+      if (err.statusCode !== 429 && err.statusCode !== 503) throw err;
+      const retryAfter = Number(err.headers?.["retry-after"]) || 2 ** attempt;
+      const jitter = Math.random() * 1000;
+      await new Promise(r => setTimeout(r, retryAfter * 1000 + jitter));
+    }
+  }
+  throw new Error(`Upload of ${fileName} failed after ${maxAttempts} attempts`);
+}
+```
+
+For the underlying mechanics and Graph-wide throttling guidance, see the [Microsoft Graph throttling guide](/blog/microsoft-graph-throttling-survive-429-retry-backoff-2026) — every pattern there applies to SharePoint Embedded operations unchanged.
+
+### `containerTypeRegistrationFailed` in PowerShell
+
+When `New-SPOContainerType` returns `containerTypeRegistrationFailed`, the most common cause is that the SharePoint admin connection is pointed at the consuming tenant instead of the provider tenant. Container types are registered in the **provider tenant** — the one that hosts your Entra app registration. Reconnect with `Connect-SPOService -Url "https://{provider-tenant}-admin.sharepoint.com"` and retry.
+
+### Files visible in Graph but missing from the Power Platform connector
+
+If a file appears in `GET /containers/{id}/drive/root/children` but the Power Automate **When a file is created** trigger never fires, check three things: the connector connection is using a service account with `FileStorageContainer.Selected`, the flow's container reference uses the container ID and not the display name, and the file was created at least 60 seconds after the flow was saved (the trigger registration takes effect on the next polling interval, not immediately).
+
+For deeper Power Automate debugging patterns, the [Power Automate expressions cheat sheet](/blog/power-automate-expressions-cheat-sheet-2026) is the fastest reference for the expressions you will reach for in trigger conditions and `Apply to each` branches.
 
 ---
 
