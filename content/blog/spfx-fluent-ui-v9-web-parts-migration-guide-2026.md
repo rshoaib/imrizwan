@@ -3,8 +3,9 @@ title: "SPFx and Fluent UI v9: Modern Web Parts with React"
 slug: spfx-fluent-ui-v9-web-parts-migration-guide-2026
 excerpt: "Learn how to use Fluent UI v9 (React Components) in SPFx web parts — from installation to theming, with practical migration tips from v8."
 date: "2026-04-12T10:00:00.000Z"
+updated_at: "2026-05-25"
 displayDate: "April 12, 2026"
-readTime: "8 min read"
+readTime: "11 min read"
 category: "SPFx"
 image: "/images/blog/spfx-fluent-ui-v9-web-parts-migration-guide-2026.png"
 tags:
@@ -150,6 +151,60 @@ private _handleThemeChanged(args: ThemeChangedEventArgs): void {
 
 This pattern ensures your v9 components switch between light and dark themes when the SharePoint section background changes — something users setting up pages with colored sections will appreciate.
 
+## Generating a Brand Ramp from the SharePoint Theme
+
+The `createSharePointTheme` helper above is a placeholder — it just returns `webLightTheme`, so your components render in Fluent's default blue no matter what brand color the tenant administrator configured. For production you want v9 components that actually match the SharePoint theme, and that means turning a single brand color into the **16-stop brand ramp** every v9 theme is built from.
+
+Fluent UI v9 derives a full theme from a `BrandVariants` ramp through the `createLightTheme` and `createDarkTheme` factory functions. ([Fluent UI React v9 — official docs](https://react.fluentui.dev/)) You generate the 16 stops once — the Fluent UI Theme Designer takes a single hex color and outputs the ramp — then feed the same ramp to both factories:
+
+```typescript
+import {
+  BrandVariants,
+  createLightTheme,
+  createDarkTheme,
+  Theme,
+} from "@fluentui/react-components";
+
+// Generated once from your tenant's primary color via the Theme Designer.
+// These 16 stops are the brand ramp; treat them as generated output.
+const contoso: BrandVariants = {
+  10: "#020305",
+  20: "#111723",
+  30: "#16263D",
+  40: "#193253",
+  50: "#1B3F6A",
+  60: "#1B4C82",
+  70: "#18599B",
+  80: "#1267B4",  // approximately the primary brand color
+  90: "#3174C2",
+  100: "#4F82C8",
+  110: "#6790CF",
+  120: "#7D9ED5",
+  130: "#92ACDC",
+  140: "#A6BAE2",
+  150: "#BAC9E9",
+  160: "#CDD8F0",
+};
+
+export const contosoLight: Theme = createLightTheme(contoso);
+export const contosoDark: Theme = createDarkTheme(contoso);
+
+// Dark mode often needs the brand foreground stops nudged for contrast
+contosoDark.colorBrandForeground1 = contoso[110];
+contosoDark.colorBrandForeground2 = contoso[120];
+```
+
+Now wire these into the `FluentWrapper` instead of the stock web themes:
+
+```typescript
+const theme = React.useMemo(
+  () => (themeVariant?.isInverted ? contosoDark : contosoLight),
+  [themeVariant]
+);
+```
+
+The result is a web part whose buttons, badges, and focus rings use your organization's brand color and switch to a contrast-corrected dark variant when a user drops the part into a dark-background section. If you ship the same package to multiple tenants, generate one `BrandVariants` per tenant and pick it from a web part property — the same per-tenant configuration approach used for [Application Customizer properties](/blog/spfx-application-customizer-header-footer-sharepoint-2026).
+
 ## Building a Component with v9
 
 Let's build a practical example: a task list card that displays items from a SharePoint list. This shows off several v9 patterns.
@@ -291,6 +346,75 @@ Here is a quick reference for the components you will migrate most often:
 | `MessageBar` | `MessageBar` | New API, same purpose |
 
 The biggest pain point is `DetailsList` → `DataGrid`. The v9 `DataGrid` has a fundamentally different API built around column definitions and row data rather than the v8 approach of columns plus `onRenderItemColumn`. If your web part has a heavy `DetailsList` implementation, migrate everything else first and tackle the grid last. In many cases, running the v8 `DetailsList` alongside v9 components during the transition is the pragmatic choice.
+
+## Migrating DetailsList to DataGrid
+
+`DetailsList` → `DataGrid` is the migration most likely to stall, because it is not a prop rename — the mental model changed. In v8 you passed a `columns` array and an `items` array and rendered cells through `onRenderItemColumn`. In v9 you declare columns with `createTableColumn`, giving each one explicit `renderHeaderCell` and `renderCell` functions, then hand the rows to `DataGrid`. ([Fluent UI v9 DataGrid docs](https://react.fluentui.dev/?path=/docs/components-datagrid--default)) `DataGrid` ships in the `@fluentui/react-table` package, re-exported through `@fluentui/react-components`. ([@fluentui/react-table — npm](https://www.npmjs.com/package/@fluentui/react-table))
+
+Here is the task data from earlier rendered as a `DataGrid`:
+
+```tsx
+import {
+  DataGrid,
+  DataGridHeader,
+  DataGridRow,
+  DataGridHeaderCell,
+  DataGridBody,
+  DataGridCell,
+  createTableColumn,
+  TableColumnDefinition,
+  Badge,
+} from "@fluentui/react-components";
+
+const columns: TableColumnDefinition<Task>[] = [
+  createTableColumn<Task>({
+    columnId: "title",
+    renderHeaderCell: () => "Task",
+    renderCell: (item) => item.title,
+  }),
+  createTableColumn<Task>({
+    columnId: "priority",
+    renderHeaderCell: () => "Priority",
+    renderCell: (item) => (
+      <Badge appearance="filled" size="small">
+        {item.priority}
+      </Badge>
+    ),
+  }),
+];
+
+export const TaskGrid: React.FC<{ tasks: Task[] }> = ({ tasks }) => (
+  <DataGrid items={tasks} columns={columns} getRowId={(t) => t.id}>
+    <DataGridHeader>
+      <DataGridRow>
+        {({ renderHeaderCell }) => (
+          <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+        )}
+      </DataGridRow>
+    </DataGridHeader>
+    <DataGridBody<Task>>
+      {({ item, rowId }) => (
+        <DataGridRow<Task> key={rowId}>
+          {({ renderCell }) => (
+            <DataGridCell>{renderCell(item)}</DataGridCell>
+          )}
+        </DataGridRow>
+      )}
+    </DataGridBody>
+  </DataGrid>
+);
+```
+
+Two behaviors will trip up a v8 developer:
+
+| v8 `DetailsList` | v9 `DataGrid` | What to change |
+|---|---|---|
+| `onRenderItemColumn(item, _, col)` | `renderCell(item)` per column | Move cell logic into each `createTableColumn` |
+| `onItemInvoked` (row double-click) | No built-in equivalent | Wire `onClick` on the row or cell yourself |
+| `selectionMode` + `Selection` object | `selectionMode="multiselect"` prop | Read selection from `DataGrid` events |
+| Columns + items as flat props | Column defs hold render fns; rows via render-prop children | Restructure the component body |
+
+A practical sequencing tip echoing the earlier advice: migrate every other component to v9 first, run `DataGrid` last, and keep the v8 `DetailsList` mounted through the transition if your grid is complex — the two render side by side without conflict. For grids backed by SharePoint list data, pair this with a typed data layer: [PnP JS in SPFx](/blog/spfx-pnp-js-sharepoint-data) keeps the row-fetching code clean while you focus on the v9 rendering.
 
 ## Handling Bundle Size
 
