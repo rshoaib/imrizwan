@@ -3,8 +3,9 @@ title: "Microsoft Graph Delta Query: Incremental Sync Guide (2026)"
 slug: microsoft-graph-delta-query-incremental-sync-2026
 excerpt: "Sync mail, drives, users, and groups efficiently with Microsoft Graph delta queries. Token handling, pagination, error recovery, and 2026 production patterns."
 date: "2026-04-28T09:00:00.000Z"
+updated_at: "2026-05-27"
 displayDate: "April 28, 2026"
-readTime: "12 min read"
+readTime: "15 min read"
 category: "Graph API"
 image: "/images/blog/microsoft-graph-delta-query-incremental-sync-2026.png"
 tags:
@@ -277,6 +278,80 @@ async function syncMailFolder(userId: string, folderId: string) {
 ```
 
 A subtle gotcha: a message moved between folders shows up as `@removed` in the source folder's delta and as a fresh upsert in the destination folder's delta — but only if you are tracking both folders. If you only sync the Inbox, a move to Archive looks identical to a delete. Keep that in mind when reconciling state.
+
+---
+
+## Storing Delta Tokens: A Schema That Survives Restarts
+
+Every code sample above leans on three helpers — `loadDeltaLink`, `persistDeltaLink`, and `clearDeltaLink` — without showing them. They are the part people get wrong, so here is a concrete implementation you can lift.
+
+The store is a single keyed table. The key is the resource you are syncing — [`/users/delta`](https://learn.microsoft.com/en-us/graph/delta-query-users), a specific drive, or a [mail folder](https://learn.microsoft.com/en-us/graph/delta-query-messages) — and the value is the opaque deltaLink. Because a deltaLink [encodes the original `$select` and query parameters of the request](https://learn.microsoft.com/en-us/graph/delta-query-overview), the key must be specific enough that two syncs with different selections never collide.
+
+```sql
+CREATE TABLE delta_state (
+  resource_key  TEXT PRIMARY KEY,
+  delta_link    TEXT NOT NULL,
+  next_link     TEXT,
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+Two pieces of advice are baked into that DDL:
+
+- **`delta_link` is `TEXT`, not `VARCHAR(255)`.** Real deltaLinks routinely exceed 2 KB. A length-capped column truncates the token silently, and you only find out on the next round when Graph rejects the mangled URL with `400 Bad Request`.
+- **`resource_key` is the primary key.** One row per sync target, upserted in place. You never want two live tokens for the same resource — the older one is always wrong.
+
+The helpers are then trivial and idempotent:
+
+```ts
+import { sql } from "./db";
+
+export async function loadDeltaLink(key: string): Promise<string | null> {
+  const rows = await sql<{ delta_link: string }[]>`
+    SELECT delta_link FROM delta_state WHERE resource_key = ${key}
+  `;
+  return rows[0]?.delta_link ?? null;
+}
+
+export async function persistDeltaLink(key: string, link: string): Promise<void> {
+  await sql`
+    INSERT INTO delta_state (resource_key, delta_link, next_link, updated_at)
+    VALUES (${key}, ${link}, NULL, now())
+    ON CONFLICT (resource_key)
+    DO UPDATE SET delta_link = EXCLUDED.delta_link, next_link = NULL, updated_at = now()
+  `;
+}
+
+export async function clearDeltaLink(key: string): Promise<void> {
+  await sql`DELETE FROM delta_state WHERE resource_key = ${key}`;
+}
+```
+
+The single most important rule: **only call `persistDeltaLink` after a round has fully drained its `nextLink` chain.** If you write the deltaLink mid-round and crash, you skip the rest of that round's pages forever. The code in Steps 1–5 already respects this — the `persistDeltaLink` call always sits on the branch that has a deltaLink and *no* `nextLink`. Keep that invariant when you adapt it.
+
+That extra `next_link` column is for one case only: a first-time scan of a huge drive that runs for hours. Microsoft's [best practices for detecting changes at scale](https://learn.microsoft.com/en-us/onedrive/developer/rest-api/concepts/scan-guidance?view=odsp-graph-online) recommend checkpointing in-round progress so a multi-hour initial sync can resume after a restart instead of beginning again. Store that page cursor in `next_link`, keep it strictly separate from `delta_link`, and clear it the moment the round completes — which the upsert above does for you.
+
+---
+
+## Delta Query vs Change Notifications: Which One (or Both)
+
+The question I get asked most is "should I poll with delta or subscribe with webhooks?" The honest answer is that they solve different halves of the same problem, and the mature designs use both.
+
+| Dimension | Delta query (pull) | Change notifications (push) |
+|---|---|---|
+| Delivery model | You poll on a schedule | Graph posts to your webhook |
+| Latency | Seconds to minutes | Near real-time |
+| Completeness | Gap-free — every change since the last token | At-least-once; can be dropped or duplicated |
+| Delete signal | Authoritative (`@removed` / `deleted`) | Notification only; you still fetch to confirm |
+| State you persist | A deltaLink per resource | A subscription plus its expiry |
+| Recurring chore | Refresh the token on `410 Gone` | Renew the subscription before it expires |
+| Best for | Reconciliation, batch sync, audit completeness | Instant UI reaction, event triggers |
+
+Look at the "completeness" row. Change notifications are explicitly **at-least-once and lossy** — Microsoft does not guarantee a notification for every change, and a missed renewal drops the entire stream. Delta query is the opposite: as long as you hold a valid token, no change is ever lost.
+
+That asymmetry is exactly why the [official guidance](https://learn.microsoft.com/en-us/graph/delta-query-overview) is to combine the two. Subscribe for the "something changed, wake up now" signal, then run a delta round to pull *what* changed — gap-free and de-duplicated. The webhook buys you latency; the delta round buys you correctness. As a bonus, reacting to a notification instead of polling on a tight loop keeps you well clear of throttling.
+
+If you can only ship one for a first version, choose by failure cost. Pick delta when missing a change is unacceptable — provisioning, compliance, billing. Pick notifications when latency *is* the product, like a live activity feed. For the push side, the companion walkthrough — [Microsoft Graph Change Notifications: Real-Time Webhooks Guide (2026)](/blog/microsoft-graph-change-notifications-webhooks-guide-2026) — covers subscription creation, the validation handshake, and renewal.
 
 ---
 
